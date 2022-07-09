@@ -1,0 +1,9 @@
+node_modules
+artifacts
+byproducts
+.turbo
+.vscode
+cache
+coverage*
+gasReporterOutput.json
+contracts/legacy

@@ -1,0 +1,14 @@
+node_modules
+.env
+coverage
+coverage.json
+typechain
+src/
+byproducts/
+
+# OpenZeppelin: Network file
+.openzeppelin/unknown-*.json
+
+#Hardhat files
+cache
+artifacts
