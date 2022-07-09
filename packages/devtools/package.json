@@ -1,0 +1,10 @@
+{
+  "name": "require-dotenv",
+  "version": "0.1.0",
+  "description": "Throw an error when environment variables are missing",
+  "main": "exec.ts",
+  "files": [
+    "exec.ts"
+  ],
+  "private": true
+}
