@@ -1,0 +1,29 @@
+{
+  "name": "pawcon-monorepo",
+  "version": "0.1.0",
+  "private": true,
+  "workspaces": [
+    "apps/*",
+    "packages/*"
+  ],
+  "scripts": {
+    "build": "turbo run build",
+    "dev": "turbo run dev --parallel",
+    "lint": "turbo run lint",
+    "format": "prettier --write \"**/*.{ts,tsx,md,sol}\""
+  },
+  "devDependencies": {
+    "prettier": "latest",
+    "turbo": "^1.3.1"
+  },
+  "engines": {
+    "npm": ">=7.0.0",
+    "node": ">=14.0.0"
+  },
+  "packageManager": "pnpm@7.3.0",
+  "author": {
+    "name": "Jake Sung(developerasun)",
+    "url": "https://github.com/developerasun",
+    "email": "nellow1102@gmail.com"
+  }
+}
