@@ -3,6 +3,8 @@
 .turbo
 build/**
 .gitmessage.txt
+reminder.md
+.env
 
 # dependencies
 node_modules
