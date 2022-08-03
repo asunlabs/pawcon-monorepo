@@ -1,0 +1,58 @@
+# For more information see: https://help.github.com/actions/language-and-framework-guides/using-nodejs-with-github-actions
+# see pnpm action: https://github.com/marketplace/actions/setup-pnpm
+
+name: CI
+
+on:
+  workflow_dispatch:
+  pull_request:
+
+jobs:
+  # job 1
+  cache-and-install:
+    runs-on: ubuntu-latest
+
+    strategy:
+      matrix:
+        node-version: [12.x, 14.x, 16.x]
+
+    steps:
+      - uses: actions/checkout@v3
+
+      - name: Use Node.js ${{ matrix.node-version }}
+        uses: actions/setup-node@v3
+        with:
+          node-version: ${{ matrix.node-version }}
+          cache: 'pnpm'
+
+      - name: Setup pnpm
+        uses: pnpm/action-setup@v2.2.2
+        with:
+          version: 7.5.0
+          run_install: false
+
+      # Cache for faster CI
+      - name: Get pnpm store directory
+        id: pnpm-cache
+        run: |
+          echo "::set-output name=pnpm_cache_dir::$(pnpm store path)"
+
+      - uses: actions/cache@v3
+        name: Setup pnpm cache
+        with:
+          path: ${{ steps.pnpm-cache.outputs.pnpm_cache_dir }}
+          key: ${{ runner.os }}-pnpm-store-${{ hashFiles('**/pnpm-lock.yaml') }}
+          restore-keys: |
+            ${{ runner.os }}-pnpm-store-
+
+      - name: Install dependencies
+        run: pnpm install --fronzen-lockfile # frozen is true by default in CI
+
+  # job 2
+  unit-test-feature-only:
+    if: startsWith(github.head_ref, 'feature/')
+    runs-on: ubuntu-latest
+
+    steps:
+      - run: echo Run unit test to newly added features
+      - run: pnpm exec turbo run test:unit
