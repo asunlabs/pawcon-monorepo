@@ -21,17 +21,22 @@
 
 Being migrated from [here](https://github.com/developerasun/pawcon)
 
-Breaking changes on the way.
-
--   Adopting Turborepo/monorepo with pnpm package manager
--   Apps devided into 1) client 2) server 3) blockchain 4) unity
--   Prettier adopted
--   Redux toolkit adopted
--   Nest.js,swagger adopted
--   Upgradeable, chainlink oracle, and Pinata SDK and dedicated gateway adopted
-
 **Useful resouces**
 
 You can check dev resources from below.
 
--   [Pawcon dockerhub](https://hub.docker.com/repository/docker/developerasun/pawcon-monorepo)
+- [Pawcon dockerhub](https://hub.docker.com/repository/docker/developerasun/pawcon-monorepo)
+
+## App services
+
+Two projects are being developed in this monorepo, which is as followings.
+
+**AsunMint: Minting dapp**
+
+_TBD_
+
+**AsunSwap: DeFi dapp**
+
+- Wallets: Master wallet(CA), wallet A(CA), wallet B(CA)
+- Swap: ERC20/777☜☞ERC20/777, ERC20☜☞ERC721
+- Pool: Deposit, timelock
