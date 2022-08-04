@@ -25,8 +25,10 @@
     "inspect:b": "echo inspect script will be added",
     "inspect:c": "echo inspect script will be added",
     "sort:packages": "pnpm dlx sort-package-json",
-    "test:integ": "nodemon --watch test/integration --exec \"hardhat test --grep \"integ\"\"",
-    "test:unit": "nodemon --watch test/unit --exec \"pnpm exec hardhat test --grep \"unit\"\"",
+    "test:unit:dev": "nodemon -w test --exec mocha -g \"unit\" --slow 2000  --reporter list",
+    "test:integ:dev": "nodemon -w test --exec mocha -g \"integ\" --slow 2000  --reporter list",
+    "test:unit": "mocha -g \"unit\" --slow 2000  --reporter list",
+    "test:integ": "mocha -g \"integ\" --slow 2000  --reporter list",
     "tests": "hardhat test"
   },
   "nodemonConfig": {
