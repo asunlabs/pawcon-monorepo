@@ -1,121 +1,155 @@
-import * as dotenv from 'dotenv';
-import { ethers } from 'hardhat';
-import { HardhatUserConfig, task } from 'hardhat/config';
-import '@nomiclabs/hardhat-etherscan'; // for etherscan contract verification
-import '@nomiclabs/hardhat-ethers';
-import '@nomiclabs/hardhat-waffle';
-import '@typechain/hardhat';
-import 'hardhat-gas-reporter';
-import 'solidity-coverage';
-import 'hardhat-contract-sizer';
-import 'hardhat-log-remover';
-import '@openzeppelin/hardhat-upgrades';
+import * as dotenv from "dotenv";
+import { ethers } from "hardhat";
+import { HardhatUserConfig, task } from "hardhat/config";
+import "@nomiclabs/hardhat-etherscan"; // for etherscan contract verification
+import "@typechain/hardhat";
+import "hardhat-gas-reporter";
+import "solidity-coverage";
+import "@openzeppelin/hardhat-upgrades";
+import "@nomiclabs/hardhat-ethers";
+import "@nomicfoundation/hardhat-chai-matchers";
+import { COMPILER_OPT, PLUGIN } from "./scripts/manager/constantManager";
 
-dotenv.config();
+dotenv.config({ path: "./.env.development" });
 
-const requireEnv = (argument: string) => {
-    throw new Error(`${argument} is required in .env but missing.`);
+const {
+  TEST_GOERLI_URL,
+  TEST_SEPOLIA_URL,
+  TEST_ROPSTEN_URL,
+  TEST_RINKEBY_URL,
+  TEST_KOVAN_URL,
+
+  MAIN_ETHEREUM_URL,
+  FORK_MAINNET_URL,
+  FORK_GOERLI_URL,
+
+  ACCOUNT_ETHEREUM_PRIVATE_KEY,
+  ACCOUNT_GOERLI_PRIVATE_KEY,
+  ACCOUNT_SEPOLIA_PRIVATE_KEY,
+  ACCOUNT_ROPSTEN_PRIVATE_KEY,
+  ACCOUNT_RINKEBY_PRIVATE_KEY,
+  ACCOUNT_KOVAN_PRIVATE_KEY,
+
+  ACCOUNT_DEPLOYER_PRIVATE_KEY,
+  ACCOUNT_DEPLOYER_ADDRESS,
+
+  API_COINMARKETCAP_KEY,
+  API_ETHERSCAN_KEY,
+  API_ETHERSCAN_BACKUP_KEY,
+} = process.env;
+
+const options = {
+  settings: {
+    optimizer: {
+      enabled: COMPILER_OPT.IS_ENABLED,
+      runs: COMPILER_OPT.FEE.LOW_EXECUTION,
+    },
+    // evmVersion: "london",
+  },
 };
 
-// Ensure that we have all the environment variables we need.
-const mnemonic: string | undefined = process.env.ACCOUNT_MNEMONIC_SEED;
-if (!mnemonic) {
-    requireEnv('ACCOUNT_MNEMONIC_SEED');
-}
-
-// list of network chain IDs
-const chainIds = {
-    'arbitrum-mainnet': 42161,
-    avalanche: 43114,
-    bsc: 56,
-    hardhat: 31337,
-    mainnet: 1,
-    'optimism-mainnet': 10,
-    'polygon-mainnet': 137,
-    'polygon-mumbai': 80001,
-    rinkeby: 4,
-    ganache: 1337,
+const deployerForTheSameAddress = {
+  ADDRESS: ACCOUNT_DEPLOYER_ADDRESS,
+  PRIVATE_KEY: ACCOUNT_DEPLOYER_PRIVATE_KEY,
 };
 
 const config: HardhatUserConfig = {
-    defaultNetwork: 'hardhat', // dev network is hardhat
-    solidity: {
-        // version: "0.8.0",
-        // set multiple compiler version
-        compilers: [
-            { version: '0.8.0' },
-            { version: '0.8.1' },
-            {
-                version: '0.8.10',
-                settings: {},
-            },
-        ],
-        settings: {
-            optimizer: {
-                enabled: true,
-                runs: 800,
-            },
-            evmVersion: 'london', // default value managed by solc
-        },
+  defaultNetwork: "hardhat", // dev network is hardhat
+  solidity: {
+    // version: "0.8.0",
+    // set multiple compiler version
+    compilers: [
+      { version: "0.6.6" },
+      { version: "0.8.0" },
+      { version: "0.8.15" },
+    ].map((ver) => {
+      return {
+        ...ver,
+        ...options,
+      };
+    }),
+  },
+  networks: {
+    // JSON-RPC based network
+    mainnet: {
+      url: MAIN_ETHEREUM_URL ? String(MAIN_ETHEREUM_URL) : "",
+      accounts:
+        ACCOUNT_ETHEREUM_PRIVATE_KEY !== undefined
+          ? [ACCOUNT_ETHEREUM_PRIVATE_KEY]
+          : [],
     },
-    networks: {
-        // JSON-RPC based network
-        ropsten: {
-            url: process.env.TEST_ROPSTEN_URL ? process.env.TEST_ROPSTEN_URL : requireEnv('TEST_ROPSTEN_URL'),
-            accounts:
-                process.env.ACCOUNT_ROPSTEN_PRIVATE_KEY !== undefined
-                    ? [process.env.ACCOUNT_ROPSTEN_PRIVATE_KEY]
-                    : requireEnv('ACCOUNT_ROPSTEN_PRIVATE_KEY'),
-        },
-        ganache: {
-            url: process.env.LOCAL_GANACHE_URL ? process.env.LOCAL_GANACHE_URL : requireEnv('LOCAL_GANACHE_URL'),
-            chainId: chainIds.ganache, // ganache chain id
-            gas: 'auto',
-            gasPrice: 'auto',
-            timeout: 40000, // default value is 40000
-        },
-        mainnet: {
-            url: process.env.MAIN_ETHEREUM_URL ? process.env.MAIN_ETHEREUM_URL : requireEnv('MAIN_ETHEREUM_URL'),
-            accounts:
-                process.env.ACCOUNT_ETHEREUM_PRIVATE_KEY !== undefined
-                    ? [process.env.ACCOUNT_ETHEREUM_PRIVATE_KEY]
-                    : requireEnv('ACCOUNT_ETHEREUM_PRIVATE_KEY'),
-        },
+    hardhat: {
+      forking: {
+        url: FORK_MAINNET_URL ? String(FORK_MAINNET_URL) : "", // alchemy node assist an archived data caching
+        blockNumber: 14390000,
+        enabled: true,
+      },
     },
-    paths: {
-        artifacts: './artifacts',
-        cache: './byproducts/cache',
-        sources: './contracts',
-        tests: './test',
+    goerli: {
+      url: TEST_GOERLI_URL !== undefined ? String(TEST_GOERLI_URL) : "",
+      accounts:
+        ACCOUNT_GOERLI_PRIVATE_KEY !== undefined
+          ? [ACCOUNT_GOERLI_PRIVATE_KEY]
+          : [],
     },
-    gasReporter: {
-        enabled: process.env.PLUGIN_REPORT_GAS ? true : false,
-        coinmarketcap: process.env.API_COINMARKETCAP_KEY, // for gas reporter
-        currency: 'USD',
-        src: './contracts',
-        outputFile: './byproducts',
+    // node provider not yet actively supports sepolia. currently url is empty string.
+    sepolia: {
+      url: TEST_SEPOLIA_URL !== undefined ? TEST_SEPOLIA_URL : "",
+      accounts:
+        ACCOUNT_SEPOLIA_PRIVATE_KEY !== undefined
+          ? [ACCOUNT_SEPOLIA_PRIVATE_KEY]
+          : [],
     },
-    etherscan: {
-        apiKey: {
-            ropsten: process.env.API_ETHERSCAN_KEY ? process.env.API_ETHERSCAN_KEY : requireEnv('API_ETHERSCAN_KEY'),
-        },
+    // @deprecated
+    ropsten: {
+      url: TEST_ROPSTEN_URL ? String(TEST_ROPSTEN_URL) : "",
+      accounts:
+        ACCOUNT_ROPSTEN_PRIVATE_KEY !== undefined
+          ? [ACCOUNT_ROPSTEN_PRIVATE_KEY]
+          : [],
     },
-    mocha: {
-        timeout: 40000,
-        color: true,
+    // @deprecated
+    rinkeby: {
+      url: TEST_RINKEBY_URL ? String(TEST_RINKEBY_URL) : "",
+      accounts:
+        ACCOUNT_RINKEBY_PRIVATE_KEY !== undefined
+          ? [ACCOUNT_RINKEBY_PRIVATE_KEY]
+          : [],
     },
-    typechain: {
-        outDir: 'byproducts/typechain',
-        target: 'ethers-v5',
+    // @deprecated
+    kovan: {
+      url: TEST_KOVAN_URL ? String(TEST_KOVAN_URL) : "",
+      accounts:
+        ACCOUNT_KOVAN_PRIVATE_KEY !== undefined
+          ? [ACCOUNT_KOVAN_PRIVATE_KEY]
+          : [],
     },
-    // keep contract size less than 24kb for mainnet deployment
-    contractSizer: {
-        alphaSort: false,
-        runOnCompile: false, // force to compile first
-        disambiguatePaths: false,
-        strict: true, // throw error when contract is over than 24kb
-        only: [],
+  },
+  paths: {
+    artifacts: "./artifacts",
+    cache: "./byproducts/cache",
+    sources: "./contracts",
+    tests: "./test",
+  },
+  gasReporter: {
+    enabled: Boolean(PLUGIN.REPORT_GAS) ? true : false,
+    coinmarketcap: String(API_COINMARKETCAP_KEY), // for gas reporter
+    currency: "USD",
+    src: "./contracts",
+    outputFile: "./byproducts",
+  },
+  etherscan: {
+    apiKey: {
+      goerli: API_ETHERSCAN_KEY !== undefined ? API_ETHERSCAN_KEY : "",
+      ropsten: API_ETHERSCAN_KEY !== undefined ? API_ETHERSCAN_KEY : "",
+      rinkeby:
+        API_ETHERSCAN_BACKUP_KEY !== undefined ? API_ETHERSCAN_BACKUP_KEY : "",
     },
+  },
+  typechain: {
+    outDir: "byproducts/typechain",
+    target: "ethers-v5",
+  },
 };
 
 export default config;
