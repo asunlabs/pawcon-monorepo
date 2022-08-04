@@ -12,24 +12,20 @@ jobs:
   cache-and-install:
     runs-on: ubuntu-latest
 
-    strategy:
-      matrix:
-        node-version: [12.x, 14.x, 16.x]
-
     steps:
       - uses: actions/checkout@v3
-
-      - name: Use Node.js ${{ matrix.node-version }}
-        uses: actions/setup-node@v3
-        with:
-          node-version: ${{ matrix.node-version }}
-          cache: 'pnpm'
 
       - name: Setup pnpm
         uses: pnpm/action-setup@v2.2.2
         with:
           version: 7.5.0
           run_install: false
+
+      - name: Use Node.js 16
+        uses: actions/setup-node@v3
+        with:
+          node-version: 16
+          cache: 'pnpm'
 
       # Cache for faster CI
       - name: Get pnpm store directory
@@ -44,7 +40,7 @@ jobs:
           restore-keys: |
             ${{ runner.os }}-pnpm-store-
       - name: Install dependencies
-        run: pnpm install --fronzen-lockfile # frozen is true by default in CI
+        run: pnpm install --frozen-lockfile # frozen is true by default in CI
 
   # job 2
   unit-test-feature-only:
