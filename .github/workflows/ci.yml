@@ -15,10 +15,11 @@ jobs:
     steps:
       - uses: actions/checkout@v3
 
+      # package manager should be installed before Node
       - name: Setup pnpm
         uses: pnpm/action-setup@v2.2.2
         with:
-          version: 7.5.0
+          version: 7.5.0 # requires node ver14.6+
           run_install: false
 
       - name: Use Node.js 16
@@ -49,4 +50,4 @@ jobs:
 
     steps:
       - run: echo Run unit test to newly added features
-      - run: pnpm exec turbo run test:unit
+      - run: pnpm dlx turbo run test:unit
