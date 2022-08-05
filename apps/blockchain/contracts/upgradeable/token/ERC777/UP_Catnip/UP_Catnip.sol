@@ -25,7 +25,16 @@ contract UP_Catnip is Initializable, ERC777Upgradeable, UUPSUpgradeable, Ownable
     }
 
     /**
+     * set who can upgrade contract with access control
      * _authorizeUpgrade must be overridden with access control
      */
     function _authorizeUpgrade(address newImplementation) internal override onlyOwner {}
+
+    function setNumber(uint256 _number) external {
+        number = _number;
+    }
+
+    function getNumber() external view returns (uint256) {
+        return number;
+    }
 }
