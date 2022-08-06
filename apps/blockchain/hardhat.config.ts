@@ -1,5 +1,5 @@
 import * as dotenv from "dotenv";
-import { ethers } from "hardhat";
+import hre from "hardhat";
 import { HardhatUserConfig, task } from "hardhat/config";
 import "@nomiclabs/hardhat-etherscan"; // for etherscan contract verification
 import "@typechain/hardhat";
@@ -44,7 +44,6 @@ const options = {
       enabled: COMPILER_OPT.IS_ENABLED,
       runs: COMPILER_OPT.FEE.LOW_EXECUTION,
     },
-    // evmVersion: "london",
   },
 };
 
@@ -54,7 +53,6 @@ const deployerForTheSameAddress = {
 };
 
 const config: HardhatUserConfig = {
-  defaultNetwork: "hardhat", // dev network is hardhat
   solidity: {
     // version: "0.8.0",
     // set multiple compiler version
@@ -72,7 +70,7 @@ const config: HardhatUserConfig = {
   networks: {
     // JSON-RPC based network
     mainnet: {
-      url: MAIN_ETHEREUM_URL ? String(MAIN_ETHEREUM_URL) : "",
+      url: MAIN_ETHEREUM_URL !== undefined ? MAIN_ETHEREUM_URL : "",
       accounts:
         ACCOUNT_ETHEREUM_PRIVATE_KEY !== undefined
           ? [ACCOUNT_ETHEREUM_PRIVATE_KEY]
@@ -80,13 +78,13 @@ const config: HardhatUserConfig = {
     },
     hardhat: {
       forking: {
-        url: FORK_MAINNET_URL ? String(FORK_MAINNET_URL) : "", // alchemy node assist an archived data caching
+        url: FORK_MAINNET_URL !== undefined ? FORK_MAINNET_URL : "", // alchemy node assist an archived data caching
         blockNumber: 14390000,
         enabled: true,
       },
     },
     goerli: {
-      url: TEST_GOERLI_URL !== undefined ? String(TEST_GOERLI_URL) : "",
+      url: TEST_GOERLI_URL !== undefined ? TEST_GOERLI_URL : "",
       accounts:
         ACCOUNT_GOERLI_PRIVATE_KEY !== undefined
           ? [ACCOUNT_GOERLI_PRIVATE_KEY]
@@ -102,7 +100,7 @@ const config: HardhatUserConfig = {
     },
     // @deprecated
     ropsten: {
-      url: TEST_ROPSTEN_URL ? String(TEST_ROPSTEN_URL) : "",
+      url: TEST_ROPSTEN_URL !== undefined ? TEST_ROPSTEN_URL : "",
       accounts:
         ACCOUNT_ROPSTEN_PRIVATE_KEY !== undefined
           ? [ACCOUNT_ROPSTEN_PRIVATE_KEY]
@@ -110,7 +108,7 @@ const config: HardhatUserConfig = {
     },
     // @deprecated
     rinkeby: {
-      url: TEST_RINKEBY_URL ? String(TEST_RINKEBY_URL) : "",
+      url: TEST_RINKEBY_URL !== undefined ? TEST_RINKEBY_URL : "",
       accounts:
         ACCOUNT_RINKEBY_PRIVATE_KEY !== undefined
           ? [ACCOUNT_RINKEBY_PRIVATE_KEY]
@@ -118,7 +116,7 @@ const config: HardhatUserConfig = {
     },
     // @deprecated
     kovan: {
-      url: TEST_KOVAN_URL ? String(TEST_KOVAN_URL) : "",
+      url: TEST_KOVAN_URL !== undefined ? TEST_KOVAN_URL : "",
       accounts:
         ACCOUNT_KOVAN_PRIVATE_KEY !== undefined
           ? [ACCOUNT_KOVAN_PRIVATE_KEY]
@@ -132,8 +130,9 @@ const config: HardhatUserConfig = {
     tests: "./test",
   },
   gasReporter: {
-    enabled: Boolean(PLUGIN.REPORT_GAS) ? true : false,
-    coinmarketcap: String(API_COINMARKETCAP_KEY), // for gas reporter
+    enabled: PLUGIN.REPORT_GAS ? true : false,
+    coinmarketcap:
+      API_COINMARKETCAP_KEY !== undefined ? API_COINMARKETCAP_KEY : "", // for gas reporter
     currency: "USD",
     src: "./contracts",
     outputFile: "./byproducts",
