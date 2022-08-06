@@ -4,12 +4,21 @@ coverage
 coverage.json
 typechain
 src/
-byproducts/
+
 
 # OpenZeppelin: Network file
 .openzeppelin/unknown-*.json
 
 #Hardhat files
 cache
+
+# Contract artifact is needed in Github actions CI test environment
 artifacts/*
 !artifacts/contracts
+
+# Validation is needed in Github actions CI test environment
+byproducts/*
+!byproducts/cache
+
+byproducts/cache/*
+!byproducts/cache/validations.json
