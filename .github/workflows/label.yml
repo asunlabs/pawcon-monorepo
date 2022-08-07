@@ -11,14 +11,29 @@ jobs:
     steps:
       - uses: actions/checkout@v2
 
-      # corresponding to git hook branch naming convention
       - name: set feature label
+        run: echo should set an enhancement label
+
+      # corresponding to git hook branch naming convention
       - uses: actions-ecosystem/action-add-labels@v1
         if: startsWith(github.head_ref, 'feature/')
         with:
-          labels: enhancement
+          labels: |
+            enhancement
+            test
 
-      # - name: set bugfix label
-      #   if: startsWith(github.head_ref, 'bugfix/')
-      #   with:
-      #     labels: bug
+      - name: set bugfix label
+        run: echo should set a bug label
+
+      - uses: actions-ecosystem/action-add-labels@v1
+        if: startsWith(github.head_ref, 'bugfix/')
+        with:
+          labels: bug
+
+      - name: set hotfix label
+        run: echo should set a bug label
+
+      - uses: actions-ecosystem/action-add-labels@v1
+        if: startsWith(github.head_ref, 'hotfix/')
+        with:
+          labels: bug
