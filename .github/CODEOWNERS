@@ -1,0 +1,6 @@
+# set default reviewers for below files
+*.sol @developerasun
+*.ts @developerasun
+*.js @developerasun
+*.go @developerasun
+*.md @developerasun

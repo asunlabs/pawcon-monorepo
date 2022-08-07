@@ -1,0 +1,50 @@
+# For more information see: https://help.github.com/actions/language-and-framework-guides/using-nodejs-with-github-actions
+# see pnpm action: https://github.com/marketplace/actions/setup-pnpm
+
+name: CI
+
+on:
+  workflow_dispatch:
+  pull_request:
+
+jobs:
+  # job 1
+  cache-and-install:
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v3
+
+      # package manager should be installed before Node
+      - name: Setup pnpm
+        uses: pnpm/action-setup@v2.2.2
+        with:
+          version: 7.5.0 # requires node ver14.6+
+          run_install: false
+
+      - name: Use Node.js 16
+        uses: actions/setup-node@v3
+        with:
+          node-version: 16
+          cache: 'pnpm'
+
+      # Cache for faster CI
+      - name: Get pnpm store directory
+        id: pnpm-cache
+        run: |
+          echo "::set-output name=pnpm_cache_dir::$(pnpm store path)"
+
+      - uses: actions/cache@v3
+        name: Setup pnpm cache
+        with:
+          path: ${{ steps.pnpm-cache.outputs.pnpm_cache_dir }}
+          key: ${{ runner.os }}-pnpm-store-${{ hashFiles('**/pnpm-lock.yaml') }}
+          restore-keys: |
+            ${{ runner.os }}-pnpm-store-
+
+      - name: Install dependencies
+        run: pnpm install --frozen-lockfile # frozen is true by default in CI
+
+      - name: feature branch unit test
+        if: startsWith(github.head_ref, 'feature/')
+        run: pnpm exec turbo run test:unit
