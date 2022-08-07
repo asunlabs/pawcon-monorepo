@@ -31,15 +31,13 @@
     "test:integ": "mocha -g \"integ\" --slow 2000  --reporter list",
     "tests": "hardhat test"
   },
-  "nodemonConfig": {
-    "ext": "ts, js, json",
-    "verbose": true
-  },
   "devDependencies": {
     "@chainlink/contracts": "^0.4.1",
     "@ethersproject/abi": "^5.0.0",
     "@ethersproject/bytes": "^5.0.0",
     "@ethersproject/providers": "^5.0.0",
+    "@nomicfoundation/hardhat-chai-matchers": "^1.0.2",
+    "@nomicfoundation/hardhat-network-helpers": "^1.0.3",
     "@nomiclabs/hardhat-ethers": "^2.0.6",
     "@nomiclabs/hardhat-etherscan": "^3.1.0",
     "@openzeppelin/contracts": "^4.6.0",
@@ -54,6 +52,7 @@
     "@typescript-eslint/parser": "^4.33.0",
     "async": "^3.2.4",
     "chai": "^4.3.6",
+    "chalk": "4.1.2",
     "dotenv": "^16.0.1",
     "eslint": "^7.32.0",
     "eslint-config-prettier": "^8.5.0",
@@ -70,6 +69,7 @@
     "install": "^0.13.0",
     "lodash": "^4.17.15",
     "mocha": "^10.0.0",
+    "nodemon": "^2.0.15",
     "prettier": ">=2.0.0",
     "prettier-plugin-solidity": "1.0.0-beta.19",
     "solhint": "^3.3.7",
@@ -78,5 +78,5 @@
     "typechain": "^5.2.0",
     "typescript": "^4.7.4"
   },
-  "packageManager": "pnpm@7.3.0"
+  "packageManager": "pnpm@7.5.0"
 }
