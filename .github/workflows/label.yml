@@ -11,8 +11,10 @@ jobs:
     steps:
       - uses: actions/checkout@v2
 
-      # corresponding to git hook branch naming convention
       - name: set feature label
+        run: echo should set an enhancement label
+
+      # corresponding to git hook branch naming convention
       - uses: actions-ecosystem/action-add-labels@v1
         if: startsWith(github.head_ref, 'feature/')
         with:
