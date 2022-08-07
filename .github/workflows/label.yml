@@ -1,0 +1,24 @@
+name: Auto-label
+
+on:
+  pull_request:
+    types:
+      - opened
+
+jobs:
+  add-labels:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+
+      # corresponding to git hook branch naming convention
+      - name: set feature label
+      - uses: actions-ecosystem/action-add-labels@v1
+        if: startsWith(github.head_ref, 'feature/')
+        with:
+          labels: enhancement
+
+      # - name: set bugfix label
+      #   if: startsWith(github.head_ref, 'bugfix/')
+      #   with:
+      #     labels: bug
