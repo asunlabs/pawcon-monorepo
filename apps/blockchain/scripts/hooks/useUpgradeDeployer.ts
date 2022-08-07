@@ -1,7 +1,7 @@
 import { Contract, Signer } from "ethers";
 import { ethers, upgrades } from "hardhat";
 import chalk from "chalk";
-import { proxyPattern } from "../manager/typeManager";
+import { UpgradePattern } from "../manager/typeManager";
 
 async function useTransparent(contractName: string, signer?: Signer, constructorArgs?: unknown[]) {
   let contract: Contract;
@@ -33,7 +33,7 @@ async function useBeacon() {
   // upgrades.prepareUpgrade; // upgrade-safe validation
 }
 
-async function proxyRouter(pattern: proxyPattern) {
+async function proxyRouter(pattern: UpgradePattern) {
   if (pattern == "transparent") {
     // await useTransparent();
   }
