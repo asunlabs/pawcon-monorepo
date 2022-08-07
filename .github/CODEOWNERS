@@ -1,0 +1,4 @@
+*.sol @developerasun
+*.{ts,js} @developerasun
+*.go @developerasun
+*.md @developerasun
