@@ -11,7 +11,7 @@
     "dev": {
       "cache": false
     },
-    "tests": {
+    "test:unit": {
       "outputs": []
     },
     "inspect": {
@@ -21,11 +21,6 @@
       "outputs": []
     },
     "format": {
-      "outputs": []
-    },
-    "deploy:ropsten": {
-      "inputs": [],
-      "dependsOn": ["lint", "inspect", "tests"],
       "outputs": []
     }
   }

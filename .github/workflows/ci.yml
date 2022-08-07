@@ -1,0 +1,78 @@
+# For more information see: https://help.github.com/actions/language-and-framework-guides/using-nodejs-with-github-actions
+# see pnpm action: https://github.com/marketplace/actions/setup-pnpm
+
+name: CI
+
+on:
+  workflow_dispatch:
+  pull_request:
+
+env:
+  API_ETHERSCAN_KEY: ${{ secrets.API_ETHERSCAN_KEY }}
+  API_ETHERSCAN_BACKUP_KEY: ${{ secrets.API_ETHERSCAN_BACKUP_KEY }}
+  API_COINMARKETCAP_KEY: ${{ secrets.API_COINMARKETCAP_KEY }}
+
+  INFURA_PROJECT_ID: ${{ secrets.INFURA_PROJECT_ID }}
+  INFURA_PROJECT_SECRET: ${{ secrets.INFURA_PROJECT_SECRET }}
+
+  TEST_GOERLI_URL: ${{ secrets.TEST_GOERLI_URL }}
+  TEST_ROPSTEN_URL: ${{ secrets.TEST_ROPSTEN_URL }}
+  TEST_KOVAN_URL: ${{ secrets.TEST_KOVAN_URL }}
+  TEST_RINKEBY_URL: ${{ secrets.TEST_RINKEBY_URL }}
+  MAIN_ETHEREUM_URL: ${{ secrets.MAIN_ETHEREUM_URL }}
+
+  FORK_MAINNET_URL: ${{ secrets.FORK_MAINNET_URL }}
+  FORK_GOERLI_URL: ${{ secrets.FORK_GOERLI_URL }}
+
+  ACCOUNT_ETHEREUM_PRIVATE_KEY: ${{ secrets.ACCOUNT_ETHEREUM_PRIVATE_KEY }}
+  ACCOUNT_GOERLI_PRIVATE_KEY: ${{ secrets.ACCOUNT_GOERLI_PRIVATE_KEY }}
+  ACCOUNT_SEPOLIA_PRIVATE_KEY: ${{ secrets.ACCOUNT_SEPOLIA_PRIVATE_KEY }}
+  ACCOUNT_ROPSTEN_PRIVATE_KEY: ${{ secrets.ACCOUNT_ROPSTEN_PRIVATE_KEY }}
+  ACCOUNT_RINKEBY_PRIVATE_KEY: ${{ secrets.ACCOUNT_RINKEBY_PRIVATE_KEY }}
+  ACCOUNT_KOVAN_PRIVATE_KEY: ${{ secrets.ACCOUNT_KOVAN_PRIVATE_KEY }}
+
+  ACCOUNT_MNEMONIC_SEED: ${{ secrets.ACCOUNT_MNEMONIC_SEED }}
+  ACCOUNT_DEPLOYER_ADDRESS: ${{ secrets.ACCOUNT_DEPLOYER_ADDRESS }}
+  ACCOUNT_DEPLOYER_PRIVATE_KEY: ${{ secrets.ACCOUNT_DEPLOYER_PRIVATE_KEY }}
+
+jobs:
+  # job 1
+  cache-and-install:
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v3
+
+      # package manager should be installed before Node
+      - name: Setup pnpm
+        uses: pnpm/action-setup@v2.2.2
+        with:
+          version: 7.5.0 # requires node ver14.6+
+          run_install: false
+
+      - name: Use Node.js 16
+        uses: actions/setup-node@v3
+        with:
+          node-version: 16
+          cache: 'pnpm'
+
+      # Cache for faster CI
+      - name: Get pnpm store directory
+        id: pnpm-cache
+        run: |
+          echo "::set-output name=pnpm_cache_dir::$(pnpm store path)"
+
+      - uses: actions/cache@v3
+        name: Setup pnpm cache
+        with:
+          path: ${{ steps.pnpm-cache.outputs.pnpm_cache_dir }}
+          key: ${{ runner.os }}-pnpm-store-${{ hashFiles('**/pnpm-lock.yaml') }}
+          restore-keys: |
+            ${{ runner.os }}-pnpm-store-
+
+      - name: Install dependencies
+        run: pnpm install --frozen-lockfile # frozen is true by default in CI
+
+      - name: feature branch unit test
+        if: startsWith(github.head_ref, 'feature/')
+        run: pnpm exec turbo run test:unit
