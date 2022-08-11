@@ -42,9 +42,9 @@ jobs:
           labels: bug
 
       - name: set backlog label
-        run: echo should set a backlog label
+        run: echo should set a backlog label for project issue
 
       - uses: actions-ecosystem/action-add-labels@v1
-        if: ${{ startsWith(github.event.comment.body, '/backlog') }}
+        if: github.event.added_to_project
         with:
           labels: backlog
