@@ -11,14 +11,12 @@ import "@openzeppelin/contracts-upgradeable/access/OwnableUpgradeable.sol";
 /// @notice Upgradeable ERC777 Catnip token. Governance in PawCon project
 /// @dev Proxy, UUPS
 contract UP_Catnip is Initializable, ERC777Upgradeable, UUPSUpgradeable, OwnableUpgradeable {
-    uint256 public number;
-
     /// @custom:oz-upgrades-unsafe-allow constructor
     constructor() {
         _disableInitializers();
     }
 
-    function initialize() public initializer {
+    function initialize() public virtual initializer {
         __ERC777_init("UP_Catnip", "CN", new address[](0));
         __UUPSUpgradeable_init();
         __Ownable_init();
@@ -29,12 +27,4 @@ contract UP_Catnip is Initializable, ERC777Upgradeable, UUPSUpgradeable, Ownable
      * _authorizeUpgrade must be overridden with access control
      */
     function _authorizeUpgrade(address newImplementation) internal override onlyOwner {}
-
-    function setNumber(uint256 _number) external {
-        number = _number;
-    }
-
-    function getNumber() external view returns (uint256) {
-        return number;
-    }
 }
