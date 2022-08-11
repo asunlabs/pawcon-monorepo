@@ -45,6 +45,6 @@ jobs:
         run: echo should set a backlog label
 
       - uses: actions-ecosystem/action-add-labels@v1
-        if: startsWith(github.event.comment.body, '/backlog')
+        if: ${{ startsWith(github.event.comment.body, '/backlog') }}
         with:
           labels: backlog
