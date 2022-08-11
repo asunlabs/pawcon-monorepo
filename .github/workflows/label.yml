@@ -4,6 +4,9 @@ on:
   pull_request:
     types:
       - opened
+  issues:
+    types:
+      - opened
 
 jobs:
   add-labels:
@@ -37,3 +40,11 @@ jobs:
         if: startsWith(github.head_ref, 'hotfix/')
         with:
           labels: bug
+
+      - name: set backlog label
+        run: echo should set a backlog label
+
+      - uses: actions-ecosystem/action-add-labels@v1
+        if: startsWith(github.event.comment.body, '/backlog')
+        with:
+          labels: backlog
