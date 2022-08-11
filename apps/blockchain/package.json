@@ -33,7 +33,10 @@
   },
   "devDependencies": {
     "@chainlink/contracts": "^0.4.1",
+    "@defi-wonderland/smock": "^2.2.0",
     "@ethersproject/abi": "^5.0.0",
+    "@ethersproject/abstract-provider": "5",
+    "@ethersproject/abstract-signer": "5",
     "@ethersproject/bytes": "^5.0.0",
     "@ethersproject/providers": "^5.0.0",
     "@nomicfoundation/hardhat-chai-matchers": "^1.0.2",
