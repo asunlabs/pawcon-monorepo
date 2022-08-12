@@ -57,11 +57,6 @@ describe(`${PREFIX}-metadata`, function TestMetadata() {
     await useSnapshotForReset();
   });
 
-  it("Must not be called through delegatecall", async function TestProxiableUUID() {
-    const { contract } = await loadFixture(useFixture);
-    await expect(contract.proxiableUUID()).to.be.revertedWith("UUPSUpgradeable: must not be called through delegatecall");
-  });
-
   it("Should return a owner/signer of the contract", async function TestContractOwner() {
     const { contract } = await loadFixture(useFixture);
     const [hardhatFirstAccount] = await ethers.getSigners();
@@ -70,37 +65,11 @@ describe(`${PREFIX}-metadata`, function TestMetadata() {
     expect(await contract.signer.getAddress()).to.equal(hardhatFirstAccount.address);
   });
 
-  it("Should be upgradeble for only owner", async function TestUpgradeAccessControl() {
-    const { contract } = await loadFixture(useFixture);
-    const { contractVer02 } = await deployVer2();
-
-    const [owner, recipient] = await ethers.getSigners();
-
-    await expect(contract.connect(recipient).upgradeTo(contractVer02.address)).to.be.reverted;
-    await expect(contract.upgradeTo(contractVer02.address)).not.to.be.reverted;
-  });
-
   it("Ver2 should have a catnipVersion function", async function TestVersionGetter() {
     const { contractVer02 } = await deployVer2();
     const CATNIP_VERSION_02 = 2;
 
     expect(await contractVer02.catnipVersion()).to.equal(CATNIP_VERSION_02);
-  });
-
-  it("Should work before/after upgrades", async function TestUpgrades() {
-    // before upgrades
-    const { contract } = await loadFixture(useFixture);
-    expect(await contract.name()).to.equal("UP_Catnip");
-
-    // after upgrades
-    const ContractVer02Factory = await ethers.getContractFactory("UP_CatnipVer02");
-
-    await upgrades.upgradeProxy(contract.address, ContractVer02Factory, {
-      kind: "uups",
-    });
-
-    /// @dev proxy contract name does not change even after upgrades.
-    expect(await contract.name()).to.equal("UP_Catnip");
   });
 
   it("Smock should properly work", async function TestSmockPlugin() {
@@ -121,11 +90,16 @@ describe(`${PREFIX}-metadata`, function TestMetadata() {
 
     expect(await mockContractVer02.supplyLimit()).to.equal(SUPPLY_LIMIT);
   });
+});
 
-  it("CatnipVer02 has a version getter", async function TestCatnipVersion() {
-    const { contractVer02 } = await loadFixture(deployVer2);
-    const CATNIP_VERSION_02 = 2;
-    expect(await contractVer02.catnipVersion()).to.equal(CATNIP_VERSION_02);
+describe(`${PREFIX}-upgradeability`, function TestUpgradeability() {
+  beforeEach("Reset blockchain state", async function TestResetBlockchain() {
+    await useSnapshotForReset();
+  });
+
+  it("Must not be called through delegatecall", async function TestProxiableUUID() {
+    const { contract } = await loadFixture(useFixture);
+    await expect(contract.proxiableUUID()).to.be.revertedWith("UUPSUpgradeable: must not be called through delegatecall");
   });
 
   it("Should be prepared for upgrades", async function TestPrepareUpgrades() {
@@ -151,5 +125,63 @@ describe(`${PREFIX}-metadata`, function TestMetadata() {
     });
 
     console.log(implAddr);
+  });
+
+  it("Should work before/after upgrades", async function TestUpgrades() {
+    // before upgrades
+    const { contract } = await loadFixture(useFixture);
+    expect(await contract.name()).to.equal("UP_Catnip");
+
+    // after upgrades
+    const ContractVer02Factory = await ethers.getContractFactory("UP_CatnipVer02");
+
+    await upgrades.upgradeProxy(contract.address, ContractVer02Factory, {
+      kind: "uups",
+    });
+
+    /// @dev proxy contract name does not change even after upgrades.
+    expect(await contract.name()).to.equal("UP_Catnip");
+  });
+
+  it("Should be upgradeble for only owner", async function TestUpgradeAccessControl() {
+    const { contract } = await loadFixture(useFixture);
+    const { contractVer02 } = await deployVer2();
+
+    const [owner, recipient] = await ethers.getSigners();
+
+    await expect(contract.connect(recipient).upgradeTo(contractVer02.address)).to.be.reverted;
+    await expect(contract.upgradeTo(contractVer02.address)).not.to.be.reverted;
+  });
+});
+
+describe(`${PREFIX}-ver02`, function TestVer02() {
+  beforeEach("Reset blockchain state", async function TestResetBlockchain() {
+    await useSnapshotForReset();
+  });
+
+  it("Should mint an exact amount", async function TestMint() {
+    const { mockContractVer02 } = await deployMockVer2();
+
+    const [owner, recipient] = await ethers.getSigners();
+    const mintAmount = ethers.utils.parseEther("100");
+
+    /// @dev implementation/logic contract does not hold state.
+    expect(await mockContractVer02.mint.whenCalledWith(owner.address, mintAmount, ethers.utils.toUtf8Bytes(""), ethers.utils.toUtf8Bytes(""))).not.to
+      .be.reverted;
+
+    await mockContractVer02.balanceOf.whenCalledWith(owner.address).returns(mintAmount);
+    console.log(chalk.bgMagenta.bold("OWNER BALANCE: "), await mockContractVer02.balanceOf(owner.address));
+    expect(await mockContractVer02.balanceOf(owner.address)).to.equal(mintAmount);
+  });
+
+  it("Supply limit boundary test", async function TestLimitBoundary() {
+    const SUPPLY_LIMIT = ethers.utils.parseEther("1000000000");
+    const { contractVer02 } = await loadFixture(deployVer2);
+    const [owner, recipient] = await ethers.getSigners();
+    const exceededMintAmount = ethers.utils.parseEther("1000000001");
+
+    await expect(
+      contractVer02.mint(owner.address, exceededMintAmount, ethers.utils.toUtf8Bytes(""), ethers.utils.toUtf8Bytes(""))
+    ).to.be.revertedWith("Exceeded max supply");
   });
 });
