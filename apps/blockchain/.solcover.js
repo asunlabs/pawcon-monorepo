@@ -1,4 +1,4 @@
 // solidity-coverage plugin config
 module.exports = {
-    istanbulFolder: 'byproducts/coverage',
+  istanbulFolder: "./test/coverage",
 };
