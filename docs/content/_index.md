@@ -13,3 +13,12 @@ cascade:
 Hello, Pawoneers 🐾
 
 Documentation for PawCon project will be available soon.
+
+## PR
+
+self-promotion video should include the followings:
+
+1. developerasun strength and characteristics
+1. pawcon demo short clip
+1. other accomplishments from developerasun
+1. social media contact
