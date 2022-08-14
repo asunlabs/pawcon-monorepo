@@ -63,3 +63,7 @@ docs/.hugo_build.lock
 
 # Go workspace file
 go.work
+
+# Local Netlify folder
+.netlify
+docs/public
