@@ -38,7 +38,6 @@ yarn-error.log*
 # turbo
 .turbo
 
-docs/themes
 docs/.gitmodules
 docs/.hugo_build.lock
 
