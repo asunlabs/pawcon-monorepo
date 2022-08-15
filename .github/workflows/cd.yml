@@ -1,14 +1,38 @@
 name: CD
 
 on:
-  push:
+  pull_request:
+    branches:
+      - 'feature/docs/*'
+
+env:
+  NETLIFY_BUILD_HOOK: ${{ secrets.NETLIFY_BUILD_HOOK }}
 
 jobs:
   pawcon-docs:
     runs-on: ubuntu-latest
     steps:
-      - name: get code
+      - name: Get code
         uses: actions/checkout@v3
-      - name: install hugo
-      - name: install netlify in CI
-      - name: use netlify hook for CD
+
+      - name: Setup pnpm
+        uses: pnpm/action-setup@v2.2.2
+        with:
+          version: 7.5.0
+
+      - name: Install node
+        uses: actions/setup-node@v3
+        with:
+          node-version: 16
+
+      - name: Install netlify in CI
+        run: pnpm i -D netlify-cli # frozen-lock is default in CI
+
+      - name: Install hugo
+        uses: klakegg/actions-hugo@1.0.0
+
+      - name: Build
+        run: |
+          hugo
+          curl -X POST -d {} $NETLIFY_BUILD_HOOK
+        working-directory: docs
