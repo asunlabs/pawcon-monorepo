@@ -45,6 +45,6 @@ jobs:
         run: echo should set a backlog label for project issue
 
       - uses: actions-ecosystem/action-add-labels@v1
-        if: github.event.added_to_project
+        if: github.event.project_card
         with:
           labels: backlog
