@@ -1,0 +1,11 @@
+baseURL = 'http://example.org/'
+languageCode = 'en-us'
+title = 'PawCon docs'
+theme = 'ananke'
+
+[build]
+  command = "hugo"
+  publish = "public"
+
+[build.environment]
+  HUGO_VERSION = "0.101.0"
