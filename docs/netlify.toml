@@ -1,0 +1,7 @@
+# Netlify's file-based config. 
+# See here for more details: https://docs.netlify.com/configure-builds/file-based-configuration/
+
+[build]
+base = "docs/"
+publish = "public/" # deploy-ready HTML files
+command = "hugo" # default build command
