@@ -1,6 +1,13 @@
 ---
-title: 'Blockchain application'
+title: 'Blockchain overview'
 draft: false
 ---
 
-will be added
+Below will be updated, soon.
+
+- Token economy
+- Test-driven development
+- Oracle
+- Upgradable contract
+- Media management
+- Lint

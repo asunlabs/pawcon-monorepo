@@ -1,5 +1,5 @@
 ---
-title: 'Git in Pawcon'
+title: 'Git strategy'
 draft: false
 ---
 

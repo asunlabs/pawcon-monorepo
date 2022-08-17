@@ -12,7 +12,9 @@ cascade:
 
 Hello, Pawoneers 🐾
 
-Documentation for PawCon project will be available soon.
+PawCon(Paw + Icon) is an open source web/blockchain/metaverse project by @developerasun. The goal of this project is to create an _all in one_ project, featuring web, blockchain, and metaverse. See [this discussion](https://github.com/developerasun/pawcon/discussions/194) to check project details.
+
+Note that PawCon is a long-term project and maintained by [@developerasun](https://github.com/developerasun) as of August 2022. The project has been changing over time, as I have learned and tried new things over time.
 
 ## PR
 
