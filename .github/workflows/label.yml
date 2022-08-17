@@ -7,6 +7,9 @@ on:
   issues:
     types:
       - opened
+  project_card:
+    types:
+      - moved
 
 jobs:
   add-labels:
@@ -14,11 +17,17 @@ jobs:
     steps:
       - uses: actions/checkout@v2
 
+      - name: set docs label
+        run: echo should set a documentation label
+        uses: actions-ecosystem/action-add-labels@v1
+        if: startsWith(github.head_ref, 'feature/docs/')
+        with:
+          labels: documentation
+
       - name: set feature label
         run: echo should set an enhancement label
-
-      # corresponding to git hook branch naming convention
-      - uses: actions-ecosystem/action-add-labels@v1
+        # corresponding to git hook branch naming convention
+        uses: actions-ecosystem/action-add-labels@v1
         if: startsWith(github.head_ref, 'feature/')
         with:
           labels: |
@@ -27,16 +36,14 @@ jobs:
 
       - name: set bugfix label
         run: echo should set a bug label
-
-      - uses: actions-ecosystem/action-add-labels@v1
+        uses: actions-ecosystem/action-add-labels@v1
         if: startsWith(github.head_ref, 'bugfix/')
         with:
           labels: bug
 
       - name: set hotfix label
         run: echo should set a bug label
-
-      - uses: actions-ecosystem/action-add-labels@v1
+        uses: actions-ecosystem/action-add-labels@v1
         if: startsWith(github.head_ref, 'hotfix/')
         with:
           labels: bug
@@ -44,7 +51,8 @@ jobs:
       - name: set backlog label
         run: echo should set a backlog label for project issue
 
-      - uses: actions-ecosystem/action-add-labels@v1
-        if: github.event.project_card
+      - name: set backlog label to issue
+        uses: andymckay/labeler@1.0.4
         with:
-          labels: backlog
+          add-labels: 'backlog'
+          ignore-if-labeled: true
