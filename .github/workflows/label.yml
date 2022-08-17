@@ -19,7 +19,8 @@ jobs:
 
       - name: set docs label
         run: echo should set a documentation label
-        uses: actions-ecosystem/action-add-labels@v1
+
+      - uses: actions-ecosystem/action-add-labels@v1
         if: startsWith(github.head_ref, 'feature/docs/')
         with:
           labels: documentation
@@ -27,7 +28,8 @@ jobs:
       - name: set feature label
         run: echo should set an enhancement label
         # corresponding to git hook branch naming convention
-        uses: actions-ecosystem/action-add-labels@v1
+
+      - uses: actions-ecosystem/action-add-labels@v1
         if: startsWith(github.head_ref, 'feature/')
         with:
           labels: |
@@ -36,14 +38,16 @@ jobs:
 
       - name: set bugfix label
         run: echo should set a bug label
-        uses: actions-ecosystem/action-add-labels@v1
+
+      - uses: actions-ecosystem/action-add-labels@v1
         if: startsWith(github.head_ref, 'bugfix/')
         with:
           labels: bug
 
       - name: set hotfix label
         run: echo should set a bug label
-        uses: actions-ecosystem/action-add-labels@v1
+
+      - uses: actions-ecosystem/action-add-labels@v1
         if: startsWith(github.head_ref, 'hotfix/')
         with:
           labels: bug
@@ -52,7 +56,9 @@ jobs:
         run: echo should set a backlog label for project issue
 
       - name: set backlog label to issue
-        uses: andymckay/labeler@1.0.4
+        run: echo should set a backlog label
+
+      - uses: andymckay/labeler@1.0.4
         with:
           add-labels: 'backlog'
           ignore-if-labeled: true
