@@ -4,6 +4,12 @@ on:
   pull_request:
     types:
       - opened
+  issues:
+    types:
+      - opened
+  project_card:
+    types:
+      - moved
 
 jobs:
   add-labels:
@@ -11,10 +17,18 @@ jobs:
     steps:
       - uses: actions/checkout@v2
 
+      - name: set docs label
+        run: echo should set a documentation label
+
+      - uses: actions-ecosystem/action-add-labels@v1
+        if: startsWith(github.head_ref, 'feature/docs/')
+        with:
+          labels: documentation
+
       - name: set feature label
         run: echo should set an enhancement label
+        # corresponding to git hook branch naming convention
 
-      # corresponding to git hook branch naming convention
       - uses: actions-ecosystem/action-add-labels@v1
         if: startsWith(github.head_ref, 'feature/')
         with:
@@ -37,3 +51,14 @@ jobs:
         if: startsWith(github.head_ref, 'hotfix/')
         with:
           labels: bug
+
+      - name: set backlog label
+        run: echo should set a backlog label for project issue
+
+      - name: set backlog label to issue
+        run: echo should set a backlog label
+
+      - uses: andymckay/labeler@1.0.4
+        with:
+          add-labels: 'backlog'
+          ignore-if-labeled: true
