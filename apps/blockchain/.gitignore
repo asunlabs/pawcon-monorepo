@@ -13,9 +13,7 @@ src/
 cache
 
 # Contract artifact is needed in Github actions CI test environment
-artifacts/*
-!artifacts/contracts
-!artifacts/build-info
+artifacts/@openzeppelin
 
 # Validation is needed in Github actions CI test environment
 byproducts/*
