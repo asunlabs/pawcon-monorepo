@@ -15,6 +15,7 @@ cache
 # Contract artifact is needed in Github actions CI test environment
 artifacts/*
 !artifacts/contracts
+!artifacts/build-info
 
 # Validation is needed in Github actions CI test environment
 byproducts/*
