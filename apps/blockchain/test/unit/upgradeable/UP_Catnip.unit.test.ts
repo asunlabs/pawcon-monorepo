@@ -1,6 +1,6 @@
 import { loadFixture, time } from "@nomicfoundation/hardhat-network-helpers";
 import { expect } from "chai";
-import { Contract } from "ethers";
+import { BigNumber, Contract } from "ethers";
 import { ethers, upgrades } from "hardhat";
 import { useSnapshotForReset } from "../../../scripts/hooks/useNetworkHelper";
 import { anyValue } from "@nomicfoundation/hardhat-chai-matchers/withArgs";
@@ -64,6 +64,21 @@ const deployMockVer2 = async () => {
 
   return {
     mockContractVer02,
+    owner,
+    recipient,
+  };
+};
+
+const useUpgradeFixture = async () => {
+  const { contract, owner, recipient } = await loadFixture(useFixture);
+  const ContractVer02Factory = await ethers.getContractFactory("UP_CatnipVer02");
+
+  const upgraded = await upgrades.upgradeProxy(contract.address, ContractVer02Factory, {
+    kind: "uups",
+  });
+
+  return {
+    upgraded,
     owner,
     recipient,
   };
@@ -255,7 +270,7 @@ describe(`${PREFIX}-ver02`, function TestVer02() {
     expect(await upgraded.connect(recipient).stakeAmount()).to.equal(stakeAmount);
   });
 
-  it.only("Should unstake an exact amount", async function TestUnstake() {
+  it("Should unstake an exact amount", async function TestUnstake() {
     const { contract, owner, recipient } = await loadFixture(useFixture);
     const ContractVer02Factory = await ethers.getContractFactory("UP_CatnipVer02");
 
@@ -287,5 +302,46 @@ describe(`${PREFIX}-ver02`, function TestVer02() {
 
     /// @dev once unstake is done, token holder should get their token back
     expect(await upgraded.balanceOf(recipient.address)).to.equal(ethers.utils.parseEther("10"));
+  });
+
+  it("Owner should be whitelisted", async function TestInitialWhitelist() {
+    const { upgraded, owner, recipient } = await loadFixture(useUpgradeFixture);
+
+    /// @dev init Ver02Setup
+    /// @dev msg.sender whitelisted
+    await upgraded.__Ver02Setup_init();
+
+    expect(await upgraded.whitelist(owner.address)).to.be.true;
+  });
+
+  it("Should be whitelisted only for 7 days", async function TestLimitedWhiteslist() {
+    const { upgraded, owner, recipient } = await loadFixture(useUpgradeFixture);
+
+    await upgraded.__Ver02Setup_init();
+
+    const _whitelistEventTime = (await time.latest()) + time.duration.days(7);
+    expect(await upgraded.whitelistEventTime()).to.equal(_whitelistEventTime);
+
+    /// @dev during whitelist event time
+    await time.setNextBlockTimestamp((await time.latest()) + time.duration.days(2));
+    expect(await upgraded.setWhitelist(recipient.address))
+      .to.emit("UP_CatnipVer02", "Whitelisted")
+      .withArgs(anyValue);
+
+    /// @dev past whitelist event time
+    await time.setNextBlockTimestamp(_whitelistEventTime + time.duration.seconds(1));
+    await expect(upgraded.setWhitelist(recipient.address)).to.be.revertedWith("Whitelist event ended");
+  });
+
+  it("Should whitelist-mint twice as much non-whitelist mint", async function TestWhitelistMint() {
+    const { upgraded, owner, recipient } = await loadFixture(useUpgradeFixture);
+
+    await upgraded.__Ver02Setup_init();
+    await upgraded.setWhitelist(recipient.address);
+
+    const mintAmount = ethers.utils.parseEther("10");
+    await upgraded.connect(recipient).mint(recipient.address, mintAmount, ethers.utils.toUtf8Bytes(""), ethers.utils.toUtf8Bytes(""));
+
+    expect(await upgraded.balanceOf(recipient.address)).to.equal(mintAmount.mul(ethers.BigNumber.from(2)));
   });
 });
