@@ -5,14 +5,18 @@ import "./UP_Catnip.sol";
 
 contract UP_CatnipVer02 is UP_Catnip, IERC777RecipientUpgradeable {
     uint256 public releaseTime;
-    mapping(address => uint256) public beneficiaries; // stake holder and balance
+    uint256 public whitelistEventTime;
     bool public onlyVer02SetupInit;
+
+    mapping(address => uint256) public beneficiaries; // stake holder and balance
+    mapping(address => bool) public whitelist;
 
     event ReleaseTime(uint256 _releaseTime);
     event TokenReceived(address operator, address from, address to, uint256 amount, bytes userData, bytes operatorData);
     event TokensToSend(address operator, address from, address to, uint256 amount, bytes userData, bytes operatorData);
     event Stake(address staker, uint256 stakeAmount);
     event UnStake(address unStaker, uint256 unStakeAmount);
+    event Whitelisted(address whitelistSetter, address whitelisted);
 
     function catnipVersion() external pure returns (uint256) {
         return 2;
@@ -25,12 +29,13 @@ contract UP_CatnipVer02 is UP_Catnip, IERC777RecipientUpgradeable {
         onlyVer02SetupInit = true;
         setReleaseTime();
         initERC1820Registry();
+        whitelist[msg.sender] = true;
+        whitelistEventTime = block.timestamp + 7 days;
     }
 
-    function setReleaseTime() private onlyOwner {
-        uint256 oneYear = (4 weeks * 12);
-        releaseTime = block.timestamp + oneYear;
-        emit ReleaseTime(releaseTime);
+    modifier onlyLimitedTime() {
+        require(block.timestamp < whitelistEventTime, "Whitelist event ended");
+        _;
     }
 
     /// @dev prevent token being locked (1)
@@ -79,7 +84,15 @@ contract UP_CatnipVer02 is UP_Catnip, IERC777RecipientUpgradeable {
         bytes memory operatorData
     ) external {
         require(amount < supplyLimit, "Exceeded max supply");
-        _mint(account, amount, userData, operatorData);
+
+        bool whitelistMint = whitelist[account] == true ? true : false;
+
+        if (whitelistMint) {
+            uint256 privilegedMintAmount = amount * 2;
+            _mint(account, privilegedMintAmount, userData, operatorData);
+        } else {
+            _mint(account, amount, userData, operatorData);
+        }
     }
 
     function stake(uint256 _amount) external {
@@ -97,6 +110,12 @@ contract UP_CatnipVer02 is UP_Catnip, IERC777RecipientUpgradeable {
         return beneficiaries[msg.sender];
     }
 
+    function setReleaseTime() private onlyOwner {
+        uint256 oneYear = (4 weeks * 12);
+        releaseTime = block.timestamp + oneYear;
+        emit ReleaseTime(releaseTime);
+    }
+
     /// @dev reentrancy guard pattern
     function unStake() external {
         IERC777Upgradeable catnip = IERC777Upgradeable(address(this));
@@ -107,5 +126,10 @@ contract UP_CatnipVer02 is UP_Catnip, IERC777RecipientUpgradeable {
 
         catnip.operatorSend(address(this), msg.sender, unStakeAmount, "", "");
         emit UnStake(msg.sender, unStakeAmount);
+    }
+
+    function setWhitelist(address account) external onlyLimitedTime {
+        whitelist[account] = true;
+        emit Whitelisted(msg.sender, account);
     }
 }
