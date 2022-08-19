@@ -12,8 +12,8 @@ src/
 #Hardhat files
 cache
 
-# Contract artifact is needed in Github actions CI test environment
 artifacts/*
+!artifacts/build-info
 !artifacts/contracts
 
 # Validation is needed in Github actions CI test environment
