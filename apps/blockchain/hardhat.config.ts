@@ -44,6 +44,12 @@ const options = {
       enabled: COMPILER_OPT.IS_ENABLED,
       runs: COMPILER_OPT.FEE.LOW_EXECUTION,
     },
+    // enable smock plugin mocking
+    outputSelection: {
+      "*": {
+        "*": ["storageLayout"],
+      },
+    },
   },
 };
 
