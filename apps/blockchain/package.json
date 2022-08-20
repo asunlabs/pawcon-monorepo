@@ -1,14 +1,17 @@
 {
   "name": "pawcon-blockchain",
-  "version": "0.1.0",
-  "description": "Smart contract development for pawcon project",
+  "version": "0.3.0",
+  "description": "Blockchain development for pawcon project",
   "keywords": [
     "ERC20",
     "ERC721",
-    "Dapp",
-    "Smart contract",
+    "ERC777",
+    "ERC1155",
+    "Upgradeable",
     "Ethereum",
-    "Mint"
+    "Dapp",
+    "Mint",
+    "Swap"
   ],
   "license": "Apache-2.0",
   "author": {
@@ -18,18 +21,15 @@
   },
   "main": "index.ts",
   "scripts": {
-    "format": "prettier --write --plugin=prettier-plugin-solidity \"**/*.{ts,sol,js, mjs, cjs}\"",
-    "deploy:ropsten": "hardhat run deploy/deployingAll.ts --network ropsten",
-    "inspect:a": "echo inspect script will be added",
-    "inspect:all": "echo inspect script will be added",
-    "inspect:b": "echo inspect script will be added",
-    "inspect:c": "echo inspect script will be added",
-    "sort:packages": "pnpm dlx sort-package-json",
     "test:unit:dev": "nodemon -w test --exec mocha -g \"unit\" --slow 2000  --reporter list",
     "test:integ:dev": "nodemon -w test --exec mocha -g \"integ\" --slow 2000  --reporter list",
-    "test:unit": "mocha -g \"unit\" --slow 2000  --reporter list",
-    "test:integ": "mocha -g \"integ\" --slow 2000  --reporter list",
-    "tests": "hardhat test"
+    "format": "prettier --write --plugin=prettier-plugin-solidity \"**/*.{ts,sol,js,mjs,cjs}\"",
+    "lint": "pnpm exec hardhat check",
+    "inspect:static": "slither . --print human-summary",
+    "ci:unit": "pnpm exec hardhat test --grep \"unit\"",
+    "ci:integ": "pnpm exec hardhat test --grep \"integ\"",
+    "ci:tests": "pnpm ci:unit & pnpm ci:integ",
+    "prepare": "pnpm format & pnpm lint"
   },
   "devDependencies": {
     "@chainlink/contracts": "^0.4.1",
@@ -41,13 +41,15 @@
     "@ethersproject/providers": "^5.0.0",
     "@nomicfoundation/hardhat-chai-matchers": "^1.0.2",
     "@nomicfoundation/hardhat-network-helpers": "^1.0.3",
+    "@nomicfoundation/hardhat-toolbox": "^1.0.2",
     "@nomiclabs/hardhat-ethers": "^2.0.6",
     "@nomiclabs/hardhat-etherscan": "^3.1.0",
+    "@nomiclabs/hardhat-solhint": "^2.0.1",
     "@openzeppelin/contracts": "^4.6.0",
     "@openzeppelin/contracts-upgradeable": "^4.7.0",
     "@openzeppelin/hardhat-upgrades": "^1.19.0",
-    "@typechain/ethers-v5": "^7.2.0",
-    "@typechain/hardhat": "^2.3.1",
+    "@typechain/ethers-v5": "10.1.0",
+    "@typechain/hardhat": "6.1.2",
     "@types/chai": "^4.3.1",
     "@types/mocha": "^9.1.1",
     "@types/node": "^12.20.55",
@@ -76,10 +78,9 @@
     "nodemon": "^2.0.15",
     "prettier": ">=2.0.0",
     "prettier-plugin-solidity": "1.0.0-beta.19",
-    "solhint": "^3.3.7",
     "solidity-coverage": "^0.7.21",
     "ts-node": "^10.8.1",
-    "typechain": "^5.2.0",
+    "typechain": "8.1.0",
     "typescript": "^4.7.4"
   },
   "packageManager": "pnpm@7.5.0"

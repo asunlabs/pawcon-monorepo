@@ -61,4 +61,4 @@ jobs:
 
       - name: feature branch unit test
         if: startsWith(github.head_ref, 'feature/')
-        run: pnpm exec turbo run test:unit
+        run: pnpm exec turbo run ci:tests

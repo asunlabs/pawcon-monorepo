@@ -20,7 +20,9 @@ contract UP_Catnip is Initializable, ERC777Upgradeable, UUPSUpgradeable, Ownable
      * to any version. It is recommended to use this to lock implementation contracts that are designed to be called
      * through proxies.
      */
+
     /// @custom:oz-upgrades-unsafe-allow constructor
+    // solhint-disable-next-line
     constructor() {
         _disableInitializers();
     }

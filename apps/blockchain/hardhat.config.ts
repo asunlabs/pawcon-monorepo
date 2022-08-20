@@ -1,16 +1,24 @@
 import * as dotenv from "dotenv";
 import hre from "hardhat";
-import { HardhatUserConfig, task } from "hardhat/config";
-import "@nomiclabs/hardhat-etherscan"; // for etherscan contract verification
-import "@typechain/hardhat";
-import "hardhat-gas-reporter";
-import "solidity-coverage";
-import "@openzeppelin/hardhat-upgrades";
-import "@nomiclabs/hardhat-ethers";
+import { HardhatUserConfig } from "hardhat/config";
+import "@nomicfoundation/hardhat-toolbox";
 import "@nomicfoundation/hardhat-chai-matchers";
+import "@openzeppelin/hardhat-upgrades";
+import "@nomiclabs/hardhat-solhint";
 import { COMPILER_OPT, PLUGIN } from "./scripts/manager/constantManager";
 
 dotenv.config({ path: "./.env.development" });
+
+/**
+ *
+ * "@nomicfoundation/hardhat-toolbox" dependency includes below deps.
+ * - @nomiclabs/hardhat-ethers
+ * - @nomiclabs/hardhat-etherscan
+ * - hardhat-gas-reporter
+ * - solidity-coverage
+ * - @typechain/hardhat
+ *
+ */
 
 const {
   TEST_GOERLI_URL,
@@ -62,10 +70,10 @@ const config: HardhatUserConfig = {
   solidity: {
     // version: "0.8.0",
     // set multiple compiler version
+    // prettier-ignore
     compilers: [
-      { version: "0.6.6" },
-      { version: "0.8.0" },
-      { version: "0.8.15" },
+      { version: "0.8.0" }, 
+      { version: "0.8.15" }
     ].map((ver) => {
       return {
         ...ver,
@@ -74,7 +82,6 @@ const config: HardhatUserConfig = {
     }),
   },
   networks: {
-    // JSON-RPC based network
     mainnet: {
       url: MAIN_ETHEREUM_URL !== undefined ? MAIN_ETHEREUM_URL : "",
       accounts:
@@ -82,6 +89,7 @@ const config: HardhatUserConfig = {
           ? [ACCOUNT_ETHEREUM_PRIVATE_KEY]
           : [],
     },
+    // * mainnet fork
     hardhat: {
       forking: {
         url: FORK_MAINNET_URL !== undefined ? FORK_MAINNET_URL : "", // alchemy node assist an archived data caching
@@ -104,7 +112,7 @@ const config: HardhatUserConfig = {
           ? [ACCOUNT_SEPOLIA_PRIVATE_KEY]
           : [],
     },
-    // @deprecated
+    // ! @deprecated
     ropsten: {
       url: TEST_ROPSTEN_URL !== undefined ? TEST_ROPSTEN_URL : "",
       accounts:
@@ -112,7 +120,7 @@ const config: HardhatUserConfig = {
           ? [ACCOUNT_ROPSTEN_PRIVATE_KEY]
           : [],
     },
-    // @deprecated
+    // ! @deprecated
     rinkeby: {
       url: TEST_RINKEBY_URL !== undefined ? TEST_RINKEBY_URL : "",
       accounts:
@@ -120,7 +128,7 @@ const config: HardhatUserConfig = {
           ? [ACCOUNT_RINKEBY_PRIVATE_KEY]
           : [],
     },
-    // @deprecated
+    // ! @deprecated
     kovan: {
       url: TEST_KOVAN_URL !== undefined ? TEST_KOVAN_URL : "",
       accounts:
@@ -131,7 +139,7 @@ const config: HardhatUserConfig = {
   },
   paths: {
     artifacts: "./artifacts",
-    cache: "./byproducts/cache",
+    cache: "./cache",
     sources: "./contracts",
     tests: "./test",
   },
@@ -141,7 +149,7 @@ const config: HardhatUserConfig = {
       API_COINMARKETCAP_KEY !== undefined ? API_COINMARKETCAP_KEY : "", // for gas reporter
     currency: "USD",
     src: "./contracts",
-    outputFile: "./byproducts",
+    outputFile: "./",
   },
   etherscan: {
     apiKey: {
@@ -152,7 +160,7 @@ const config: HardhatUserConfig = {
     },
   },
   typechain: {
-    outDir: "byproducts/typechain",
+    outDir: "./typechain",
     target: "ethers-v5",
   },
 };

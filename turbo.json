@@ -5,22 +5,14 @@
       "dependsOn": ["^build"],
       "outputs": ["dist/**", ".next/**"]
     },
+    "format": {
+      "outputs": []
+    },
     "lint": {
       "outputs": []
     },
-    "dev": {
-      "cache": false
-    },
-    "test:unit": {
-      "outputs": []
-    },
-    "inspect": {
-      "outputs": []
-    },
-    "sort:packages": {
-      "outputs": []
-    },
-    "format": {
+    "ci:tests": {
+      "dependsOn": ["format", "lint"],
       "outputs": []
     }
   }
