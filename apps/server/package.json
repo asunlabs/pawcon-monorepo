@@ -9,7 +9,6 @@
     "prebuild": "rimraf dist",
     "build": "nest build",
     "format": "prettier --write \"**/*.{ts,js, mjs, cjs, json}\"",
-    "lint": "eslint \"{src,apps,libs,test}/**/*.ts\" --fix",
     "sort:packages": "pnpm dlx sort-package-json",
     "start": "nest start",
     "start:debug": "nest start --debug --watch",
