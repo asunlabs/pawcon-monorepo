@@ -30,10 +30,13 @@ contract UP_CatnipVer02 is UP_Catnip, IERC777RecipientUpgradeable {
         setReleaseTime();
         initERC1820Registry();
         whitelist[msg.sender] = true;
+
+        // solhint-disable-next-line
         whitelistEventTime = block.timestamp + 7 days;
     }
 
     modifier onlyLimitedTime() {
+        // solhint-disable-next-line
         require(block.timestamp < whitelistEventTime, "Whitelist event ended");
         _;
     }
@@ -97,6 +100,8 @@ contract UP_CatnipVer02 is UP_Catnip, IERC777RecipientUpgradeable {
 
     function stake(uint256 _amount) external {
         IERC777Upgradeable catnip = IERC777Upgradeable(address(this));
+
+        // solhint-disable-next-line
         require(catnip.balanceOf(msg.sender) > _amount, "Should have catnips to stake");
 
         beneficiaries[msg.sender] += _amount;
@@ -112,6 +117,8 @@ contract UP_CatnipVer02 is UP_Catnip, IERC777RecipientUpgradeable {
 
     function setReleaseTime() private onlyOwner {
         uint256 oneYear = (4 weeks * 12);
+
+        // solhint-disable-next-line
         releaseTime = block.timestamp + oneYear;
         emit ReleaseTime(releaseTime);
     }
@@ -119,6 +126,8 @@ contract UP_CatnipVer02 is UP_Catnip, IERC777RecipientUpgradeable {
     /// @dev reentrancy guard pattern
     function unStake() external {
         IERC777Upgradeable catnip = IERC777Upgradeable(address(this));
+        
+        // solhint-disable-next-line
         require(releaseTime < block.timestamp, "Staking hasn't finished");
 
         uint256 unStakeAmount = beneficiaries[msg.sender];
