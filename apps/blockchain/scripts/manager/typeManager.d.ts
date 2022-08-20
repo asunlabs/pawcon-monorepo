@@ -11,8 +11,10 @@ export type OracleValues = OracleTestnet | number;
 export type OracleProps = Record<OracleKeys, OracleValues>;
 
 export type TokenType = "ERC20" | "ERC721" | "ERC777" | "ERC1155";
+export type PawConTokenType = "CHURU" | "CURIOUSPAWONEER" | "CATNIP" | "WHISKERS";
 
 export type ERC20TokenName = {
+  CHURU?: string;
   DAI?: string;
   USDC?: string;
   TETHER?: string;
@@ -27,14 +29,16 @@ export type ERC721TokenName = {
 };
 
 export type ERC777TokenName = {
-  SOME_TOKEN_HERE?: string;
+  CATNIP?: string;
 };
 
 export type ERC1155TokenName = {
-  SOME_TOKEN_HERE?: string;
+  WHISKERS?: string;
 };
 
 export type ERC20TokenProps = Record<Extract<"ERC20", TokenType>, ERC20TokenName>;
 export type ERC721TokenProps = Record<Extract<"ERC721", TokenType>, ERC721TokenName>;
 export type ERC777TokenProps = Record<Extract<"ERC777", TokenType>, ERC777TokenName>;
 export type ERC1155TokenProps = Record<Extract<"ERC1155", TokenType>, ERC1155TokenName>;
+
+export type CoverageIndiceProps = "statements" | "branches" | "functions" | "lines";
