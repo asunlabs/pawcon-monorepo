@@ -3,13 +3,13 @@ name: Auto-label
 on:
   pull_request:
     types:
-      - opened
+      - 'opened'
   issues:
     types:
-      - opened
+      - 'opened'
   project_card:
     types:
-      - moved
+      - 'created'
 
 jobs:
   add-labels:
@@ -54,9 +54,6 @@ jobs:
 
       - name: set backlog label
         run: echo should set a backlog label for project issue
-
-      - name: set backlog label to issue
-        run: echo should set a backlog label
 
       - uses: andymckay/labeler@1.0.4
         with:
