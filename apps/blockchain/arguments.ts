@@ -1,8 +1,7 @@
-// required to verify contract in etherscan
-const curiousPawoneerArguments = [
-    // key.CONSTRUCTOR.CURIOUSPAWONEER.churuAddr.ROPSTEN,
-    // key.CONSTRUCTOR.CURIOUSPAWONEER.nonce,
-    // key.CONSTRUCTOR.CURIOUSPAWONEER.cid,
+const exampleArguments = ["constructor argument 1", "constructor argument 2", "constructor argument 3"];
+
+const upgradeableArguments = [
+  // upgradeable does not require constructor
 ];
 
-export default curiousPawoneerArguments;
+export { exampleArguments };

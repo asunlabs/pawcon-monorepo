@@ -1,5 +1,5 @@
 {
-  "filter_paths": "openzeppelin|hardhat|legacy",
+  "filter_paths": "openzeppelin|hardhat",
   "printers_to_run": "variable-order",
   "exclude_low": true,
   "exclude_medium": false,
