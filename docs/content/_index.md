@@ -8,19 +8,10 @@ cascade:
   featured_image: '/images/gohugo-default-sample-hero-image.jpg'
 ---
 
-# Introduction
+PawCon is an open source web/blockchain/metaverse and maintained by [@developerasun](https://github.com/developerasun)
 
-Hello, Pawoneers 🐾
+Use above top navigation menu to check details for each application section.
 
-PawCon(Paw + Icon) is an open source web/blockchain/metaverse project by @developerasun. The goal of this project is to create an _all in one_ project, featuring web, blockchain, and metaverse. See [this discussion](https://github.com/developerasun/pawcon/discussions/194) to check project details.
+Check project progress [here](https://github.com/orgs/asunlabs/projects/3/views/1)
 
-Note that PawCon is a long-term project and maintained by [@developerasun](https://github.com/developerasun) as of August 2022. The project has been changing over time, as I have learned and tried new things over time.
-
-## PR
-
-self-promotion video should include the followings:
-
-1. developerasun strength and characteristics
-1. pawcon demo short clip
-1. other accomplishments from developerasun
-1. social media contact
+The project has been changing over time, as I have learned and tried new things over time.
