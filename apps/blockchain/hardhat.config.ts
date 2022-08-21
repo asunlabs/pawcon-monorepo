@@ -6,7 +6,10 @@ import "@nomicfoundation/hardhat-chai-matchers";
 import "@openzeppelin/hardhat-upgrades";
 import "@nomiclabs/hardhat-solhint";
 import { COMPILER_OPT, PLUGIN } from "./scripts/manager/constantManager";
-import { checkCoverageForCI } from "./scripts/manager/coverageManager";
+import {
+  checkCoverageForCI,
+  cleanCoverageDir,
+} from "./scripts/manager/coverageManager";
 
 dotenv.config({ path: "./.env.development" });
 
@@ -21,9 +24,13 @@ dotenv.config({ path: "./.env.development" });
  *
  */
 
-task("index", "Prints test coverage indices").setAction(
-  async () => await checkCoverageForCI()
+task("clean-coverage", "Delete previous coverage report").setAction(
+  async () => await cleanCoverageDir()
 );
+
+task("cherry-pick", "Prints test coverage indices").setAction(async () => {
+  await checkCoverageForCI();
+});
 
 const {
   TEST_GOERLI_URL,
