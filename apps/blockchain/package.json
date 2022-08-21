@@ -21,6 +21,7 @@
   },
   "main": "index.ts",
   "scripts": {
+    "compile": "pnpm exec hardhat compile",
     "test:unit:dev": "nodemon -w test --exec mocha -g \"unit\" --slow 2000  --reporter list",
     "test:integ:dev": "nodemon -w test --exec mocha -g \"integ\" --slow 2000  --reporter list",
     "format": "prettier --write --plugin=prettier-plugin-solidity \"**/*.{ts,sol,js,mjs,cjs}\"",
