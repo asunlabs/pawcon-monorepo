@@ -16,12 +16,10 @@
 
 pragma solidity ^0.8.15;
 
-import "./UP_CuriousPawoneer.sol";
+import "./CuriousPawoneer.sol";
 
-contract UP_CuriousPawoneerVer02 is UP_CuriousPawoneer {
+contract CuriousPawoneerVer02 is CuriousPawoneer {
     using CountersUpgradeable for CountersUpgradeable.Counter;
 
     CountersUpgradeable.Counter private _tokenIdCounter;
-
-
 }
