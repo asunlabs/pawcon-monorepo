@@ -16,5 +16,8 @@
   ],
   "files": [
     "./hardhat.config.ts"
+  ],
+  "exclude": [
+    "./test/coverage"
   ]
 }
