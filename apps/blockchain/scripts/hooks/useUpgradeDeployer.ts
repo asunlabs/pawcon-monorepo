@@ -4,7 +4,8 @@ import chalk from "chalk";
 
 async function useTransparentDeployer(contractName: string, signer?: Signer, constructorArgs?: unknown[]) {
   let contract: Contract;
-  const Contract = await ethers.getContractFactory(contractName, signer);
+  const [owner, recipient] = await ethers.getSigners();
+  const Contract = await ethers.getContractFactory(contractName, owner);
 
   if (constructorArgs !== undefined) {
     contract = await upgrades.deployProxy(Contract, constructorArgs, {
@@ -21,12 +22,13 @@ async function useTransparentDeployer(contractName: string, signer?: Signer, con
   console.log(chalk.bgMagenta.bold(`===== ${contractName} is upgradeable: transparent proxy =====`));
   console.log(chalk.bgCyan.bold(`${contractName} deployed to: `), contract.address);
 
-  return { contract };
+  return { contract, owner, recipient };
 }
 
-async function useUUPSDeployer(contractName: string, signer?: Signer, constructorArgs?: unknown[]) {
+async function useUUPSDeployer(contractName: string, constructorArgs?: unknown[]) {
   let contract;
-  const uupsProxyFactory = await ethers.getContractFactory(contractName, signer);
+  const [owner, recipient] = await ethers.getSigners();
+  const uupsProxyFactory = await ethers.getContractFactory(contractName, owner);
 
   if (constructorArgs !== undefined) {
     contract = await upgrades.deployProxy(uupsProxyFactory, constructorArgs, {
@@ -42,7 +44,7 @@ async function useUUPSDeployer(contractName: string, signer?: Signer, constructo
   console.log(chalk.bgMagenta.bold(`===== ${contractName} is upgradeable: uups proxy =====`));
   console.log(chalk.bgCyan.bold(`${contractName} deployed to: `), contract.address);
 
-  return { contract };
+  return { contract, owner, recipient };
 }
 
 // TODO set beacon pattern deployer
