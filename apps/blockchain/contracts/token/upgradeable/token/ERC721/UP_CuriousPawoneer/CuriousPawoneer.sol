@@ -16,16 +16,32 @@
 
 pragma solidity ^0.8.15;
 
-import "@openzeppelin/contracts-upgradeable/token/ERC721/ERC721Upgradeable.sol";
-import "@openzeppelin/contracts-upgradeable/access/OwnableUpgradeable.sol";
 import "@openzeppelin/contracts-upgradeable/proxy/utils/Initializable.sol";
+import "@openzeppelin/contracts-upgradeable/token/ERC721/ERC721Upgradeable.sol";
 import "@openzeppelin/contracts-upgradeable/proxy/utils/UUPSUpgradeable.sol";
 import "@openzeppelin/contracts-upgradeable/utils/CountersUpgradeable.sol";
+import "@openzeppelin/contracts-upgradeable/access/AccessControlUpgradeable.sol";
+import "@openzeppelin/contracts-upgradeable/security/PausableUpgradeable.sol";
+import "@openzeppelin/contracts-upgradeable/token/ERC721/extensions/ERC721BurnableUpgradeable.sol";
 
-contract CuriousPawoneer is Initializable, ERC721Upgradeable, OwnableUpgradeable, UUPSUpgradeable {
+contract CuriousPawoneer is
+    Initializable,
+    ERC721Upgradeable,
+    UUPSUpgradeable,
+    AccessControlUpgradeable,
+    PausableUpgradeable,
+    ERC721BurnableUpgradeable
+{
     using CountersUpgradeable for CountersUpgradeable.Counter;
 
     CountersUpgradeable.Counter private _tokenIdCounter;
+
+    /// @dev roles should be externally available
+    /// @dev it is OK to define constants in upgradeables
+    bytes32 public constant MINTER_ROLE = keccak256("MINTER_ROLE");
+    bytes32 public constant BURNER_ROLE = keccak256("BURNER_ROLE");
+    bytes32 public constant PAUSER_ROLE = keccak256("PAUSER_ROLE");
+    bytes32 public constant UPGRADER_ROLE = keccak256("UPGRADER_ROLE");
 
     /// @custom:oz-upgrades-unsafe-allow constructor
     // solhint-disable-next-line
@@ -33,23 +49,46 @@ contract CuriousPawoneer is Initializable, ERC721Upgradeable, OwnableUpgradeable
         _disableInitializers();
     }
 
-    function initialize() initializer public {
+    function initialize() public initializer {
         __ERC721_init("CuriousPawoneer", "CP");
-        __Ownable_init();
         __UUPSUpgradeable_init();
+        __AccessControl_init();
+        __ERC721Burnable_init();
+        __Pausable_init();
+
+        /// @dev set contract deployer a default admin
+        _grantRole(DEFAULT_ADMIN_ROLE, msg.sender);
+        _grantRole(MINTER_ROLE, msg.sender);
+        _grantRole(UPGRADER_ROLE, msg.sender);
     }
 
-    function safeMint(address to) public onlyOwner {
+    function safeMint(address to) public onlyRole(MINTER_ROLE) whenNotPaused {
         uint256 tokenId = _tokenIdCounter.current();
         _tokenIdCounter.increment();
         _safeMint(to, tokenId);
     }
 
-    function _authorizeUpgrade(address newImplementation)
-        internal
-        onlyOwner
-        override
-    {}
+    /// @dev _authorizeUpgrade MUST be overriden and access-controlled.
+    function _authorizeUpgrade(
+        address newImplementation // onlyOwner
+    ) internal override onlyRole(UPGRADER_ROLE) {}
+
+    /// @dev overriding supportsInterface is required by AccessControlUpgradeable and ERC721Upgradeable.
+    function supportsInterface(bytes4 interfaceId) public view virtual override(ERC721Upgradeable, AccessControlUpgradeable) returns (bool) {
+        return interfaceId == type(IAccessControlUpgradeable).interfaceId || super.supportsInterface(interfaceId);
+    }
+
+    function pauseCuriousPawoneer() external onlyRole(PAUSER_ROLE) {
+        super._pause();
+    }
+
+    function resumeCuriousPawoneer() external onlyRole(PAUSER_ROLE) {
+        super._unpause();
+    }
+
+    function burnOneToken(uint256 tokenId) external onlyRole(BURNER_ROLE) {
+        super.burn(tokenId);
+    }
 }
 
 /**
