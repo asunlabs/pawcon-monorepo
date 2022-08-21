@@ -11,7 +11,7 @@
 |:--------------:|:-------------:|
 |[![wakatime](https://wakatime.com/badge/user/e56daee8-7aae-4b0e-814c-b6bb7f5f841c/project/b1b2013f-a6ca-41d1-a14f-101a6d202f49.svg)](https://wakatime.com/badge/user/e56daee8-7aae-4b0e-814c-b6bb7f5f841c/project/b1b2013f-a6ca-41d1-a14f-101a6d202f49)|[![wakatime](https://wakatime.com/badge/github/asunlabs/pawcon-monorepo.svg)](https://wakatime.com/badge/github/asunlabs/pawcon-monorepo)|
 
-<img src="https://img.shields.io/badge/version-v0.2.0-red" alt="version0.2.0" /> &nbsp; [![CI](https://github.com/asunlabs/pawcon-monorepo/actions/workflows/ci.yml/badge.svg)](https://github.com/asunlabs/pawcon-monorepo/actions/workflows/ci.yml) &nbsp; [![Netlify Status](https://api.netlify.com/api/v1/badges/bd81d367-6c26-4c58-a953-f851466d6662/deploy-status)](https://app.netlify.com/sites/pawcon/deploys) &nbsp; ![Heroku](https://img.shields.io/badge/heroku-APIsontheway-darkgreen?style=square&logo=heroku&logoColor=white) &nbsp;
+<img src="https://img.shields.io/badge/version-v0.3.0-black" alt="semver" /> &nbsp; [![CI](https://github.com/asunlabs/pawcon-monorepo/actions/workflows/ci.yml/badge.svg)](https://github.com/asunlabs/pawcon-monorepo/actions/workflows/ci.yml) &nbsp; [![Netlify Status](https://api.netlify.com/api/v1/badges/5f92577c-a8f1-42ff-b433-40725b0be4f8/deploy-status)](https://app.netlify.com/sites/docs-pawcon/deploys) &nbsp;
 
 <br/>
 
@@ -19,24 +19,14 @@
 
 **NOTICE**
 
-Being migrated from [here](https://github.com/developerasun/pawcon)
+Project being migrated from [here](https://github.com/developerasun/pawcon).
 
-**Useful resouces**
+For developers, read documentations [here](https://docs-pawcon.netlify.app/).
 
-You can check dev resources from below.
+For recruiters, visit my Linkedin [here](https://www.linkedin.com/in/jakesung/)
 
-- [Pawcon dockerhub](https://hub.docker.com/repository/docker/developerasun/pawcon-monorepo)
+For contributors, contact me with below email.
 
-## App services
-
-Two projects are being developed in this monorepo, which is as followings.
-
-**AsunMint: Minting dapp**
-
-_TBD_
-
-**AsunSwap: DeFi dapp**
-
-- Wallets: Master wallet(CA), wallet A(CA), wallet B(CA)
-- Swap: ERC20/777☜☞ERC20/777, ERC20☜☞ERC721
-- Pool: Deposit, timelock
+```
+nellow1102@gmail.com
+```

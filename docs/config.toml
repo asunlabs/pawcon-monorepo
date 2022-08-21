@@ -1,7 +1,13 @@
+title = 'PawCon docs'
 baseURL = 'https://docs-pawcon.netlify.app/'
 languageCode = 'en-us'
-title = 'PawCon docs'
 theme = 'ananke'
+
+DefaultContentLanguage = "en"
+SectionPagesMenu = "main"
+Paginate = 3 # this is set low for demonstrating with dummy content. Set to a higher number
+googleAnalytics = ""
+enableRobotsTXT = true
 
 [[menu.main]]
   name ="_setup"
@@ -21,3 +27,12 @@ theme = 'ananke'
 
 [build.environment]
   HUGO_VERSION = "0.101.0"
+
+[params]
+  text_color = "Black"
+  author = "Jake Sung"
+  recent_posts_number = 3
+
+[[params.ananke_socials]]
+name = "linkedin"
+url = "https://www.linkedin.com/in/jakesung/"
