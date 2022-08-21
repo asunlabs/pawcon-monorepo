@@ -17,4 +17,4 @@ jobs:
 
       - name: netlify hook
         if: startsWith(github.head_ref, 'feature/docs')
-        run: curl -X POST -d {} NETLIFY_BUILD_HOOK
+        run: curl -X POST -d {} $NETLIFY_BUILD_HOOK
