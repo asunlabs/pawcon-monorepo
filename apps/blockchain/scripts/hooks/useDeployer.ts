@@ -17,7 +17,7 @@ async function deploy(contractName: string, constructorArgs?: any[]) {
   console.log(chalk.bgMagenta.bold(`===== ${contractName} is non-upgrade =====`));
   console.log(chalk.bgCyan.bold(`${contractName} deployed to: `), contract.address);
 
-  return contract;
+  return { contract };
 }
 
 export default deploy;
