@@ -1,9 +1,8 @@
 import { Contract, Signer } from "ethers";
 import { ethers, upgrades } from "hardhat";
 import chalk from "chalk";
-import { UpgradePattern } from "../manager/typeManager";
 
-async function useTransparent(contractName: string, signer?: Signer, constructorArgs?: unknown[]) {
+async function useTransparentDeployer(contractName: string, signer?: Signer, constructorArgs?: unknown[]) {
   let contract: Contract;
   const Contract = await ethers.getContractFactory(contractName, signer);
 
@@ -22,29 +21,33 @@ async function useTransparent(contractName: string, signer?: Signer, constructor
   console.log(chalk.bgMagenta.bold(`===== ${contractName} is upgradeable: transparent proxy =====`));
   console.log(chalk.bgCyan.bold(`${contractName} deployed to: `), contract.address);
 
-  return contract;
+  return { contract };
 }
 
-async function upgradeTransparent(proxyAddress: string) {}
+async function useUUPSDeployer(contractName: string, signer?: Signer, constructorArgs?: unknown[]) {
+  let contract;
+  const uupsProxyFactory = await ethers.getContractFactory(contractName, signer);
 
-async function useUUPS() {}
+  if (constructorArgs !== undefined) {
+    contract = await upgrades.deployProxy(uupsProxyFactory, constructorArgs, {
+      initializer: "initialize",
+      kind: "uups",
+    });
+  } else {
+    contract = await upgrades.deployProxy(uupsProxyFactory, {
+      kind: "uups",
+    });
+  }
 
-async function useBeacon() {
+  console.log(chalk.bgMagenta.bold(`===== ${contractName} is upgradeable: uups proxy =====`));
+  console.log(chalk.bgCyan.bold(`${contractName} deployed to: `), contract.address);
+
+  return { contract };
+}
+
+// TODO set beacon pattern deployer
+async function useBeaconDeployer() {
   // upgrades.prepareUpgrade; // upgrade-safe validation
 }
 
-async function proxyRouter(pattern: UpgradePattern) {
-  if (pattern == "transparent") {
-    // await useTransparent();
-  }
-
-  if (pattern == "uups") {
-    // await useUUPS();
-  }
-
-  if (pattern == "beacon") {
-    // await useBeacon();
-  }
-}
-
-export default proxyRouter;
+export { useTransparentDeployer, useUUPSDeployer, useBeaconDeployer };
