@@ -2,22 +2,19 @@ import fs from "fs";
 import { parse } from "node-html-parser";
 import { promisify } from "util";
 import path from "path";
+import { CoverageIndiceProps } from "./typeManager";
 
 const readFile = promisify(fs.readFile);
+const removeDir = promisify(fs.rmdirSync);
 
-interface CoverageIndiceProps {
-  statements: string;
-  branches: string;
-  functions: string;
-  lines: string;
-}
+const CoverageResultTable = new Map<CoverageIndiceProps, string>();
 
 export async function checkCoverageForCI() {
   const testDir = path.join(__dirname, "..", "..", "test", "coverage", "index.html");
   const file = (await readFile(testDir)).toString();
 
   const root = parse(file);
-  const container: String[] = [];
+  const container: string[] = [];
 
   // * .clearfix is a solidity-coverage plugin's class name, which
   // * holds test coverage indices.
@@ -30,9 +27,24 @@ export async function checkCoverageForCI() {
     }
   });
 
-  console.log(container);
+  CoverageResultTable.set("statements", container[0]);
+  CoverageResultTable.set("branches", container[1]);
+  CoverageResultTable.set("functions", container[2]);
+  CoverageResultTable.set("lines", container[3]);
 
-  return { container };
+  console.log(CoverageResultTable);
+  return { CoverageResultTable };
 }
 
-checkCoverageForCI();
+// * this function is used to prevent istanbul's window not defined error.
+// see here: https://github.com/gotwarlost/istanbul/issues/216
+export async function cleanCoverageDir() {
+  const testDir = path.join(__dirname, "..", "..", "test", "coverage");
+
+  try {
+    await removeDir(testDir, { recursive: true });
+  } catch (err) {
+    console.error(err);
+    process.exit(1);
+  }
+}
