@@ -5,6 +5,7 @@ import path from "path";
 import { CoverageIndiceProps } from "./typeManager";
 
 const readFile = promisify(fs.readFile);
+const removeDir = promisify(fs.rmdirSync);
 
 const CoverageResultTable = new Map<CoverageIndiceProps, string>();
 
@@ -33,4 +34,17 @@ export async function checkCoverageForCI() {
 
   console.log(CoverageResultTable);
   return { CoverageResultTable };
+}
+
+// * this function is used to prevent istanbul's window not defined error.
+// see here: https://github.com/gotwarlost/istanbul/issues/216
+export async function cleanCoverageDir() {
+  const testDir = path.join(__dirname, "..", "..", "test", "coverage");
+
+  try {
+    await removeDir(testDir, { recursive: true });
+  } catch (err) {
+    console.error(err);
+    process.exit(1);
+  }
 }
