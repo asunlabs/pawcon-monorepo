@@ -10,6 +10,7 @@ import {
   checkCoverageForCI,
   cleanCoverageDir,
 } from "./scripts/manager/coverageManager";
+import "hardhat-contract-sizer";
 
 dotenv.config({ path: "./.env.development" });
 
@@ -174,6 +175,11 @@ const config: HardhatUserConfig = {
   typechain: {
     outDir: "./typechain",
     target: "ethers-v5",
+  },
+  contractSizer: {
+    alphaSort: false,
+    runOnCompile: false,
+    strict: true,
   },
 };
 
