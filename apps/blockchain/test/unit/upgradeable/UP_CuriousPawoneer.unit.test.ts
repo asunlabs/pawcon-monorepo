@@ -1,5 +1,8 @@
-import { loadFixture } from "@nomicfoundation/hardhat-network-helpers";
+import { anyValue } from "@nomicfoundation/hardhat-chai-matchers/withArgs";
+import { loadFixture, time } from "@nomicfoundation/hardhat-network-helpers";
+import { SignerWithAddress } from "@nomiclabs/hardhat-ethers/signers";
 import { expect } from "chai";
+import { BigNumber, Contract } from "ethers";
 import { ethers, upgrades } from "hardhat";
 import { useSnapshotForReset } from "../../../scripts/hooks/useNetworkHelper";
 import { useUUPSDeployer } from "../../../scripts/hooks/useUpgradeDeployer";
@@ -18,7 +21,7 @@ const MINTER_ROLE = ethers.utils.solidityKeccak256(["string"], ["MINTER_ROLE"]);
 const UPGRADER_ROLE = ethers.utils.solidityKeccak256(["string"], ["UPGRADER_ROLE"]);
 const BURNER_ROLE = ethers.utils.solidityKeccak256(["string"], ["BURNER_ROLE"]);
 const PAUSER_ROLE = ethers.utils.solidityKeccak256(["string"], ["PAUSER_ROLE"]);
-// const DEFAULT_ADMIN_ROLE = ethers.utils.hex;
+const DEFAULT_ADMIN_ROLE = ethers.utils.solidityKeccak256(["string"], ["DEFAULT_ADMIN_ROLE"]);
 
 const useFixture = async () => {
   return await useUUPSDeployer(contractName);
@@ -136,7 +139,7 @@ describe(`${PREFIX}-backlogs`, function TestBacklogs() {
       await expect(contract.connect(burner).burnOneToken(0)).not.to.be.reverted;
     });
 
-    it.only("Only Pauser can pause", async function TestPauserRole() {
+    it("Only Pauser can pause", async function TestPauserRole() {
       const { contract, owner, recipient } = await loadFixture(useFixture);
       const [_, __, ___, pauser] = await ethers.getSigners();
 
@@ -157,4 +160,120 @@ describe(`${PREFIX}-backlogs`, function TestBacklogs() {
       expect(await contract.ownerOf(0)).to.equal(owner.address);
     });
   });
+});
+
+describe(`${PREFIX}-ver02`, async function TestVer02() {
+  let upgraded: Contract;
+  let _owner: SignerWithAddress;
+  let _recipient: SignerWithAddress;
+
+  beforeEach("Should upgrade a UUPS proxy to ver02", async function TestUpgradeDeploy() {
+    await useSnapshotForReset();
+
+    const { contract, owner, recipient } = await loadFixture(useFixture);
+    const contractVer02Factory = await ethers.getContractFactory("CuriousPawoneerVer02");
+
+    upgraded = await upgrades.upgradeProxy(contract.address, contractVer02Factory, {
+      kind: "uups",
+    });
+
+    _owner = owner;
+    _recipient = recipient;
+  });
+
+  it("Should return a version", async function TestVersionGetter() {
+    /// @dev proxy does not have a version getter
+    const VERSION_02 = 2;
+    expect(await upgraded.curiousPawoneerVersion()).to.equal(VERSION_02);
+  });
+
+  it("Should initialize ver02", async function TestVer02SetupInit() {
+    await expect(upgraded.connect(_recipient).__Ver02Setup_init()).to.be.reverted;
+
+    /// @dev should initialze once
+    await upgraded.connect(_owner).__Ver02Setup_init();
+
+    expect(await upgraded.onlyVer02SetupInit()).to.be.true;
+
+    const _whitelistEventTime = (await time.latest()) + time.duration.weeks(1);
+    expect(await upgraded.whitelistEventTime()).to.equal(_whitelistEventTime);
+  });
+
+  it("Should set a whitelist only for a limited time", async function TestWhitelistSetter() {
+    await upgraded.connect(_owner).__Ver02Setup_init();
+
+    expect(await upgraded.setWhitelist(_owner.address)).not.to.be.reverted;
+    expect(await upgraded.whitelist(_owner.address)).to.be.true;
+  });
+
+  it("Should whitelist-mint free", async function TestWhitelistMint() {
+    /// @dev should initialze once
+    await upgraded.connect(_owner).__Ver02Setup_init();
+
+    /// @dev whitelist mint requires no fee
+    await upgraded.connect(_owner).setWhitelist(_owner.address);
+    await upgraded.connect(_owner).safeMint(_owner.address);
+    expect(await upgraded.ownerOf(0)).to.equal(_owner.address);
+  });
+
+  it("Non-whitelist mint requires a 0.0001 ether", async function TestNonWhitelistMint() {
+    await upgraded.connect(_owner).__Ver02Setup_init();
+
+    /// @dev non-whitelist mint requires a 0.0001 ether
+    /// @dev owner has a minter role
+    await expect(upgraded.connect(_owner).safeMint(_recipient.address)).to.be.revertedWith("Non-whitelist mint requires a fee");
+    expect(await upgraded.connect(_owner).safeMint(_recipient.address, { value: ethers.utils.parseEther("0.0001") }));
+  });
+
+  it("Contract should receive mint fee in Ether", async function TestEtherReceival() {
+    await upgraded.connect(_owner).__Ver02Setup_init();
+
+    await expect(upgraded.connect(_owner).safeMint(_recipient.address)).to.be.revertedWith("Non-whitelist mint requires a fee");
+    expect(await upgraded.connect(_owner).safeMint(_recipient.address, { value: ethers.utils.parseEther("0.0001") }));
+
+    expect(await upgraded.getReceivedEther()).to.equal(ethers.utils.parseEther("0.0001"));
+  });
+
+  it("Should withdraw and transfer a received ether", async function TestEtherWithdrawl() {
+    await upgraded.connect(_owner).__Ver02Setup_init();
+
+    await expect(upgraded.connect(_owner).safeMint(_recipient.address)).to.be.revertedWith("Non-whitelist mint requires a fee");
+    expect(await upgraded.connect(_owner).safeMint(_recipient.address, { value: ethers.utils.parseEther("0.0001") }));
+
+    await upgraded.withdrawReceivedEther(_recipient.address);
+    expect(await upgraded.withdrawReceivedEther(_recipient.address))
+      .to.emit(upgraded, "WithdrewEtherTo")
+      .withArgs(anyValue);
+
+    /// @dev hardhat accounts already pre-funded to 10,000 ether
+    expect(await _recipient.getBalance()).to.equal(ethers.utils.parseEther("10000.0001"));
+  });
+
+  it("Should withdraw a minted NFT", async function TestNFTWithdrawl() {
+    await upgraded.connect(_owner).__Ver02Setup_init();
+
+    await upgraded.connect(_owner).setWhitelist(_owner.address);
+    await upgraded.connect(_owner).safeMint(_owner.address);
+
+    const tokenId = 0;
+    await expect(upgraded.withdrawMintedNFT(_owner.address, _recipient.address, tokenId)).not.to.be.reverted;
+
+    expect(await upgraded.ownerOf(tokenId)).to.equal(_recipient.address);
+    expect(await upgraded.ownerOf(tokenId)).not.to.equal(_owner.address);
+  });
+
+  it.only("Should receive NFT", async function TestNFTReceival() {
+    await upgraded.connect(_owner).__Ver02Setup_init();
+
+    await upgraded.connect(_owner).setWhitelist(_owner.address);
+    await upgraded.connect(_owner).safeMint(_owner.address);
+
+    const tokenId = 0;
+
+    /// @dev send a NFT to curious pawoneer contract
+    await expect(upgraded.withdrawMintedNFT(_owner.address, upgraded.address, tokenId)).not.to.be.reverted;
+    expect(await upgraded.ownerOf(tokenId)).to.equal(upgraded.address);
+  });
+
+  it.skip("Should withdraw a received NFT", async function TestReceivedNFTWithdrawl() {});
 });
