@@ -62,7 +62,7 @@ contract CuriousPawoneer is
         _grantRole(UPGRADER_ROLE, msg.sender);
     }
 
-    function safeMint(address to) public onlyRole(MINTER_ROLE) whenNotPaused {
+    function safeMint(address to) public payable virtual onlyRole(MINTER_ROLE) whenNotPaused {
         uint256 tokenId = _tokenIdCounter.current();
         _tokenIdCounter.increment();
         _safeMint(to, tokenId);
