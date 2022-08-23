@@ -28,6 +28,14 @@ const useFixture = async () => {
   return await useUUPSDeployer(contractName);
 };
 
+const useOracleFixture = async () => {
+  const DataFeedFactory = await ethers.getContractFactory("DataFeedFactory");
+  const _contract = await DataFeedFactory.deploy();
+  const contract = await _contract.deployed();
+
+  return { contract };
+};
+
 describe(`${PREFIX}-metadata`, function TestMetadata() {
   this.beforeEach("Should rest blockchain state", async function TestReset() {
     await useSnapshotForReset();
@@ -324,5 +332,29 @@ describe(`${PREFIX}-ver02-receive-withdraw`, async function TestVer02() {
     await expect(upgraded.connect(_owner).unstake(tokenId)).not.to.be.reverted;
     expect(await upgraded.ownerOf(tokenId)).to.equal(_owner.address);
     // await expect(upgraded.connect(_owner).unstake(tokenId)).to.emit(upgraded, "NFTUnstaked").withArgs(anyValue);
+  });
+});
+
+describe(`${PREFIX}-ver02-oracle`, function TestOracle() {
+  describe("Should return a mainnet ETH/USD", async function TestMainnetEthUsdFeed() {
+    const mainnetFeedId = 0;
+    const goerliFeedId = 1;
+
+    it("Should return a ETH/USD aggregator", async function TestDatafeeds() {
+      const { contract } = await loadFixture(useOracleFixture);
+
+      expect(await contract.getPriceFeed(mainnetFeedId)).to.equal("0x5f4eC3Df9cbd43714FE2740f5E3616155c5b8419");
+      expect(await contract.getPriceFeed(goerliFeedId)).to.equal("0xD4a33860578De61DBAbDc8BFdb98FD742fA7028e");
+    });
+
+    it("Should return ETH/USD oracle price", async function TestEthUsdOraclePrice() {
+      const { contract } = await loadFixture(useOracleFixture);
+
+      const ExtendedMockAggregatorFactory = await ethers.getContractFactory("ExtendedMockAggregator");
+      const _extendedMockAggregatorFactory = await ExtendedMockAggregatorFactory.deploy();
+      const extendedMockAggregator = await _extendedMockAggregatorFactory.deployed();
+
+      console.log(extendedMockAggregator);
+    });
   });
 });
