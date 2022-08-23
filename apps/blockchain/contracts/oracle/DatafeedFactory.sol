@@ -47,7 +47,7 @@ contract DataFeedFactory is Ownable {
         _feedId.increment();
     }
 
-    function getOralcePrice(uint256 feedId) external view returns (int256) {
+    function getOraclePrice(uint256 feedId) external view returns (int256) {
         //   (uint80 roundID, int256 price, uint256 startedAt, uint256 timeStamp, uint80 answeredInRound) = priceFeed.latestRoundData();
         (, int256 price, , , ) = feeds[feedId].latestRoundData();
         return price;
