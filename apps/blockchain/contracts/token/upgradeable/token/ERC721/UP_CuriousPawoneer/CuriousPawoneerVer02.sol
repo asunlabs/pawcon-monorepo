@@ -19,7 +19,9 @@ pragma solidity ^0.8.16;
 import "./CuriousPawoneer.sol";
 import "@openzeppelin/contracts-upgradeable/security/ReentrancyGuardUpgradeable.sol";
 
-// import "@openzeppelin/contracts-upgradeable/token/ERC721/IERC721ReceiverUpgradeable.sol";
+interface IDataFeedFactory {
+    function getOraclePrice(uint256 feedId) external view returns (int256);
+}
 
 contract CuriousPawoneerVer02 is CuriousPawoneer, ReentrancyGuardUpgradeable {
     bool public onlyVer02SetupInit;
