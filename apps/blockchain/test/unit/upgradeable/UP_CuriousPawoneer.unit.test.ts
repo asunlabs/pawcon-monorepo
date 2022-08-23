@@ -2,6 +2,7 @@ import { anyValue } from "@nomicfoundation/hardhat-chai-matchers/withArgs";
 import { loadFixture, time } from "@nomicfoundation/hardhat-network-helpers";
 import { SignerWithAddress } from "@nomiclabs/hardhat-ethers/signers";
 import { expect } from "chai";
+import chalk from "chalk";
 import { BigNumber, Contract } from "ethers";
 import { ethers, upgrades } from "hardhat";
 import { useSnapshotForReset } from "../../../scripts/hooks/useNetworkHelper";
@@ -237,16 +238,25 @@ describe(`${PREFIX}-ver02`, async function TestVer02() {
   it("Should withdraw and transfer a received ether", async function TestEtherWithdrawl() {
     await upgraded.connect(_owner).__Ver02Setup_init();
 
+    console.log(chalk.bgMagenta.bold("BAL BEFORE MINT: "), await _recipient.getBalance());
+
     await expect(upgraded.connect(_owner).safeMint(_recipient.address)).to.be.revertedWith("Non-whitelist mint requires a fee");
     expect(await upgraded.connect(_owner).safeMint(_recipient.address, { value: ethers.utils.parseEther("0.0001") }));
 
+    const recipientBalanceBeforeEtherTransfer = await _recipient.getBalance();
+
     await upgraded.withdrawReceivedEther(_recipient.address);
+
+    const recipientBalanceAfterEtherTransfer = await _recipient.getBalance();
+
     expect(await upgraded.withdrawReceivedEther(_recipient.address))
       .to.emit(upgraded, "WithdrewEtherTo")
       .withArgs(anyValue);
 
     /// @dev hardhat accounts already pre-funded to 10,000 ether
-    expect(await _recipient.getBalance()).to.equal(ethers.utils.parseEther("10000.0001"));
+    /// @dev do not compare balances directly. try to use difference.
+    const diff = recipientBalanceAfterEtherTransfer.toBigInt() - recipientBalanceBeforeEtherTransfer.toBigInt();
+    expect(diff).to.equal(ethers.utils.parseEther("0.0001"));
   });
 
   it("Should withdraw a minted NFT", async function TestNFTWithdrawl() {
@@ -262,7 +272,7 @@ describe(`${PREFIX}-ver02`, async function TestVer02() {
     expect(await upgraded.ownerOf(tokenId)).not.to.equal(_owner.address);
   });
 
-  it.only("Should receive NFT", async function TestNFTReceival() {
+  it("Should receive NFT", async function TestNFTReceival() {
     await upgraded.connect(_owner).__Ver02Setup_init();
 
     await upgraded.connect(_owner).setWhitelist(_owner.address);
