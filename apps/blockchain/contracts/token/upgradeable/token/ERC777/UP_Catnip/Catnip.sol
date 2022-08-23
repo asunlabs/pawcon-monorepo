@@ -14,7 +14,7 @@
                                                       |__/                                                                 
 */
 
-pragma solidity ^0.8.15;
+pragma solidity ^0.8.16;
 
 import "@openzeppelin/contracts-upgradeable/proxy/utils/Initializable.sol";
 import "@openzeppelin/contracts-upgradeable/proxy/utils/UUPSUpgradeable.sol";
@@ -24,7 +24,7 @@ import "@openzeppelin/contracts-upgradeable/access/OwnableUpgradeable.sol";
 /// @author @developerasun
 /// @notice Upgradeable ERC777 Catnip token. Governance token in PawCon project
 /// @dev Proxy, UUPS
-contract UP_Catnip is Initializable, ERC777Upgradeable, UUPSUpgradeable, OwnableUpgradeable {
+contract Catnip is Initializable, ERC777Upgradeable, UUPSUpgradeable, OwnableUpgradeable {
     uint256 public supplyLimit;
 
     /**
@@ -42,7 +42,7 @@ contract UP_Catnip is Initializable, ERC777Upgradeable, UUPSUpgradeable, Ownable
     }
 
     function initialize() public virtual initializer {
-        __ERC777_init("UP_Catnip", "CN", new address[](0));
+        __ERC777_init("Catnip", "CN", new address[](0));
         __UUPSUpgradeable_init();
         __Ownable_init();
         __Setup_init();

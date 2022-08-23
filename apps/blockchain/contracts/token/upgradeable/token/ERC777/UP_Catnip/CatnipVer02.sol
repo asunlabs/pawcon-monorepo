@@ -14,11 +14,11 @@
                                                       |__/                                                                 
 */
 
-pragma solidity ^0.8.15;
+pragma solidity ^0.8.16;
 
-import "./UP_Catnip.sol";
+import "./Catnip.sol";
 
-contract UP_CatnipVer02 is UP_Catnip, IERC777RecipientUpgradeable {
+contract CatnipVer02 is Catnip, IERC777RecipientUpgradeable {
     uint256 public releaseTime;
     uint256 public whitelistEventTime;
     bool public onlyVer02SetupInit;
@@ -141,7 +141,7 @@ contract UP_CatnipVer02 is UP_Catnip, IERC777RecipientUpgradeable {
     /// @dev reentrancy guard pattern
     function unStake() external {
         IERC777Upgradeable catnip = IERC777Upgradeable(address(this));
-        
+
         // solhint-disable-next-line
         require(releaseTime < block.timestamp, "Staking hasn't finished");
 
