@@ -23,13 +23,27 @@ import "@openzeppelin/contracts-upgradeable/security/ReentrancyGuardUpgradeable.
 
 contract CuriousPawoneerVer02 is CuriousPawoneer, ReentrancyGuardUpgradeable {
     bool public onlyVer02SetupInit;
-    uint256 public whitelistEventTime;
     uint256 public mintFee;
+    uint256 public whitelistEventTime;
+    uint256 private statkingTime;
 
+    /// @dev staker => tokenId => StakedNFT
+    mapping(address => mapping(uint256 => StakedNFT)) public stakedTokenlist;
+    mapping(address => mapping(uint256 => bool)) public tokenStaked;
     mapping(address => bool) public whitelist;
 
     event ReceivedEtherFrom(address sender, uint256 etherSent);
     event WithdrewEtherTo(address recipient, uint256 etherWithdrawn);
+    event ReceivedERC721Token(address operator, address from, uint256 tokenId, bytes data);
+    event NFTStaked(address staker, uint256 tokenId, uint256 stakedAt);
+    event NFTUnstaked(address stakingContract, uint256 tokenId, uint256 unstakedAt);
+
+    struct StakedNFT {
+        address owner;
+        uint256 tokenId;
+        uint256 stakedAt;
+        uint256 unstakableAt;
+    }
 
     modifier onlyLimitedTime() {
         require(block.timestamp < whitelistEventTime, "Whitelist event ended");
@@ -64,7 +78,7 @@ contract CuriousPawoneerVer02 is CuriousPawoneer, ReentrancyGuardUpgradeable {
         if (whitelist[to]) {
             super.safeMint(to);
         } else {
-            require(msg.value == mintFee, "Non-whitelist mint requires a fee");
+            require(msg.value == mintFee, "Non-whitelist: 0.0001 ether");
             super.safeMint(to);
         }
     }
@@ -84,7 +98,7 @@ contract CuriousPawoneerVer02 is CuriousPawoneer, ReentrancyGuardUpgradeable {
         emit WithdrewEtherTo(recipient, address(this).balance);
     }
 
-    function withdrawMintedNFT(
+    function safeTransferNFT(
         address from,
         address to,
         uint256 tokenId
@@ -92,13 +106,48 @@ contract CuriousPawoneerVer02 is CuriousPawoneer, ReentrancyGuardUpgradeable {
         super.safeTransferFrom(from, to, tokenId, "");
     }
 
-    // ! Should inherit a proper function visibility
+    /// @dev now contract receivable ERC721
     function onERC721Received(
         address operator,
         address from,
         uint256 tokenId,
         bytes calldata data
-    ) external pure returns (bytes4) {
+    ) external returns (bytes4) {
+        // ! Should inherit a proper function visibility
+        emit ReceivedERC721Token(operator, from, tokenId, data);
         return IERC721ReceiverUpgradeable.onERC721Received.selector;
+    }
+
+    function stake(uint256 _tokenId) external {
+        IERC721Upgradeable curiousPawoneer = IERC721Upgradeable(address(this));
+        require(curiousPawoneer.ownerOf(_tokenId) == msg.sender, "Only owner");
+
+        /// @dev note that token transfer approval should be done in user sider(front side)
+        curiousPawoneer.safeTransferFrom(msg.sender, address(this), _tokenId, "");
+
+        uint256 oneYear = 4 weeks * 12;
+
+        StakedNFT memory stakedNFT = StakedNFT({
+            owner: msg.sender,
+            tokenId: _tokenId,
+            stakedAt: block.timestamp,
+            unstakableAt: block.timestamp + oneYear
+        });
+
+        stakedTokenlist[msg.sender][_tokenId] = stakedNFT;
+        tokenStaked[msg.sender][_tokenId] = true;
+
+        emit NFTStaked(msg.sender, _tokenId, block.timestamp);
+    }
+
+    function unstake(uint256 _tokenId) external {
+        IERC721Upgradeable curiousPawoneer = IERC721Upgradeable(address(this));
+
+        require(tokenStaked[msg.sender][_tokenId] == true, "Token not staked");
+        require(stakedTokenlist[msg.sender][_tokenId].unstakableAt < block.timestamp, "Staking not finished");
+
+        curiousPawoneer.safeTransferFrom(address(this), msg.sender, _tokenId, "");
+
+        emit NFTUnstaked(address(this), _tokenId, block.timestamp);
     }
 }
