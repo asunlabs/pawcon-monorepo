@@ -93,7 +93,7 @@ describe(`${PREFIX}-upgradeability`, function TestUpgradeability() {
   });
 });
 
-describe(`${PREFIX}-backlogs`, function TestBacklogs() {
+describe(`${PREFIX}-access-control`, function TestAccessControlSuite() {
   this.beforeEach("Should reset blockchain state", async function TestReset() {
     await useSnapshotForReset();
   });
@@ -163,7 +163,7 @@ describe(`${PREFIX}-backlogs`, function TestBacklogs() {
   });
 });
 
-describe(`${PREFIX}-ver02`, async function TestVer02() {
+describe(`${PREFIX}-ver02-receive-withdraw`, async function TestVer02() {
   let upgraded: Contract;
   let _owner: SignerWithAddress;
   let _recipient: SignerWithAddress;
@@ -222,14 +222,14 @@ describe(`${PREFIX}-ver02`, async function TestVer02() {
 
     /// @dev non-whitelist mint requires a 0.0001 ether
     /// @dev owner has a minter role
-    await expect(upgraded.connect(_owner).safeMint(_recipient.address)).to.be.revertedWith("Non-whitelist mint requires a fee");
+    await expect(upgraded.connect(_owner).safeMint(_recipient.address)).to.be.revertedWith("Non-whitelist: 0.0001 ether");
     expect(await upgraded.connect(_owner).safeMint(_recipient.address, { value: ethers.utils.parseEther("0.0001") }));
   });
 
   it("Contract should receive mint fee in Ether", async function TestEtherReceival() {
     await upgraded.connect(_owner).__Ver02Setup_init();
 
-    await expect(upgraded.connect(_owner).safeMint(_recipient.address)).to.be.revertedWith("Non-whitelist mint requires a fee");
+    await expect(upgraded.connect(_owner).safeMint(_recipient.address)).to.be.revertedWith("Non-whitelist: 0.0001 ether");
     expect(await upgraded.connect(_owner).safeMint(_recipient.address, { value: ethers.utils.parseEther("0.0001") }));
 
     expect(await upgraded.getReceivedEther()).to.equal(ethers.utils.parseEther("0.0001"));
@@ -240,7 +240,7 @@ describe(`${PREFIX}-ver02`, async function TestVer02() {
 
     console.log(chalk.bgMagenta.bold("BAL BEFORE MINT: "), await _recipient.getBalance());
 
-    await expect(upgraded.connect(_owner).safeMint(_recipient.address)).to.be.revertedWith("Non-whitelist mint requires a fee");
+    await expect(upgraded.connect(_owner).safeMint(_recipient.address)).to.be.revertedWith("Non-whitelist: 0.0001 ether");
     expect(await upgraded.connect(_owner).safeMint(_recipient.address, { value: ethers.utils.parseEther("0.0001") }));
 
     const recipientBalanceBeforeEtherTransfer = await _recipient.getBalance();
@@ -266,7 +266,7 @@ describe(`${PREFIX}-ver02`, async function TestVer02() {
     await upgraded.connect(_owner).safeMint(_owner.address);
 
     const tokenId = 0;
-    await expect(upgraded.withdrawMintedNFT(_owner.address, _recipient.address, tokenId)).not.to.be.reverted;
+    await expect(upgraded.safeTransferNFT(_owner.address, _recipient.address, tokenId)).not.to.be.reverted;
 
     expect(await upgraded.ownerOf(tokenId)).to.equal(_recipient.address);
     expect(await upgraded.ownerOf(tokenId)).not.to.equal(_owner.address);
@@ -281,9 +281,48 @@ describe(`${PREFIX}-ver02`, async function TestVer02() {
     const tokenId = 0;
 
     /// @dev send a NFT to curious pawoneer contract
-    await expect(upgraded.withdrawMintedNFT(_owner.address, upgraded.address, tokenId)).not.to.be.reverted;
+    await expect(upgraded.safeTransferNFT(_owner.address, upgraded.address, tokenId)).not.to.be.reverted;
     expect(await upgraded.ownerOf(tokenId)).to.equal(upgraded.address);
   });
 
-  it.skip("Should withdraw a received NFT", async function TestReceivedNFTWithdrawl() {});
+  it("Should stake NFT", async function TestNFTStaking() {
+    await upgraded.connect(_owner).__Ver02Setup_init();
+    await upgraded.connect(_owner).safeMint(_owner.address, { value: ethers.utils.parseEther("0.0001") });
+
+    const tokenId = 0;
+
+    expect(await upgraded.ownerOf(tokenId)).to.equal(_owner.address);
+
+    /// @dev token transfer approval must be done
+    await upgraded.connect(_owner).approve(upgraded.address, tokenId);
+    await expect(upgraded.connect(_owner).stake(tokenId)).not.to.reverted;
+
+    expect(await upgraded.stakedTokenlist(_owner.address, tokenId)).not.to.reverted;
+    expect(await upgraded.stakedTokenlist(_owner.address, tokenId))
+      .to.emit(upgraded, "NFTStaked")
+      .withArgs(anyValue);
+
+    /// @dev nested mapping: deliver keys in order. below will log NFT struct
+    console.log(await upgraded.stakedTokenlist(_owner.address, tokenId));
+  });
+
+  it("Should unstake NFT", async function TestNFTUnstaking() {
+    await upgraded.__Ver02Setup_init();
+    await upgraded.connect(_owner).safeMint(_owner.address, { value: ethers.utils.parseEther("0.0001") });
+
+    const tokenId = 0;
+
+    await upgraded.connect(_owner).approve(upgraded.address, tokenId);
+    await upgraded.connect(_owner).stake(tokenId);
+
+    /// @dev staking is one year
+    await expect(upgraded.unstake(tokenId)).to.be.revertedWith("Staking not finished");
+    expect(await upgraded.ownerOf(tokenId)).to.equal(upgraded.address);
+
+    await time.setNextBlockTimestamp((await time.latest()) + time.duration.years(1) + time.duration.seconds(1));
+
+    await expect(upgraded.connect(_owner).unstake(tokenId)).not.to.be.reverted;
+    expect(await upgraded.ownerOf(tokenId)).to.equal(_owner.address);
+    // await expect(upgraded.connect(_owner).unstake(tokenId)).to.emit(upgraded, "NFTUnstaked").withArgs(anyValue);
+  });
 });
