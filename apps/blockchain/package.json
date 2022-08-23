@@ -29,6 +29,7 @@
     "inspect:static": "slither . --print human-summary",
     "inspect:size": "pnpm exec hardhat size-contracts",
     "expect": "pnpm exec hardhat cherry-pick",
+    "clean": "pnpm exec hardhat clean",
     "clean:cov": "pnpm exec hardhat clean-coverage",
     "cov": "pnpm clean:cov & pnpm exec hardhat coverage",
     "ci:unit": "pnpm exec hardhat test --grep \"unit\"",

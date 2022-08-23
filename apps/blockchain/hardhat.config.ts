@@ -86,7 +86,7 @@ const config: HardhatUserConfig = {
     // prettier-ignore
     compilers: [
       { version: "0.8.0" }, 
-      { version: "0.8.15" }
+      { version: "0.8.16" }
     ].map((ver) => {
       return {
         ...ver,
