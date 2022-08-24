@@ -18,6 +18,7 @@ pragma solidity ^0.8.16;
 
 import "./CuriousPawoneer.sol";
 import "@openzeppelin/contracts-upgradeable/security/ReentrancyGuardUpgradeable.sol";
+import "hardhat/console.sol";
 
 interface IDataFeedFactory {
     function getOraclePrice(uint256 feedId) external view returns (int256);
@@ -39,6 +40,7 @@ contract CuriousPawoneerVer02 is CuriousPawoneer, ReentrancyGuardUpgradeable {
     event ReceivedERC721Token(address operator, address from, uint256 tokenId, bytes data);
     event NFTStaked(address staker, uint256 tokenId, uint256 stakedAt);
     event NFTUnstaked(address stakingContract, uint256 tokenId, uint256 unstakedAt);
+    event WrongFeedId(uint256 actual, string message);
 
     struct StakedNFT {
         address owner;
@@ -67,6 +69,10 @@ contract CuriousPawoneerVer02 is CuriousPawoneer, ReentrancyGuardUpgradeable {
 
         /// @dev change this later to dynamic fee with oracle
         mintFee = 0.0001 ether;
+
+        console.log("onlyVer02SetupInit: ", onlyVer02SetupInit);
+        console.log("whitelistEventTime: ", whitelistEventTime);
+        console.log("initial mintFee: ", mintFee);
     }
 
     function setWhitelist(address account) external onlyLimitedTime onlyRole(DEFAULT_ADMIN_ROLE) {
@@ -82,6 +88,22 @@ contract CuriousPawoneerVer02 is CuriousPawoneer, ReentrancyGuardUpgradeable {
         } else {
             require(msg.value == mintFee, "Non-whitelist: 0.0001 ether");
             super.safeMint(to);
+        }
+    }
+
+    function setDynamicPrice(address _dataFeedFactory, uint256 feedId) public onlyRole(MINTER_ROLE) whenNotPaused {
+        IDataFeedFactory dataFeedFactory = IDataFeedFactory(_dataFeedFactory);
+
+        /// @dev external contract call with try~catch
+        try dataFeedFactory.getOraclePrice(feedId) returns (int256 _price) {
+            int256 priceWeight = 100000000000; // 10^11 => 0.001 ether
+            console.log("_price return value: ", uint256(_price));
+
+            /// @dev now mint fee is in USD
+            mintFee = uint256(_price / priceWeight);
+            console.log("mint fee: ", mintFee);
+        } catch Error(string memory _err) {
+            emit WrongFeedId(feedId, _err);
         }
     }
 
