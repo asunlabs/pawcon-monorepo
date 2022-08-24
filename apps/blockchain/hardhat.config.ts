@@ -11,6 +11,7 @@ import {
   cleanCoverageDir,
 } from "./scripts/manager/coverageManager";
 import "hardhat-contract-sizer";
+import "hardhat-log-remover";
 
 dotenv.config({ path: "./.env.development" });
 
