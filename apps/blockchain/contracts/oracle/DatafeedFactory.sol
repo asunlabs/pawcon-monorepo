@@ -44,6 +44,7 @@ contract DataFeedFactory is Ownable {
      * Test cases done with mocking
      */
 
+    // solhint-disable-next-line
     constructor() {
         /// @dev set Mainnet, Goerli ETH / USD aggreagtor default
         AggregatorV3Interface mainnetEthUsdFeed = AggregatorV3Interface(0x5f4eC3Df9cbd43714FE2740f5E3616155c5b8419);
