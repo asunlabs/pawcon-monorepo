@@ -98,3 +98,13 @@ export const CHAIN_ID = {
   rinkeby: 4,
   ganache: 1337,
 };
+
+export const mainnetDataFeed = {
+  id: 0,
+  address: "0x5f4eC3Df9cbd43714FE2740f5E3616155c5b8419",
+};
+
+export const goerliDataFeed = {
+  id: 1,
+  address: "0xD4a33860578De61DBAbDc8BFdb98FD742fA7028e",
+};
