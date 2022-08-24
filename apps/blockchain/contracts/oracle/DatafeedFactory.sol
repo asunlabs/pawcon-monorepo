@@ -24,6 +24,9 @@ contract DataFeedFactory is Ownable {
      * Network Mainnet
      * Aggregator: ETH/USD
      * Address: 0x5f4eC3Df9cbd43714FE2740f5E3616155c5b8419
+
+     * Base functionality checked in Remix Goerli testnet
+     * Test cases done with mocking
      */
 
     constructor() {
@@ -47,6 +50,7 @@ contract DataFeedFactory is Ownable {
         _feedId.increment();
     }
 
+    /// @dev should be test with mock in integration test
     function getOraclePrice(uint256 feedId) external view returns (int256) {
         //   (uint80 roundID, int256 price, uint256 startedAt, uint256 timeStamp, uint80 answeredInRound) = priceFeed.latestRoundData();
         (, int256 price, , , ) = feeds[feedId].latestRoundData();
