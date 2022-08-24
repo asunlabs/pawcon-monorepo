@@ -7,16 +7,6 @@ import { ethers } from "hardhat";
 const PREFIX = "integ-mockDataFeedFactory";
 const mockedRandomNumber = 778;
 
-const mainnetDataFeed = {
-  id: 0,
-  address: "0x5f4eC3Df9cbd43714FE2740f5E3616155c5b8419",
-};
-
-const goerliDataFeed = {
-  id: 1,
-  address: "0xD4a33860578De61DBAbDc8BFdb98FD742fA7028e",
-};
-
 const useMockedOracleFixture = async () => {
   const DataFeedFactoryFactory = await ethers.getContractFactory("MockDataFeedFactory");
   const _dataFeedFactorFactory = await DataFeedFactoryFactory.deploy();

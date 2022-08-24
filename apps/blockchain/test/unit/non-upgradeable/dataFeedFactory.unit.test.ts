@@ -2,18 +2,9 @@ import { loadFixture } from "@nomicfoundation/hardhat-network-helpers";
 import { expect } from "chai";
 import { ethers } from "hardhat";
 import { useSnapshotForReset } from "../../../scripts/hooks/useNetworkHelper";
+import { mainnetDataFeed, goerliDataFeed } from "../../../scripts/manager/constantManager";
 
 const PREFIX = "unit-DataFeedFactory";
-
-const mainnetDataFeed = {
-  id: 0,
-  address: "0x5f4eC3Df9cbd43714FE2740f5E3616155c5b8419",
-};
-
-const goerliDataFeed = {
-  id: 1,
-  address: "0xD4a33860578De61DBAbDc8BFdb98FD742fA7028e",
-};
 
 const useOracleFixture = async () => {
   const DataFeedFactory = await ethers.getContractFactory("DataFeedFactory");
@@ -24,6 +15,10 @@ const useOracleFixture = async () => {
 };
 
 describe(`${PREFIX}-function`, function TestMainnetEthUsdFeed() {
+  this.beforeEach("Should rest blockchain state", async function TestReset() {
+    await useSnapshotForReset();
+  });
+
   it("Should return a ETH/USD aggregator", async function TestDatafeeds() {
     const { contract } = await loadFixture(useOracleFixture);
 
