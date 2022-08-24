@@ -99,7 +99,6 @@ import "@openzeppelin/contracts/utils/Counters.sol";
 import "@openzeppelin/contracts/security/Pausable.sol";
 import "@openzeppelin/contracts/security/ReentrancyGuard.sol";
 import "../ERC20/Churu.sol";
-import "hardhat/console.sol";
 
 /// @title ERC721 implementation of CuriousPawoneer NFT
 /// @author DeveloperAsun(Jake Sung)
@@ -164,8 +163,6 @@ contract CuriousPawoneer is ERC721, AccessControl, Pausable, ReentrancyGuard {
         nonce = _nonce; // nonce added when deployed
         _grantRole(DEFAULT_ADMIN_ROLE, msg.sender); // set invoker to role setter
         setBaseURI(cid); // set pinata IPFS URI when deployed
-        console.log("Churu deployed at :", _churu);
-        console.log("Contract owner :", owner);
     }
     // ======================== Token inheritance setting ================== //
     
@@ -249,8 +246,7 @@ contract CuriousPawoneer is ERC721, AccessControl, Pausable, ReentrancyGuard {
 
     function resetRarity(uint256 tokenId) public payable whenNotPaused returns(uint256) {
         require(msg.value > cost, "Reset rarity cost 0.03 ether");
-        uint256 rand = getRandomNumber();
-        console.log("resetted rarity is : ",rand); // check random number
+        uint256 rand = getRandomNumber(); // check random number
         emit LogRarity(rand); // emit rarity as event
         tokenRarity[tokenId] = rand;
         return rand;
@@ -307,8 +303,6 @@ contract CuriousPawoneer is ERC721, AccessControl, Pausable, ReentrancyGuard {
 
     // front end will invoke this to get tokenURI
     function getTokenURIs() public view whenNotPaused returns(string[2] memory){
-        console.log("URI for base image :",baseImageURI);
-        console.log("URI for base metadata :", baseMetadataURI);
         // combine baseURI with tokenId and  returns a string         
         return [baseImageURI, baseMetadataURI];
     }
