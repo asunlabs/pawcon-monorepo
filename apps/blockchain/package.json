@@ -21,6 +21,7 @@
   },
   "main": "index.ts",
   "scripts": {
+    "doc": "pnpm exec hardhat docgen",
     "test:unit:dev": "nodemon -w test --exec mocha -g \"unit\" --slow 2000  --reporter list",
     "test:integ:dev": "nodemon -w test --exec mocha -g \"integ\" --slow 2000  --reporter list",
     "format": "prettier --write --plugin=prettier-plugin-solidity \"**/*.{ts,sol,js,mjs,cjs}\"",
@@ -58,6 +59,7 @@
     "@types/node": "^12.20.55",
     "@typescript-eslint/eslint-plugin": "^4.33.0",
     "@typescript-eslint/parser": "^4.33.0",
+    "alchemy-sdk": "^2.0.3",
     "async": "^3.2.4",
     "chai": "^4.3.6",
     "chalk": "4.1.2",
@@ -82,6 +84,7 @@
     "prettier": ">=2.0.0",
     "prettier-plugin-solidity": "1.0.0-beta.19",
     "solidity-coverage": "^0.7.21",
+    "solidity-docgen": "0.6.0-beta.22",
     "ts-node": "^10.8.1",
     "typechain": "8.1.0",
     "typescript": "^4.7.4"
