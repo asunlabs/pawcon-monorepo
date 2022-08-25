@@ -19,7 +19,7 @@ draft: false
    1. [Oracle](#oracle)
    1. [Media management](#media-management)
 
-1. [Wallet]
+1. [Wallet](#wallet)
 
 ## Heads-up
 
