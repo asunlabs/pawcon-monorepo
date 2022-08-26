@@ -12,6 +12,7 @@ import {
 } from "./scripts/manager/coverageManager";
 import "hardhat-contract-sizer";
 import "hardhat-log-remover";
+import "solidity-docgen";
 
 dotenv.config({ path: "./.env.development" });
 
@@ -181,6 +182,12 @@ const config: HardhatUserConfig = {
     alphaSort: false,
     runOnCompile: false,
     strict: true,
+  },
+  docgen: {
+    pages: "files",
+    pageExtension: ".md",
+    outputDir: "docs",
+    exclude: [],
   },
 };
 

@@ -60,6 +60,7 @@ importers:
       prettier: '>=2.0.0'
       prettier-plugin-solidity: 1.0.0-beta.19
       solidity-coverage: ^0.7.21
+      solidity-docgen: 0.6.0-beta.22
       ts-node: ^10.8.1
       typechain: 8.1.0
       typescript: ^4.7.4
@@ -112,6 +113,7 @@ importers:
       prettier: 2.7.1
       prettier-plugin-solidity: 1.0.0-beta.19_prettier@2.7.1
       solidity-coverage: 0.7.21
+      solidity-docgen: 0.6.0-beta.22_hardhat@2.9.9
       ts-node: 10.8.1_rf36vhyq5bw7w55ijgrvnfasgy
       typechain: 8.1.0_typescript@4.7.4
       typescript: 4.7.4
@@ -15667,6 +15669,16 @@ packages:
       - bufferutil
       - supports-color
       - utf-8-validate
+    dev: true
+
+  /solidity-docgen/0.6.0-beta.22_hardhat@2.9.9:
+    resolution: {integrity: sha512-DDxyqsCHdOxPD+Pk/RBje/flxniVCcyPsc+fjmiPY/yUseebd09f+qGs085BF709MJ0XPFwIiU5t/cHze5/vng==}
+    peerDependencies:
+      hardhat: ^2.8.0
+    dependencies:
+      handlebars: 4.7.7
+      hardhat: 2.9.9_mu66ohdiwyrigyorzidgf4bsdu
+      solidity-ast: 0.4.35
     dev: true
 
   /source-list-map/2.0.1:

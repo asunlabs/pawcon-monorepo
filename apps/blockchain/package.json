@@ -25,6 +25,7 @@
     "test:unit:dev": "pnpm compile & nodemon -w test --exec mocha -g \"unit\" --slow 2000  --reporter list",
     "test:integ:dev": "pnpm compile & nodemon -w test --exec mocha -g \"integ\" --slow 2000  --reporter list",
     "tests:dev": "pnpm compile & nodemon -w test --exec mocha --slow 2000  --reporter list",
+    "doc": "pnpm exec hardhat docgen",
     "format": "prettier --write --plugin=prettier-plugin-solidity \"**/*.{ts,sol,js,mjs,cjs}\"",
     "lint": "pnpm exec hardhat check",
     "inspect:log": "pnpm exec hardhat remove-logs",
@@ -88,6 +89,7 @@
     "prettier": ">=2.0.0",
     "prettier-plugin-solidity": "1.0.0-beta.19",
     "solidity-coverage": "^0.7.21",
+    "solidity-docgen": "0.6.0-beta.22",
     "ts-node": "^10.8.1",
     "typechain": "8.1.0",
     "typescript": "^4.7.4"
