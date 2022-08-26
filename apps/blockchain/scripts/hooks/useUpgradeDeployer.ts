@@ -2,7 +2,23 @@ import { Contract, Signer } from "ethers";
 import { ethers, upgrades } from "hardhat";
 import chalk from "chalk";
 
-async function useTransparentDeployer(contractName: string, signer?: Signer, constructorArgs?: unknown[]) {
+// TODO encapsulate useTransparentDeployer, useUUPSDeployer, useBeaconDeployer with class instance
+class UpgradeDeployer {
+  contractName: string;
+  constructorArgs: unknown[];
+
+  constructor(_contractName: string, _constructorArgs: unknown[]) {
+    this.contractName = _contractName;
+    this.constructorArgs = _constructorArgs;
+  }
+
+  uups() {}
+  transparent() {}
+  beacon() {}
+  diamond() {}
+}
+
+async function useTransparentDeployer(contractName: string, constructorArgs?: unknown[]) {
   let contract: Contract;
   const [owner, recipient] = await ethers.getSigners();
   const Contract = await ethers.getContractFactory(contractName, owner);
