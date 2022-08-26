@@ -23,6 +23,8 @@ import "@openzeppelin/contracts-upgradeable/utils/CountersUpgradeable.sol";
 import "@openzeppelin/contracts-upgradeable/access/AccessControlUpgradeable.sol";
 import "@openzeppelin/contracts-upgradeable/security/PausableUpgradeable.sol";
 import "@openzeppelin/contracts-upgradeable/token/ERC721/extensions/ERC721BurnableUpgradeable.sol";
+import "@openzeppelin/contracts-upgradeable/utils/Base64Upgradeable.sol";
+import "hardhat/console.sol";
 
 contract CuriousPawoneer is
     Initializable,
@@ -33,6 +35,7 @@ contract CuriousPawoneer is
     ERC721BurnableUpgradeable
 {
     using CountersUpgradeable for CountersUpgradeable.Counter;
+    using StringsUpgradeable for uint256;
 
     CountersUpgradeable.Counter private _tokenIdCounter;
 
@@ -42,6 +45,10 @@ contract CuriousPawoneer is
     bytes32 public constant BURNER_ROLE = keccak256("BURNER_ROLE");
     bytes32 public constant PAUSER_ROLE = keccak256("PAUSER_ROLE");
     bytes32 public constant UPGRADER_ROLE = keccak256("UPGRADER_ROLE");
+    string public MIME;
+    bool public onChainStorageType;
+
+    error OffChainStroageNotImplemented();
 
     /// @custom:oz-upgrades-unsafe-allow constructor
     // solhint-disable-next-line
@@ -60,6 +67,32 @@ contract CuriousPawoneer is
         _grantRole(DEFAULT_ADMIN_ROLE, msg.sender);
         _grantRole(MINTER_ROLE, msg.sender);
         _grantRole(UPGRADER_ROLE, msg.sender);
+
+        onChainStorageType = true;
+        MIME = "data:application/json;base64,";
+    }
+
+    /// @dev on-chain tokenURI: mime/dataURI
+    function tokenURI(uint256 tokenId) public view virtual override returns (string memory) {
+        super._requireMinted(tokenId);
+        string memory _tokenURI = "";
+
+        /// @dev add IPFS token URI later
+        if (onChainStorageType) {
+            // prettier-ignore
+            bytes memory dataURI = abi.encodePacked(
+                '{', 
+                    '"name": "CuriousPawoneer #', tokenId.toString(), '"', 
+                '}'
+            );
+
+            string memory encodedDataURI = Base64Upgradeable.encode(dataURI);
+            _tokenURI = string(abi.encodePacked(MIME, encodedDataURI));
+        }
+
+        console.log("contract tokenURI: ", _tokenURI);
+
+        return _tokenURI;
     }
 
     function safeMint(address to) public payable virtual onlyRole(MINTER_ROLE) whenNotPaused {
@@ -69,9 +102,7 @@ contract CuriousPawoneer is
     }
 
     /// @dev _authorizeUpgrade MUST be overriden and access-controlled.
-    function _authorizeUpgrade(
-        address newImplementation // onlyOwner
-    ) internal override onlyRole(UPGRADER_ROLE) {}
+    function _authorizeUpgrade(address newImplementation) internal override onlyRole(UPGRADER_ROLE) {}
 
     /// @dev overriding supportsInterface is required by AccessControlUpgradeable and ERC721Upgradeable.
     function supportsInterface(bytes4 interfaceId) public view virtual override(ERC721Upgradeable, AccessControlUpgradeable) returns (bool) {
