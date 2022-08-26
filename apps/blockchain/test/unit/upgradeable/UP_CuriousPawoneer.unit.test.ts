@@ -17,6 +17,7 @@ import { useUUPSDeployer } from "../../../scripts/hooks/useUpgradeDeployer";
 const contractName = "CuriousPawoneer";
 const contractSymbol = "CP";
 const PREFIX = "unit-CuriousPawoneer";
+const staticMintPrice = "0.0001";
 
 const MINTER_ROLE = ethers.utils.solidityKeccak256(["string"], ["MINTER_ROLE"]);
 const UPGRADER_ROLE = ethers.utils.solidityKeccak256(["string"], ["UPGRADER_ROLE"]);
@@ -323,5 +324,47 @@ describe(`${PREFIX}-ver02-receive-withdraw`, async function TestVer02() {
 
     await expect(upgraded.connect(_owner).unstake(tokenId)).not.to.be.reverted;
     expect(await upgraded.ownerOf(tokenId)).to.equal(_owner.address);
+  });
+});
+
+describe(`${PREFIX}-token-URI`, function TestTokenManagement() {
+  let upgraded: Contract;
+  let _owner: SignerWithAddress;
+  let _recipient: SignerWithAddress;
+
+  this.beforeEach("Should upgrade", async function TestUpgrade() {
+    await useSnapshotForReset();
+
+    const { contract, owner, recipient } = await loadFixture(useFixture);
+    const contractVer02Factory = await ethers.getContractFactory("CuriousPawoneerVer02");
+
+    upgraded = await upgrades.upgradeProxy(contract.address, contractVer02Factory);
+    _owner = owner;
+    _recipient = recipient;
+  });
+
+  it("Should return true for onChainStorageType", async function TestBaseURI() {
+    expect(await upgraded.onChainStorageType()).to.be.true;
+  });
+
+  it("Should return a full tokenURI", async function TestTokenURI() {
+    const tokenId = 0;
+
+    await upgraded.connect(_owner).__Ver02Setup_init();
+    await upgraded.connect(_owner).safeMint(_owner.address, { value: ethers.utils.parseEther(staticMintPrice) });
+
+    const result = await upgraded.tokenURI(tokenId);
+    console.log(result);
+
+    const mime = "data:application/json;base64,"; // should contain ,
+    const base64Encoded = "eyJuYW1lIjogIkN1cmlvdXNQYXdvbmVlciAjMCJ9"; // value read from contract
+
+    const decoded = ethers.utils.base64.decode(base64Encoded);
+    const encoded = ethers.utils.base64.encode(decoded);
+
+    expect(await upgraded.tokenURI(tokenId)).to.equal(mime.concat(encoded));
+    console.log(chalk.bgMagenta.bold("FULL TOKEN URI: "), await upgraded.tokenURI(tokenId));
+
+    // console.log(upgraded);
   });
 });
