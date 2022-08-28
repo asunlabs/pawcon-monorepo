@@ -1,15 +1,20 @@
 ---
-title: 'App guide: How it works'
-description: 'A side project that will not be a side project. Powered by @developerasun.'
+title: 'Introduction'
+description: 'Open source Ethereum dapp project. Powered by @developerasun.'
 theme_version: '2.8.2'
 cascade:
-  featured_image: '/images/developerasun.jpg'
+  featured_image: '/images/pawcon-banner.jpg' # path: static/images
 ---
 
-PawCon is an open source web/blockchain/metaverse and maintained by [@developerasun](https://github.com/developerasun)
+## Maintainer
 
-Use above top navigation menu to check details for each application section.
+🔊 BGM included
+{{< youtube id="Y1ediZp-SE0" title="developerasun promotion video" autoplay="true" >}}
 
-Check project progress [here](https://github.com/orgs/asunlabs/projects/3/views/1)
+## Guide
 
-The project has been changing over time, as I have learned and tried new things over time.
+- Use above **top navigation menu** to check details for each application section.
+
+- Check project progress **[here](https://github.com/orgs/asunlabs/projects/3/views/1)**
+
+- The project has been changing over time, as I have learned and tried new things over time.

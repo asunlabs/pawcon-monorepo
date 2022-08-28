@@ -7,6 +7,8 @@ draft: false
 
 1. [Heads-up](#heads-up)
 
+1. [Migration](#migration)
+
 1. [App services](#app-services)
 
    1. [Token economy](#token-economy)
@@ -30,6 +32,10 @@ There once a wise man said,
 ... and yes, that's pretty much sums up my blockchain development journey.
 
 Jokes aside, welcome to my project. I will try my best to spell out how the project configures.
+
+## Migration
+
+As project gets bigger and complicated, documentation and readmes were starting to be scattered. To avoid this, all docs will be maintained in a static website using HUGO.
 
 ## App services
 
