@@ -18,6 +18,7 @@ pragma solidity ^0.8.16;
 
 import "./CuriousPawoneer.sol";
 import "@openzeppelin/contracts-upgradeable/security/ReentrancyGuardUpgradeable.sol";
+import "@openzeppelin/contracts-upgradeable/utils/math/SafeMathUpgradeable.sol";
 import "hardhat/console.sol";
 
 interface IDataFeedFactory {
@@ -26,9 +27,11 @@ interface IDataFeedFactory {
 
 contract CuriousPawoneerVer02 is CuriousPawoneer, ReentrancyGuardUpgradeable {
     bool public onlyVer02SetupInit;
+    bool public isStaticFee;
     uint256 public mintFee;
     uint256 public whitelistEventTime;
     uint256 private statkingTime;
+    uint256 public oracleEtherInUSD;
 
     /// @dev staker => tokenId => StakedNFT
     mapping(address => mapping(uint256 => StakedNFT)) public stakedTokenlist;
@@ -41,6 +44,10 @@ contract CuriousPawoneerVer02 is CuriousPawoneer, ReentrancyGuardUpgradeable {
     event NFTStaked(address staker, uint256 tokenId, uint256 stakedAt);
     event NFTUnstaked(address stakingContract, uint256 tokenId, uint256 unstakedAt);
     event WrongFeedId(uint256 actual, string message);
+
+    error RevertWhenDynamicMint(bool isStaticMint);
+
+    using SafeMathUpgradeable for uint256;
 
     struct StakedNFT {
         address owner;
@@ -67,8 +74,9 @@ contract CuriousPawoneerVer02 is CuriousPawoneer, ReentrancyGuardUpgradeable {
         // solhint-disable-next-line
         whitelistEventTime = block.timestamp + 7 days;
 
-        /// @dev change this later to dynamic fee with oracle
+        /// @dev fee can be dynamic with oracle. default is static
         mintFee = 0.0001 ether;
+        isStaticFee = true;
 
         console.log("onlyVer02SetupInit: ", onlyVer02SetupInit);
         console.log("whitelistEventTime: ", whitelistEventTime);
@@ -85,23 +93,50 @@ contract CuriousPawoneerVer02 is CuriousPawoneer, ReentrancyGuardUpgradeable {
         /// @dev whitelist mint is free of charge
         if (whitelist[to]) {
             super.safeMint(to);
-        } else {
+        }
+
+        if (!whitelist[to] && isStaticFee == true) {
             require(msg.value == mintFee, "Non-whitelist: 0.0001 ether");
             super.safeMint(to);
         }
+
+        if (!whitelist[to] && isStaticFee != true) {
+            revert RevertWhenDynamicMint({isStaticMint: isStaticFee});
+        }
     }
 
+    function safeDynamicMint(
+        address _dataFeedFactory,
+        uint256 feedId,
+        address to
+    ) public payable virtual onlyRole(MINTER_ROLE) whenNotPaused {
+        setDynamicPrice(_dataFeedFactory, feedId);
+        require(msg.value == mintFee, "Should pay a proper mint fee");
+        super.safeMint(to);
+    }
+
+    /// @dev change static mint fee 0.0001 ether to dynamic mint fee with oracle
     function setDynamicPrice(address _dataFeedFactory, uint256 feedId) public onlyRole(MINTER_ROLE) whenNotPaused {
         IDataFeedFactory dataFeedFactory = IDataFeedFactory(_dataFeedFactory);
 
         /// @dev external contract call with try~catch
         try dataFeedFactory.getOraclePrice(feedId) returns (int256 _price) {
-            int256 priceWeight = 100000000000; // 10^11 => 0.001 ether
-            console.log("_price return value: ", uint256(_price));
+            console.log("ETH / USD return value: ", uint256(_price));
 
-            /// @dev now mint fee is in USD
-            mintFee = uint256(_price / priceWeight);
-            console.log("mint fee: ", mintFee);
+            /// @dev 1 ether equals to 1473.92 in USD as of August 28th, 2022
+            /// @dev example value from oracle network: 147392015247 (1e12)
+            isStaticFee = false;
+            oracleEtherInUSD = uint256(_price);
+            console.log("oracleEtherInUSD: ", oracleEtherInUSD);
+
+            /// @dev _mintFee is 2 digit e.g 147392015247 => 14
+            (, uint256 _mintFee) = oracleEtherInUSD.tryDiv(1e10);
+
+            require(_mintFee != 0, "ETH / USD decimals changed");
+
+            /// @dev oraclized mintFee is 0.0014 ether
+            mintFee = _mintFee * mintFee;
+            console.log("oraclized mintFee: ", mintFee);
         } catch Error(string memory _err) {
             emit WrongFeedId(feedId, _err);
         }
