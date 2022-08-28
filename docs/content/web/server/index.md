@@ -29,7 +29,7 @@ Logic behind minimizing backend code is about blockchain decentralization. _Find
 
 ## Migration
 
-will be added
+As project gets bigger and complicated, documentation and readmes were starting to be scattered. To avoid this, all docs will be maintained in a static website using HUGO.
 
 ## Decentralized Identity
 
