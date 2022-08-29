@@ -10,6 +10,8 @@ import {
   checkCoverageForCI,
   cleanCoverageDir,
 } from "./scripts/manager/coverageManager";
+import "hardhat-contract-sizer";
+import "hardhat-log-remover";
 import "solidity-docgen";
 
 dotenv.config({ path: "./.env.development" });
@@ -86,7 +88,7 @@ const config: HardhatUserConfig = {
     // prettier-ignore
     compilers: [
       { version: "0.8.0" }, 
-      { version: "0.8.15" }
+      { version: "0.8.16" }
     ].map((ver) => {
       return {
         ...ver,
@@ -175,6 +177,11 @@ const config: HardhatUserConfig = {
   typechain: {
     outDir: "./typechain",
     target: "ethers-v5",
+  },
+  contractSizer: {
+    alphaSort: false,
+    runOnCompile: false,
+    strict: true,
   },
   docgen: {
     pages: "files",

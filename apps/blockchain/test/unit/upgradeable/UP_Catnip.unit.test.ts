@@ -30,11 +30,11 @@ import chai from "chai";
 
 chai.use(smock.matchers);
 
-const PREFIX = "unit-UP_Catnip";
+const PREFIX = "unit-Catnip";
 let contract: Contract;
 
 const useFixture = async () => {
-  const UP_Catnip = await ethers.getContractFactory("UP_Catnip");
+  const UP_Catnip = await ethers.getContractFactory("Catnip");
   const Contract = await upgrades.deployProxy(UP_Catnip, {
     initializer: "initialize",
     kind: "uups",
@@ -47,7 +47,7 @@ const useFixture = async () => {
 };
 
 const deployVer2 = async () => {
-  const UP_CatnipVer02 = await ethers.getContractFactory("UP_CatnipVer02");
+  const UP_CatnipVer02 = await ethers.getContractFactory("CatnipVer02");
   const ContractVer02 = await UP_CatnipVer02.deploy();
   const contractVer02 = await ContractVer02.deployed();
 
@@ -57,7 +57,7 @@ const deployVer2 = async () => {
 };
 
 const deployMockVer2 = async () => {
-  const MockContract = await smock.mock("UP_CatnipVer02");
+  const MockContract = await smock.mock("CatnipVer02");
   const mockContractVer02 = await MockContract.deploy();
 
   const [owner, recipient] = await ethers.getSigners();
@@ -71,7 +71,7 @@ const deployMockVer2 = async () => {
 
 const useUpgradeFixture = async () => {
   const { contract, owner, recipient } = await loadFixture(useFixture);
-  const ContractVer02Factory = await ethers.getContractFactory("UP_CatnipVer02");
+  const ContractVer02Factory = await ethers.getContractFactory("CatnipVer02");
 
   const upgraded = await upgrades.upgradeProxy(contract.address, ContractVer02Factory, {
     kind: "uups",
@@ -152,7 +152,7 @@ describe(`${PREFIX}-upgradeability`, function TestUpgradeability() {
     console.log(chalk.bgMagenta.bold("PROXY ADDR: "), contract.address);
     console.log(chalk.bgCyan.bold("VER2 ADDR: "), contractVer02.address);
 
-    const contractVer02Factory = await ethers.getContractFactory("UP_CatnipVer02");
+    const contractVer02Factory = await ethers.getContractFactory("CatnipVer02");
 
     /// @dev upgrades.prepareUpgrade returns an implementation address
     expect(
@@ -171,10 +171,10 @@ describe(`${PREFIX}-upgradeability`, function TestUpgradeability() {
   it("Should work before/after upgrades", async function TestUpgrades() {
     // before upgrades
     const { contract } = await loadFixture(useFixture);
-    expect(await contract.name()).to.equal("UP_Catnip");
+    expect(await contract.name()).to.equal("Catnip");
 
     // after upgrades
-    const ContractVer02Factory = await ethers.getContractFactory("UP_CatnipVer02");
+    const ContractVer02Factory = await ethers.getContractFactory("CatnipVer02");
 
     await upgrades.upgradeProxy(contract.address, ContractVer02Factory, {
       kind: "uups",
@@ -184,7 +184,7 @@ describe(`${PREFIX}-upgradeability`, function TestUpgradeability() {
      * @dev proxy contract name does not change even after upgrades
      * @dev since initializer is locked in constructor
      */
-    expect(await contract.name()).to.equal("UP_Catnip");
+    expect(await contract.name()).to.equal("Catnip");
   });
 
   it("Should be upgradeble by only owner", async function TestUpgradeAccessControl() {
@@ -199,7 +199,7 @@ describe(`${PREFIX}-upgradeability`, function TestUpgradeability() {
 
   it("Should mint an exact amount after upgrade", async function TestUpgradeMint() {
     const { contract } = await loadFixture(useFixture);
-    const ContractVer02Factory = await ethers.getContractFactory("UP_CatnipVer02");
+    const ContractVer02Factory = await ethers.getContractFactory("CatnipVer02");
 
     /// @dev the upgraded is typeof Contract, holding newly added functions in contract ver02.
     const upgraded = await upgrades.upgradeProxy(contract.address, ContractVer02Factory, {
@@ -243,7 +243,7 @@ describe(`${PREFIX}-ver02`, function TestVer02() {
 
   it("Should stake an exact amount", async function TestStake() {
     const { contract } = await loadFixture(useFixture);
-    const ContractVer02Factory = await ethers.getContractFactory("UP_CatnipVer02");
+    const ContractVer02Factory = await ethers.getContractFactory("CatnipVer02");
 
     const upgraded = await upgrades.upgradeProxy(contract.address, ContractVer02Factory, {
       kind: "uups",
@@ -272,7 +272,7 @@ describe(`${PREFIX}-ver02`, function TestVer02() {
 
   it("Should unstake an exact amount", async function TestUnstake() {
     const { contract, owner, recipient } = await loadFixture(useFixture);
-    const ContractVer02Factory = await ethers.getContractFactory("UP_CatnipVer02");
+    const ContractVer02Factory = await ethers.getContractFactory("CatnipVer02");
 
     const upgraded = await upgrades.upgradeProxy(contract.address, ContractVer02Factory, {
       kind: "uups",

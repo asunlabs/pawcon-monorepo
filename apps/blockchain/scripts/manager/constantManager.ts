@@ -50,6 +50,29 @@ export const WHALE: Record<string, ERC20TokenProps> = {
   },
 };
 
+export const RareNFTWhales = {
+  MAINNET: {
+    FiniliarEgg: "0xe4f91a435ef991A380f8dF573EF49d415b9D627D", // 16 FEGG
+    FatRatMafia: "0x0EeCCd3B48D7cAA3a516D808eE5aDA20fB660c3a", // 237 FRM
+    CryptoPudgyPunks: "0xa85c827B214123ad8818532f7E8fe3069132bc42", // 121 CPP
+  },
+  GOERLI: {},
+};
+
+export const RareNFTContracts = {
+  MAINNET: {
+    FiniliarEgg: "0x326f09FFCDd200f1B110E6dda0d240635b89e507", // 16 FEGG
+    FatRatMafia: "0x2b9FD4D651414e51c9bA56aE1add36bb71cCa24B", // 237 FRM
+    CryptoPudgyPunks: "0xCd903693a2EdDA8D4C9F69f9937eaf2B38A2CbF6", // 121 CPP
+  },
+  GOERLI: {},
+};
+
+const TopERC1155Whales = {
+  MAINNET: {},
+  GOERLI: {},
+};
+
 export const PLUGIN = {
   REPORT_GAS: true,
 };
@@ -74,4 +97,14 @@ export const CHAIN_ID = {
   "polygon-mumbai": 80001,
   rinkeby: 4,
   ganache: 1337,
+};
+
+export const mainnetDataFeed = {
+  id: 0,
+  address: "0x5f4eC3Df9cbd43714FE2740f5E3616155c5b8419",
+};
+
+export const goerliDataFeed = {
+  id: 1,
+  address: "0xD4a33860578De61DBAbDc8BFdb98FD742fA7028e",
 };
