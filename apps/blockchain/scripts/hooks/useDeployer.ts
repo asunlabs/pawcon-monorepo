@@ -14,10 +14,12 @@ async function deploy(contractName: string, constructorArgs?: any[]) {
     contract = await _contract.deployed();
   }
 
+  const [owner, recipient] = await ethers.getSigners();
+
   console.log(chalk.bgMagenta.bold(`===== ${contractName} is non-upgrade =====`));
   console.log(chalk.bgCyan.bold(`${contractName} deployed to: `), contract.address);
 
-  return { contract };
+  return { contract, owner, recipient };
 }
 
 export default deploy;
