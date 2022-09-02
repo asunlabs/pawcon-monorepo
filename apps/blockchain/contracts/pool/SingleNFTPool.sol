@@ -2,7 +2,7 @@
 pragma solidity ^0.8.16;
 
 /**
- * 
+
  * * SinglePool : reward => staked amount * 4 percent
  * Should stake ERC777 Catnip, rewarding Catnip
  * Should stake ERC721 CuriousPawoneer, rewarding Catnip
@@ -13,6 +13,15 @@ pragma solidity ^0.8.16;
 import "@openzeppelin/contracts-upgradeable/token/ERC721/IERC721Upgradeable.sol";
 import "@openzeppelin/contracts/token/ERC721/IERC721Receiver.sol";
 import "@openzeppelin/contracts-upgradeable/token/ERC721/IERC721ReceiverUpgradeable.sol";
+
+interface ICatnipProxy {
+    function mint(
+        address account,
+        uint256 amount,
+        bytes memory userData,
+        bytes memory operatorData
+    ) external;
+}
 
 contract SingleNFTPool is IERC721ReceiverUpgradeable, IERC721Receiver {
     /// @dev staker => tokenId => StakedNFT
@@ -41,7 +50,11 @@ contract SingleNFTPool is IERC721ReceiverUpgradeable, IERC721Receiver {
         return IERC721Receiver.onERC721Received.selector;
     }
 
-    function stake(address _curiousPawoneer, uint256 _tokenId) external {
+    function stake(
+        address _catnip,
+        address _curiousPawoneer,
+        uint256 _tokenId
+    ) external {
         IERC721Upgradeable curiousPawoneer = IERC721Upgradeable(_curiousPawoneer);
         require(curiousPawoneer.ownerOf(_tokenId) == msg.sender, "Only owner");
 
@@ -59,8 +72,23 @@ contract SingleNFTPool is IERC721ReceiverUpgradeable, IERC721Receiver {
 
         stakedTokenlist[msg.sender][_tokenId] = stakedNFT;
         isStaker[msg.sender][_tokenId] = true;
+        rewardStaker(_catnip, msg.sender);
 
         emit NFTStaked(msg.sender, _tokenId, block.timestamp);
+    }
+
+    /// @dev simplified NFT staking reward. will be improved with formular later.
+    function calculateReward() public pure returns (uint256) {
+        uint256 decimals = 1e18;
+        uint256 stakingReward = 100 * decimals;
+        return stakingReward;
+    }
+
+    function rewardStaker(address _catnip, address staker) private {
+        ICatnipProxy catnip = ICatnipProxy(_catnip);
+        uint256 reward = calculateReward();
+
+        catnip.mint(staker, reward, "", "");
     }
 
     function unstake(address _curiousPawoneer, uint256 _tokenId) external {
