@@ -111,7 +111,7 @@ describe(`${PREFIX}-bid`, function TestBid() {
     expect(await contract.getReceivedEther()).to.equal(ethers.utils.parseEther("1"));
 
     expect(await contract.connect(owner).withdrawReceivedEther(recipient.address)).not.to.be.reverted;
-    expect(await recipient.getBalance()).to.equal(ethers.utils.parseEther("10001"));
+    expect(await recipient.getBalance()).to.be.closeTo(ethers.utils.parseEther("10001"), ethers.utils.parseEther("0.1"));
     expect(await contract.getReceivedEther()).to.equal(0);
   });
 });
