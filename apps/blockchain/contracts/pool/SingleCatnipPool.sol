@@ -8,15 +8,32 @@ pragma solidity ^0.8.16;
 
  */
 
+import "@openzeppelin/contracts/utils/math/SafeMath.sol";
+import "@openzeppelin/contracts/security/ReentrancyGuard.sol";
 import "@openzeppelin/contracts/access/Ownable.sol";
 import "@openzeppelin/contracts-upgradeable/interfaces/IERC777RecipientUpgradeable.sol";
 import "@openzeppelin/contracts-upgradeable/interfaces/IERC777SenderUpgradeable.sol";
 import "@openzeppelin/contracts-upgradeable/interfaces/IERC1820RegistryUpgradeable.sol";
 import "@openzeppelin/contracts-upgradeable/interfaces/IERC777Upgradeable.sol";
 
-contract SingleCatnipPool is IERC777RecipientUpgradeable, IERC777SenderUpgradeable, Ownable {
-    uint256 public releaseTime;
-    mapping(address => uint256) public beneficiaries; // stake holder and balance
+interface ICatnipProxy {
+    function mint(
+        address account,
+        uint256 amount,
+        bytes memory userData,
+        bytes memory operatorData
+    ) external;
+}
+
+contract SingleCatnipPool is IERC777RecipientUpgradeable, IERC777SenderUpgradeable, Ownable, ReentrancyGuard {
+    using SafeMath for uint256;
+
+    /// @dev stake holder and amount
+    mapping(address => uint256) public beneficiaries;
+
+    /// @dev stake holder => (amount => timestamp)
+    mapping(address => mapping(uint256 => uint256)) private unstakableAt;
+
     IERC1820RegistryUpgradeable public _ERC1820_REGISTRY;
 
     event ReleaseTime(uint256 _releaseTime);
@@ -28,7 +45,6 @@ contract SingleCatnipPool is IERC777RecipientUpgradeable, IERC777SenderUpgradeab
     /// @dev SingleCatnipPool contract itself is not upgradeable.
     constructor() {
         _ERC1820_REGISTRY = IERC1820RegistryUpgradeable(0x1820a4B7618BdE71Dce8cdc73aAB6C95905faD24);
-        setReleaseTime();
         initERC1820Registry();
     }
 
@@ -73,14 +89,18 @@ contract SingleCatnipPool is IERC777RecipientUpgradeable, IERC777SenderUpgradeab
 
     function stake(address _catnip, uint256 _amount) public {
         IERC777Upgradeable catnip = IERC777Upgradeable(_catnip);
-
-        // solhint-disable-next-line
         require(catnip.balanceOf(msg.sender) > _amount, "Should have catnips to stake");
 
+        uint256 unstakeTime = block.timestamp + (4 weeks * 12);
+
         beneficiaries[msg.sender] += _amount;
+        unstakableAt[msg.sender][_amount] = unstakeTime;
 
         /// @dev token holder should authorize first
         catnip.operatorSend(msg.sender, address(this), _amount, "", "");
+
+        /// @dev mint 4 percent of staked amount as reward
+        rewardStaker(_catnip, msg.sender);
         emit Stake(msg.sender, _amount);
     }
 
@@ -88,23 +108,36 @@ contract SingleCatnipPool is IERC777RecipientUpgradeable, IERC777SenderUpgradeab
         return beneficiaries[msg.sender];
     }
 
-    function setReleaseTime() private onlyOwner {
-        uint256 oneYear = (4 weeks * 12);
+    /**
+     * @dev staking reward is the 4 percent of whole staked amount
+     */
+    function calculateStakeReward(address staker) public view returns (uint256) {
+        uint256 stakedAmount = beneficiaries[staker];
 
-        // solhint-disable-next-line
-        releaseTime = block.timestamp + oneYear;
-        emit ReleaseTime(releaseTime);
+        (bool _success, uint256 _result) = stakedAmount.tryDiv(100);
+        require(_success, "reward calculation (1) failed");
+
+        (bool success, uint256 result) = _result.tryMul(4);
+        require(success, "reward calculation (2) failed");
+
+        return result;
+    }
+
+    function rewardStaker(address _catnip, address staker) private {
+        uint256 rewardAmount = calculateStakeReward(staker);
+        ICatnipProxy(_catnip).mint(staker, rewardAmount, "", "");
     }
 
     /// @dev reentrancy guard pattern
-    function unStake(address _catnip) external {
+    function unStake(address _catnip, uint256 _amount) external nonReentrant {
         IERC777Upgradeable catnip = IERC777Upgradeable(_catnip);
 
         // solhint-disable-next-line
-        require(releaseTime < block.timestamp, "Staking hasn't finished");
+        require(unstakableAt[msg.sender][_amount] < block.timestamp, "Staking hasn't finished");
 
         uint256 unStakeAmount = beneficiaries[msg.sender];
         beneficiaries[msg.sender] = 0;
+        unstakableAt[msg.sender][_amount] = 0;
 
         catnip.operatorSend(address(this), msg.sender, unStakeAmount, "", "");
         emit UnStake(msg.sender, unStakeAmount);
