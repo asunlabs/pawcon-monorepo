@@ -272,59 +272,6 @@ describe(`${PREFIX}-ver02-receive-withdraw`, async function TestVer02() {
     expect(await upgraded.ownerOf(tokenId)).to.equal(_recipient.address);
     expect(await upgraded.ownerOf(tokenId)).not.to.equal(_owner.address);
   });
-
-  it("Should receive NFT", async function TestNFTReceival() {
-    await upgraded.connect(_owner).__Ver02Setup_init();
-
-    await upgraded.connect(_owner).setWhitelist(_owner.address);
-    await upgraded.connect(_owner).safeMint(_owner.address);
-
-    const tokenId = 0;
-
-    /// @dev send a NFT to curious pawoneer contract
-    await expect(upgraded.safeTransferNFT(_owner.address, upgraded.address, tokenId)).not.to.be.reverted;
-    expect(await upgraded.ownerOf(tokenId)).to.equal(upgraded.address);
-  });
-
-  it("Should stake NFT", async function TestNFTStaking() {
-    await upgraded.connect(_owner).__Ver02Setup_init();
-    await upgraded.connect(_owner).safeMint(_owner.address, { value: ethers.utils.parseEther("0.0001") });
-
-    const tokenId = 0;
-
-    expect(await upgraded.ownerOf(tokenId)).to.equal(_owner.address);
-
-    /// @dev token transfer approval must be done
-    await upgraded.connect(_owner).approve(upgraded.address, tokenId);
-    await expect(upgraded.connect(_owner).stake(tokenId)).not.to.reverted;
-
-    expect(await upgraded.stakedTokenlist(_owner.address, tokenId)).not.to.reverted;
-    expect(await upgraded.stakedTokenlist(_owner.address, tokenId))
-      .to.emit(upgraded, "NFTStaked")
-      .withArgs(anyValue);
-
-    /// @dev nested mapping: deliver keys in order. below will log NFT struct
-    console.log(await upgraded.stakedTokenlist(_owner.address, tokenId));
-  });
-
-  it("Should unstake NFT", async function TestNFTUnstaking() {
-    await upgraded.__Ver02Setup_init();
-    await upgraded.connect(_owner).safeMint(_owner.address, { value: ethers.utils.parseEther("0.0001") });
-
-    const tokenId = 0;
-
-    await upgraded.connect(_owner).approve(upgraded.address, tokenId);
-    await upgraded.connect(_owner).stake(tokenId);
-
-    /// @dev staking is one year
-    await expect(upgraded.unstake(tokenId)).to.be.revertedWith("Staking not finished");
-    expect(await upgraded.ownerOf(tokenId)).to.equal(upgraded.address);
-
-    await time.setNextBlockTimestamp((await time.latest()) + time.duration.years(1) + time.duration.seconds(1));
-
-    await expect(upgraded.connect(_owner).unstake(tokenId)).not.to.be.reverted;
-    expect(await upgraded.ownerOf(tokenId)).to.equal(_owner.address);
-  });
 });
 
 describe(`${PREFIX}-token-URI`, function TestTokenManagement() {
@@ -364,7 +311,5 @@ describe(`${PREFIX}-token-URI`, function TestTokenManagement() {
 
     expect(await upgraded.tokenURI(tokenId)).to.equal(mime.concat(encoded));
     console.log(chalk.bgMagenta.bold("FULL TOKEN URI: "), await upgraded.tokenURI(tokenId));
-
-    // console.log(upgraded);
   });
 });

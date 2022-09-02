@@ -34,32 +34,18 @@ contract CuriousPawoneerVer02 is CuriousPawoneer, ReentrancyGuardUpgradeable {
     bool public isStaticFee;
     uint256 public mintFee;
     uint256 public whitelistEventTime;
-    uint256 private statkingTime;
     uint256 public oracleEtherInUSD;
 
-    /// @dev staker => tokenId => StakedNFT
-    mapping(address => mapping(uint256 => StakedNFT)) public stakedTokenlist;
-    mapping(address => mapping(uint256 => bool)) public tokenStaked;
     mapping(address => bool) public whitelist;
     mapping(address => bool) public auctionWinnerList;
 
     event ReceivedEtherFrom(address sender, uint256 etherSent);
     event WithdrewEtherTo(address recipient, uint256 etherWithdrawn);
-    event ReceivedERC721Token(address operator, address from, uint256 tokenId, bytes data);
-    event NFTStaked(address staker, uint256 tokenId, uint256 stakedAt);
-    event NFTUnstaked(address stakingContract, uint256 tokenId, uint256 unstakedAt);
     event WrongFeedId(uint256 actual, string message);
 
     error RevertWhenDynamicMint(bool isStaticMint);
 
     using SafeMathUpgradeable for uint256;
-
-    struct StakedNFT {
-        address owner;
-        uint256 tokenId;
-        uint256 stakedAt;
-        uint256 unstakableAt;
-    }
 
     modifier onlyLimitedTime() {
         require(block.timestamp < whitelistEventTime, "Whitelist event ended");
@@ -180,50 +166,5 @@ contract CuriousPawoneerVer02 is CuriousPawoneer, ReentrancyGuardUpgradeable {
         uint256 tokenId
     ) external onlyRole(MINTER_ROLE) {
         super.safeTransferFrom(from, to, tokenId, "");
-    }
-
-    /// @dev now contract receivable ERC721
-    function onERC721Received(
-        address operator,
-        address from,
-        uint256 tokenId,
-        bytes calldata data
-    ) external returns (bytes4) {
-        // ! Should inherit a proper function visibility
-        emit ReceivedERC721Token(operator, from, tokenId, data);
-        return IERC721ReceiverUpgradeable.onERC721Received.selector;
-    }
-
-    function stake(uint256 _tokenId) external {
-        IERC721Upgradeable curiousPawoneer = IERC721Upgradeable(address(this));
-        require(curiousPawoneer.ownerOf(_tokenId) == msg.sender, "Only owner");
-
-        /// @dev note that token transfer approval should be done in user sider(front side)
-        curiousPawoneer.safeTransferFrom(msg.sender, address(this), _tokenId, "");
-
-        uint256 oneYear = 4 weeks * 12;
-
-        StakedNFT memory stakedNFT = StakedNFT({
-            owner: msg.sender,
-            tokenId: _tokenId,
-            stakedAt: block.timestamp,
-            unstakableAt: block.timestamp + oneYear
-        });
-
-        stakedTokenlist[msg.sender][_tokenId] = stakedNFT;
-        tokenStaked[msg.sender][_tokenId] = true;
-
-        emit NFTStaked(msg.sender, _tokenId, block.timestamp);
-    }
-
-    function unstake(uint256 _tokenId) external {
-        IERC721Upgradeable curiousPawoneer = IERC721Upgradeable(address(this));
-
-        require(tokenStaked[msg.sender][_tokenId] == true, "Token not staked");
-        require(stakedTokenlist[msg.sender][_tokenId].unstakableAt < block.timestamp, "Staking not finished");
-
-        curiousPawoneer.safeTransferFrom(address(this), msg.sender, _tokenId, "");
-
-        emit NFTUnstaked(address(this), _tokenId, block.timestamp);
     }
 }

@@ -241,69 +241,6 @@ describe(`${PREFIX}-ver02`, function TestVer02() {
     ).to.be.revertedWith("Exceeded max supply");
   });
 
-  it("Should stake an exact amount", async function TestStake() {
-    const { contract } = await loadFixture(useFixture);
-    const ContractVer02Factory = await ethers.getContractFactory("CatnipVer02");
-
-    const upgraded = await upgrades.upgradeProxy(contract.address, ContractVer02Factory, {
-      kind: "uups",
-    });
-
-    const mintAmount = ethers.utils.parseEther("100");
-    const stakeAmount = ethers.utils.parseEther("50");
-    const [owner, recipient] = await ethers.getSigners();
-
-    /// @dev token holder mint
-    await upgraded.connect(recipient).mint(recipient.address, mintAmount, ethers.utils.toUtf8Bytes(""), ethers.utils.toUtf8Bytes(""));
-
-    /// @dev contract ver02 setup initialization: release time and ERC1820 registry
-    await upgraded.connect(owner).__Ver02Setup_init();
-
-    /// @dev authorize contract for token transfer
-    await upgraded.connect(recipient).authorizeOperator(upgraded.address);
-
-    /// @dev token holder stake
-    expect(await upgraded.connect(recipient).stake(stakeAmount))
-      .to.emit(upgraded, "Stake")
-      .withArgs(anyValue);
-
-    expect(await upgraded.connect(recipient).stakeAmount()).to.equal(stakeAmount);
-  });
-
-  it("Should unstake an exact amount", async function TestUnstake() {
-    const { contract, owner, recipient } = await loadFixture(useFixture);
-    const ContractVer02Factory = await ethers.getContractFactory("CatnipVer02");
-
-    const upgraded = await upgrades.upgradeProxy(contract.address, ContractVer02Factory, {
-      kind: "uups",
-    });
-
-    await upgraded.connect(owner).__Ver02Setup_init();
-
-    await upgraded
-      .connect(recipient)
-      .mint(recipient.address, ethers.utils.parseEther("10"), ethers.utils.toUtf8Bytes(""), ethers.utils.toUtf8Bytes(""));
-    await upgraded.connect(recipient).authorizeOperator(upgraded.address);
-    await upgraded.connect(recipient).stake(ethers.utils.parseEther("7"));
-
-    /// @dev staking is 1-year-long
-    await expect(upgraded.connect(recipient).unStake()).to.be.revertedWith("Staking hasn't finished");
-
-    const current = time.latest();
-    const oneYear = time.duration.years(1);
-    const oneSecond = time.duration.seconds(1);
-    const stakingFinished = (await current) + oneYear + oneSecond;
-
-    await time.setNextBlockTimestamp(stakingFinished);
-
-    /// @dev staking should end and token should be withdrawable
-    await expect(upgraded.connect(recipient).unStake()).not.to.be.reverted;
-    expect(await upgraded.connect(recipient).stakeAmount()).to.equal(0);
-
-    /// @dev once unstake is done, token holder should get their token back
-    expect(await upgraded.balanceOf(recipient.address)).to.equal(ethers.utils.parseEther("10"));
-  });
-
   it("Owner should be whitelisted", async function TestInitialWhitelist() {
     const { upgraded, owner, recipient } = await loadFixture(useUpgradeFixture);
 
