@@ -25,6 +25,10 @@ interface IDataFeedFactory {
     function getOraclePrice(uint256 feedId) external view returns (int256);
 }
 
+interface IAuction {
+    function revealWinner(uint256 tokenId) external view returns (address);
+}
+
 contract CuriousPawoneerVer02 is CuriousPawoneer, ReentrancyGuardUpgradeable {
     bool public onlyVer02SetupInit;
     bool public isStaticFee;
@@ -37,6 +41,7 @@ contract CuriousPawoneerVer02 is CuriousPawoneer, ReentrancyGuardUpgradeable {
     mapping(address => mapping(uint256 => StakedNFT)) public stakedTokenlist;
     mapping(address => mapping(uint256 => bool)) public tokenStaked;
     mapping(address => bool) public whitelist;
+    mapping(address => bool) public auctionWinnerList;
 
     event ReceivedEtherFrom(address sender, uint256 etherSent);
     event WithdrewEtherTo(address recipient, uint256 etherWithdrawn);
@@ -83,6 +88,18 @@ contract CuriousPawoneerVer02 is CuriousPawoneer, ReentrancyGuardUpgradeable {
         console.log("initial mintFee: ", mintFee);
     }
 
+    function setAuctionWinner(address _auction, uint256 tokenId) external onlyRole(DEFAULT_ADMIN_ROLE) {
+        IAuction auction = IAuction(_auction);
+        address winner = auction.revealWinner(tokenId);
+
+        /// @dev if auction winner is not set, address is zero.
+        if (winner != address(0)) {
+            auctionWinnerList[winner] = true;
+        } else {
+            auctionWinnerList[winner] = false;
+        }
+    }
+
     function setWhitelist(address account) external onlyLimitedTime onlyRole(DEFAULT_ADMIN_ROLE) {
         whitelist[account] = true;
     }
@@ -90,17 +107,17 @@ contract CuriousPawoneerVer02 is CuriousPawoneer, ReentrancyGuardUpgradeable {
     /// @dev only minter. overriding super.
     /// @dev msg.value requires a function to be payable.
     function safeMint(address to) public payable override onlyRole(MINTER_ROLE) whenNotPaused {
-        /// @dev whitelist mint is free of charge
-        if (whitelist[to]) {
+        /// @dev whitelist/auction winner mint is free of charge
+        if (whitelist[to] || auctionWinnerList[to]) {
             super.safeMint(to);
         }
 
-        if (!whitelist[to] && isStaticFee == true) {
+        if (!whitelist[to] && !auctionWinnerList[to] && isStaticFee == true) {
             require(msg.value == mintFee, "Non-whitelist: 0.0001 ether");
             super.safeMint(to);
         }
 
-        if (!whitelist[to] && isStaticFee != true) {
+        if (!whitelist[to] && !auctionWinnerList[to] && isStaticFee != true) {
             revert RevertWhenDynamicMint({isStaticMint: isStaticFee});
         }
     }
