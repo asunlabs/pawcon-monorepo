@@ -3,13 +3,32 @@ title: 'Git strategy'
 draft: false
 ---
 
-# From creator
+## Contents
+
+1. [From creator](#from-creator)
+
+1. [Git flow](#git-flow)
+
+1. [Commit convention](#git-commit-convention)
+
+1. [Git hooks](#git-hooks)
+
+1. [Templates](#templates)
+
+## From creator
 
 PawCon actively uses git to optimize and keep code convention consistent. Please take a look at below documents what is configured and how it works.
 
 ## Git flow
 
-will be added
+PawCon adopts a git flow for branch strategy.
+
+- Main branches(non-deletable): main, develop
+- Support branches(deletable): feature, release, bugfix, hotfix, release
+
+Most of time, I spend time in develop and feature branches, adding new features.
+
+The develop branch is regularly merged into main branch. Note that branch names should be matched correctly as specified in [git hooks](#git-hooks)
 
 ## Git commit convention
 
@@ -60,4 +79,64 @@ then
 fi
 ```
 
-## Git workflows
+## Templates
+
+Using templates saves your time a lot by automating repetitive works.
+
+**Issue template**
+
+```yml
+name: Bug Report
+description: File a bug report
+title: '[Bug]: '
+labels: ['bug']
+assignees:
+  - developerasun
+body:
+  - type: markdown
+    attributes:
+      value: |
+        @asunlabs/pawcon-monorepo bug report
+  - type: textarea
+    id: what-happened
+    attributes:
+      label: What happened?
+      description: Describe what went wrong and what was supposed to happen
+      placeholder: Enter your description here
+      value: 'A bug happened!'
+    validations:
+      required: true
+  - type: textarea
+    id: logs
+    attributes:
+      label: Relevant log output
+      description: Please copy and paste any relevant log output. This will be automatically formatted into code, so no need for backticks.
+      render: shell
+```
+
+**Pull request template**
+
+```md
+# Pull request format
+
+This is a PR format for PawCon project.
+
+## What's changed
+
+**description**
+
+1.
+1.
+
+**Linked issue(optional)**: #
+
+**Screenshot/Clips(optional)**
+
+- content here
+
+## Checklist
+
+- [ ] Follow this project's commit convention
+- [ ] Follow this project's branch strategy convention
+- [ ] Set label and milestone
+```
