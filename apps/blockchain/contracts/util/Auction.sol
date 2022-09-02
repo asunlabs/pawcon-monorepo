@@ -110,28 +110,16 @@ contract Auction is Ownable, ReentrancyGuard {
      */
     function bid(uint256 tokenId) public payable {
         if (auctionStarted != true) {
-            revert AuctionNotStartedError(
-                { _auctionStarted: auctionStarted }
-            );
+            revert AuctionNotStartedError({_auctionStarted: auctionStarted});
         }
 
         if (msg.value < highestBid) {
-            revert NotHighestBidError(
-                { 
-                    _highestBid: highestBid, 
-                    _bid: msg.value 
-                }
-            );
+            revert NotHighestBidError({_highestBid: highestBid, _bid: msg.value});
         }
 
         // solhint-disable-next-line
         if (block.timestamp > startedAt + period) {
-            revert NotAuctionPeriodError(
-                { 
-                    _startedAt: startedAt,
-                    _period: startedAt + period
-                }
-            );
+            revert NotAuctionPeriodError({_startedAt: startedAt, _period: startedAt + period});
         }
 
         highestBid = msg.value;
@@ -144,23 +132,22 @@ contract Auction is Ownable, ReentrancyGuard {
     // solhint-disable-next-line
     receive() external payable {}
 
-    function getReceivedEther() public view returns(uint256) {
+    function getReceivedEther() public view returns (uint256) {
         return address(this).balance;
     }
 
     function withdrawReceivedEther(address _recipient) external payable onlyOwner nonReentrant {
         // solhint-disable-next-line
-        (bool success, ) = address(_recipient).call{ value: address(this).balance }("");
+        (bool success, ) = _recipient.call{value: address(this).balance}("");
         require(success, "Ether transfer failed");
     }
 
-    /// @dev call revealWinner in CuriousPawoneer NFT contract 
-    function revealWinner(uint256 tokenId) public view returns(address) {
+    function revealWinner(uint256 tokenId) public view returns (address) {
         require(auctionEnded == true, "Auction ongoing");
 
         address winner;
 
-        for (uint256 i=0; i<_bidList.length; i++) {
+        for (uint256 i = 0; i < _bidList.length; i++) {
             if (bidList[tokenId][_bidList[i]] == highestBid) {
                 winner = _bidList[i];
             } else {
