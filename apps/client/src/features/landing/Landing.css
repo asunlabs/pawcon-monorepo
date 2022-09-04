@@ -1,0 +1,162 @@
+/* text-shadow : offset-x, offset-y, blur-radius, color */
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: 'JetBrainsMono NF';
+}
+
+.landingBanner {
+    display: flex;
+    background-color: black;
+    color: white;
+}
+
+.landingBanner:first-child {
+    background-color: white;
+    color: black;
+}
+
+#github {
+    width: 50px;
+}
+
+#top {
+    height: 10vh;
+    flex-flow: row nowrap;
+    justify-content: center;
+    align-items: center;
+}
+
+#top > span > a {
+    text-decoration: none;
+    transform: translateY(20px);
+}
+
+#top > span > a:hover {
+    font-weight: bold;
+}
+
+#middle {
+    height: 80vh;
+    flex-flow: column nowrap;
+    justify-content: center;
+    align-items: center;
+}
+
+#middle > h1 {
+    font-size: 4rem;
+    background-image: linear-gradient(
+        60deg,
+        #40011e,
+        #bf34b6,
+        #711073,
+        #1b4c8c,
+        #0f8aa6
+    );
+    background-clip: text;
+    -webkit-background-clip: text;
+    color: transparent;
+    animation: breath 2.5s ease-in-out infinite;
+    margin-bottom: 30px;
+}
+
+@keyframes breath {
+    0% {
+        opacity: 0.2;
+        text-shadow: 3px 3px rgb(255, 255, 255);
+    }
+    100% {
+        opacity: 1;
+        text-shadow: 6px 6px rgb(255, 255, 255);
+    }
+}
+
+#bottom {
+    height: 10vh;
+}
+
+/* * wavy landing css migration */
+
+/*
+
+
+
+.hoverMe {
+
+}
+
+footer {
+    position: absolute;
+    bottom: 0;
+    width: 100%;
+    overflow: hidden;
+}
+
+.wave1 {
+    position: inherit;
+    background-image: url('./wave.png');
+    background-repeat: repeat;
+    width: 100%;
+    height: 100px;
+    animation: wave 30s linear infinite;
+    animation-delay: 1s;
+    z-index: 997;
+    opacity: 0.8;
+}
+
+.wave2 {
+    position: inherit;
+    background-image: url('./wave.png');
+    background-repeat: repeat;
+    width: 100%;
+    height: 100px;
+    animation: wave 25s linear infinite;
+    animation-direction: reverse;
+    z-index: 998;
+    opacity: 0.6;
+}
+
+.wave3 {
+    position: inherit;
+    background-image: url('./wave.png');
+    background-repeat: repeat;
+    width: 100%;
+    height: 100px;
+    animation: wave 20s linear infinite;
+    z-index: 999;
+    opacity: 0.4;
+}
+
+.wave4 {
+    background-image: url('./wave.png');
+    background-repeat: repeat;
+    width: 100%;
+    height: 100px;
+    animation: wave 15s linear infinite;
+    animation-direction: reverse;
+    z-index: 1000;
+    opacity: 0.2;
+}
+
+@keyframes wave {
+    0% {
+        background-position-x: 0;
+    }
+    100% {
+        background-position-x: 1000px;
+    }
+}
+
+@keyframes blink {
+    50% {
+        opacity: 0;
+    }
+
+    100% {
+        opacity: 1;
+    }
+}
+
+*/
