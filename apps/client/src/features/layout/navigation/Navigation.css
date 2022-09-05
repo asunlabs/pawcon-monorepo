@@ -16,10 +16,18 @@
     height: 100px;
 }
 
+#trigger > #menuTrigger {
+    cursor: pointer;
+}
+
 #menu {
     list-style: none;
     flex-flow: column nowrap;
     align-items: center;
+}
+
+#disabled {
+    display: none;
 }
 
 #menu > .menuItem {
