@@ -6,8 +6,7 @@ export interface IAsunMintProps {}
 export function AsunMint(props: IAsunMintProps) {
     return (
         <div id="asunMint">
-            <LayoutProvider />
-            mint page
+            <LayoutProvider>mint page</LayoutProvider>
         </div>
     );
 }

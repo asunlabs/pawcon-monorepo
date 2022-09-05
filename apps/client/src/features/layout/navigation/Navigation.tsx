@@ -24,7 +24,11 @@ function ToggleContextProvider({ children }: IToggleContextProviderProps) {
         <ToggleContext.Provider value={toggle}>
             <div className="navigationBar" id="trigger">
                 <span id="logotype">PawCon</span>
-                <img src={logo} alt="logo" loading="lazy" />
+                <img
+                    src={'https://i.ibb.co/2tfRH08/pawcon-logo.png'}
+                    alt="logo"
+                    loading="lazy"
+                />
                 <span
                     id="menuTrigger"
                     onClick={() => {
