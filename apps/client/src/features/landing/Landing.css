@@ -7,6 +7,11 @@
     font-family: 'JetBrainsMono NF';
 }
 
+a {
+    all: unset;
+    cursor: pointer;
+}
+
 .landingBanner {
     display: flex;
     background-color: black;
