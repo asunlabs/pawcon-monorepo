@@ -44,10 +44,10 @@ function MiddleBody() {
 function BottomWavyBanner() {
     return (
         <div className="landingBanner" id="bottom">
-            <div className="waves">wave 1</div>
-            <div className="waves">wave 2</div>
-            <div className="waves">wave 3</div>
-            <div className="waves">wave 4</div>
+            <div className="waves"></div>
+            <div className="waves"></div>
+            <div className="waves"></div>
+            <div className="waves"></div>
         </div>
     );
 }
