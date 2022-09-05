@@ -42,7 +42,7 @@ As project gets bigger and complicated, documentation and readmes were starting 
 UI wireframes dealt with using [Uizard](https://uizard.io/) with a pre-made templates for faster UI development. Note that below attached images in detail tags are **reference** images.
 
 - [AsunMint](https://app.uizard.io/p/aa4f6b74)
-- [AsunSwap](https://app.uizard.io/p/be853c23)
+- [AsunSwap](https://app.uizard.io/p/6284aee8)
 
 - Reference: [@Shazia Alam on Behence](https://www.behance.net/gallery/138262699/NFT-landing-page?tracking_source=search_projects%7Cnft%20marketplace%20wireframe), [@Sergey Antoniuk on Behence](https://www.behance.net/gallery/134683025/Pixanimal-NFT-Website?tracking_source=search_projects%7Cdefi%20wireframe)
 
