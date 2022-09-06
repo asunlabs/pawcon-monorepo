@@ -1,0 +1,43 @@
+.navigationBar {
+    display: flex;
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+#trigger {
+    font-weight: bold;
+    font-size: 2rem;
+    justify-content: space-around;
+    align-items: center;
+}
+
+#trigger > img {
+    height: 100px;
+}
+
+#trigger > #menuTrigger {
+    cursor: pointer;
+}
+
+#menu {
+    list-style: none;
+    flex-flow: column nowrap;
+    align-items: center;
+}
+
+#disabled {
+    display: none;
+}
+
+#menu > .menuItem {
+    padding: 1rem;
+}
+
+/* * tablet: +768px */
+@media screen and (min-width: 768px) {
+    #menu {
+        flex-flow: row nowrap;
+        justify-content: space-around;
+    }
+}

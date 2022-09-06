@@ -1,7 +1,17 @@
 import * as React from 'react';
+import { Footer } from './footer/Footer';
+import { Navigation } from './navigation/Navigation';
 
-export interface ILayoutProviderProps {}
+export interface ILayoutProviderProps {
+    children?: React.ReactNode;
+}
 
-export function LayoutProvider(props: ILayoutProviderProps) {
-    return <div>asdf</div>;
+export function LayoutProvider({ children }: ILayoutProviderProps) {
+    return (
+        <div id="layoutProvider">
+            <Navigation />
+            {children}
+            <Footer />
+        </div>
+    );
 }

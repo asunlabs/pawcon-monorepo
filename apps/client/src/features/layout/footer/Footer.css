@@ -1,0 +1,19 @@
+#footer {
+    display: flex;
+    justify-content: space-around;
+}
+
+.footerSection {
+    display: flex;
+    flex-flow: column nowrap;
+    padding: 1rem;
+}
+
+.footerSection > span {
+    font-weight: bold;
+    font-size: 1.3rem;
+}
+
+.footerSection > ul > li {
+    list-style: none;
+}
