@@ -33,6 +33,8 @@ draft: false
 
 New version of PawCon client documentation will be avaiable soon. Till then, feel free to check out previous version of client app [here](https://github.com/developerasun/pawcon/tree/main/client#pawcon-client-side)
 
+What I'm focusing on client side is to be _lightweight_ and _trendy_. This means that the client app will try to use as minimum dependencies as possible and at the same time, contains all the necessities.
+
 ## Migration
 
 As project gets bigger and complicated, documentation and readmes were starting to be scattered. To avoid this, all docs will be maintained in a static website using HUGO.
@@ -109,48 +111,35 @@ UI wireframes dealt with using [Uizard](https://uizard.io/) with a pre-made temp
 
 {{< /rawhtml >}}
 
-## Temp
+### Style
 
-{{< rawhtml >}}
+**structure**
 
-<details>
-<summary>Under construction</summary>
+Each feature is managed in independent directory, having a .tsx and .css for UI.
 
-## Sign in with Ethereum
+**breakpoints**
 
-will be added
+Screen size for CSS media queries is based on a part of [bootstrap 5 breakspoints](https://getbootstrap.com/docs/5.1/layout/breakpoints/#media-queries), which is as follows :
 
-## Deployment
+1. mobile : <576px
+1. tablet : ≥768px
+1. pc : ≥992px
 
-API documentation will be available soon.
+**Component**
 
-### Netlify
+React component is functional components with interface props. Props are destructured and have verb-based names.
 
-will be added
+```tsx
+interface AppProps {
+  name: string;
+}
+const App = ({ name }: AppProps) => {
+  return <div></div>;
+};
 
-### IPFS
+export default App;
+```
 
-will be added
+## On the way
 
-### ENS
-
-will be added
-
-## Components
-
-Component map will be available soon.
-
-### Layout
-
-will be added
-
-### State management
-
-will be added
-
-## Style
-
-Style convention will be available soon.
-
-</details>
-{{< /rawhtml >}}
+These will be added: app characteristics, sign in with Ethereum, continuous delivery, state management
