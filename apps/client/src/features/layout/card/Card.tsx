@@ -4,7 +4,7 @@ import './Card.css';
 export interface ICardProps {
     date?: string;
     title?: string;
-    description: string | string[];
+    description?: string | string[];
     image?: string;
     author?: string;
 }
