@@ -1,0 +1,14 @@
+#collection > #gallery {
+    display: grid;
+    grid-template-columns: repeat(1, 1fr);
+}
+
+/* * tablet: +768px */
+@media screen and (min-width: 768px) {
+    #collection {
+        flex-flow: column nowrap;
+    }
+    #collection > #gallery {
+        grid-template-columns: repeat(3, 1fr);
+    }
+}
