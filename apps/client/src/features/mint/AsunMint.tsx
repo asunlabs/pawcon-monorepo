@@ -1,12 +1,19 @@
 import * as React from 'react';
+import './AsunMint.css';
 import { LayoutProvider } from '../layout/LayoutProvider';
+import { Welcome } from './welcome/Welcome';
+import { Collection } from './collection/Collection';
 
 export interface IAsunMintProps {}
 
 export function AsunMint(props: IAsunMintProps) {
     return (
-        <div id="asunMint">
-            <LayoutProvider>mint page</LayoutProvider>
-        </div>
+        <LayoutProvider>
+            <div id="asunMint">
+                <h1 id="pageTitle">AsunMint</h1>
+                <Welcome />
+                <Collection />
+            </div>
+        </LayoutProvider>
     );
 }

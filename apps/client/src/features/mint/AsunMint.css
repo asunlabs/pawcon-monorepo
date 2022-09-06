@@ -1,0 +1,22 @@
+#asunMint {
+    background-color: black;
+    color: white;
+}
+
+#asunMint > #pageTitle {
+    font-weight: bold;
+    font-size: 3rem;
+}
+
+.asunMintComponent {
+    display: flex;
+    flex-flow: column nowrap;
+    justify-content: center;
+    align-items: center;
+    width: 70%;
+    margin: 0 15%;
+}
+
+.asunMintComponentTitle {
+    font-size: 2rem;
+}
