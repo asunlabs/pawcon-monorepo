@@ -21,17 +21,17 @@ export function Featured(props: IFeaturedProps) {
             <div className="featuredItem" id="featuredGallery">
                 <Card
                     description={'Lorem ipsum, dolor sit amet consectetur'}
-                    bid="2"
+                    bid="2 ETH"
                     text="Place a bid"
                 />
                 <Card
                     description={'vero possimus tenetur. Laudantium'}
-                    bid="3"
+                    bid="3 ETH"
                     text="Place a bid"
                 />
                 <Card
                     description={'tenetur mollitia accusamus excepturi sit?'}
-                    bid="1.4"
+                    bid="1.4 ETH"
                     text="Place a bid"
                 />
             </div>

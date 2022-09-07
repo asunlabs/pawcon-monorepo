@@ -1,4 +1,5 @@
 import * as React from 'react';
+import { Banner } from '../../layout/banner/Banner';
 import { Card } from '../../layout/card/Card';
 import './About.css';
 
@@ -18,15 +19,17 @@ export function About(props: IAboutProps) {
             </div>
 
             <div className="aboutItem" id="aboutGallery">
+                <Banner
+                    bannerType="video"
+                    video="https://www.youtube.com/embed/Y1ediZp-SE0"
+                    title="Dev promotion"
+                />
                 <Card
                     title="Dev promotion"
                     description={'Lorem ipsum, dolor sit amet consectetur'}
+                    // TODO set image later
+                    image=""
                     text="Check Github"
-                />
-                <Card
-                    title="Dev documentation"
-                    description={'vero possimus tenetur. Laudantium'}
-                    text="Read docs"
                 />
             </div>
         </div>

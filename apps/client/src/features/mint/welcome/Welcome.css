@@ -14,4 +14,8 @@
     .asunMintComponent {
         flex-flow: row nowrap;
     }
+    #welcome {
+        display: grid;
+        grid-template-columns: repeat(2, 1fr);
+    }
 }
