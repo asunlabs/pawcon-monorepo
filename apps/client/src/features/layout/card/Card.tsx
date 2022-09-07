@@ -1,15 +1,16 @@
 import * as React from 'react';
+import { Buttom } from '../button/Button';
 import './Card.css';
 
 export interface ICardProps {
-    date?: string;
     title?: string;
     description?: string | string[];
     image?: string;
-    author?: string;
+    bid?: string;
+    text?: string;
 }
 
-export function Card({ description, date, title, image, author }: ICardProps) {
+export function Card({ description, title, image, bid, text }: ICardProps) {
     return (
         <div className="card">
             <img
@@ -19,11 +20,11 @@ export function Card({ description, date, title, image, author }: ICardProps) {
                 loading="lazy"
             />
             <div className="cardDetails">
-                <span className="date">{date}</span>
                 <h3 className="title">{title}</h3>
-                <span className="author">{author}</span>
+                <span className="bid">{bid} ETH</span>
                 <p className="description">{description}</p>
             </div>
+            <Buttom text={text} />
         </div>
     );
 }
