@@ -15,10 +15,17 @@
 package main
 
 import (
+	"fmt"
 	"log"
 	"time"
-	"github.com/gofiber/fiber/v2"
+
+	"github.com/asunlabs/pawcon-monorepo/server/src/app/database"
 	"github.com/asunlabs/pawcon-monorepo/server/src/feature/auth"
+	"github.com/gofiber/fiber/v2"
+)
+
+const (
+	_PORT = 3001
 )
 
 func main() {
@@ -31,6 +38,7 @@ func main() {
 		Immutable: false,
 		GETOnly: false,
 	})
+	database.Connect(auth.UserModel())
 	// ================ App config ================ //
 	
 	// ================ API ================ //
@@ -43,7 +51,7 @@ func main() {
 	// ================ API ================ //
 	
 	// ================ Routers ================ //
-	app.Group("/auth", auth.AuthHandler)
+	app.Group("/auth", auth.Default)
 	// ================ Routers ================ //
 
 	app.Get("/", func(c *fiber.Ctx) error {
@@ -59,7 +67,6 @@ func main() {
 		return c.JSON(pawconServerGuide)
 	})
 
-	
-
-	log.Fatal(app.Listen(":3000"))
+	PORT := fmt.Sprintf(":%d", _PORT)
+	log.Fatal(app.Listen(PORT))
 }
