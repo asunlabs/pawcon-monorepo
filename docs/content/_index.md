@@ -11,6 +11,8 @@ cascade:
 🔊 BGM included
 {{< youtube id="Y1ediZp-SE0" title="developerasun promotion video" autoplay="true" >}}
 
+{{< download resume-KOR.pdf >}}
+
 ## Guide
 
 - Use above **top navigation menu** to check details for each application section.
