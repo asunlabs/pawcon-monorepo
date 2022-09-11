@@ -1,4 +1,5 @@
 ---
+# front matter: managing metadata
 title: 'Introduction'
 description: 'Open source Ethereum dapp project. Powered by @developerasun.'
 theme_version: '2.8.2'
@@ -10,6 +11,8 @@ cascade:
 
 🔊 BGM included
 {{< youtube id="Y1ediZp-SE0" title="developerasun promotion video" autoplay="true" >}}
+
+{{< download resume-KOR.pdf >}}
 
 ## Guide
 

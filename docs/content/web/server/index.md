@@ -1,6 +1,9 @@
 ---
 title: 'Server overview'
 draft: false
+featured_image: '/images/web-banner.jpg' # the images dir means static.
+tags: ['backend', 'webapp', 'centralization']
+categories: ['web']
 ---
 
 ## Content
@@ -9,50 +12,41 @@ draft: false
 
 1. [Migration](#migration)
 
-1. [Decentralized Identity](did)
+1. [Auth](#auth)
 
-   1. [Sign in with Ethereum - server](#sign-in-with-ethereum)
-   1. [Self.id](#selfid)
-
-1. [APIs](#components)
-
-   1. [Docker hub](#docker-hub)
-   1. [Documents](#documents)
+   1. [Centralized Identity](#centralized-identity)
+   1. [Decentralized Identity](#decentralized-identity)
+      1. [Sign in with Ethereum - server](#sign-in-with-ethereum)
+      1. [Self.id](#selfid)
 
 ## Heads-up
 
 In version 0.2, PawCon targets to implement a server application with Node.js/Express, serving API and login authentication(JWT, Google Oauth, and Mongo DB). Check [here](https://github.com/developerasun/pawcon/tree/main/server#pawcon-server) to find out what were implemented.
 
-Now, this is no longer a case. The project will now on target to _minimize_ server codes, adopting docker for API and decentralized id for login authentication.
-
-Logic behind minimizing backend code is about blockchain decentralization. _Finding out how much decentralized an app can be_ is one of the goals for the minimization. Consider this a technical experimentation, which is probable for _non-production_ application.
+What I'm focusing on server application is to mix decentralization and centralization. Supporting an aunthentication in a traditional way is important since _most of users still logins that way_. On top of that, DID is also important in terms of blockchain development.
 
 ## Migration
 
 As project gets bigger and complicated, documentation and readmes were starting to be scattered. To avoid this, all docs will be maintained in a static website using HUGO.
 
-## Decentralized Identity
+## Auth
+
+PawCon ver 0.3.0 targets to provide three ways for user authentication: 1) json web token 2) Google OAuth 3) Sign in with Ethereum. Each way will restrict user behaviors
+
+Note that the last one is _somewhat experimental_.
+
+### Centralized Identity
 
 will be added
 
-### Sign in with Ethereum
+### Decentralized Identity
 
 will be added
 
-### Self.id
+**Sign in with Ethereum**
 
-will be added
+**Self.id**
 
-## APIs
+## On the way
 
-will be added
-
-### Docker hub
-
-You can check dev resources from below.
-
-- [Pawcon dockerhub](https://hub.docker.com/repository/docker/developerasun/pawcon-monorepo)
-
-### Documents
-
-will be added
+These will be added: app characteristics, apis, sign in with Ethereum, continuous delivery, state management, CORS, cache

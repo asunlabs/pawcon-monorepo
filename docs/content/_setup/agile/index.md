@@ -1,6 +1,17 @@
 ---
 title: 'Agile development'
 draft: false
+featured_image: '/images/agile-banner.png'
+tags:
+  [
+    'project management',
+    'product owner',
+    'sprint',
+    'backlog',
+    'requirement',
+    'development environment',
+  ]
+categories: ['_setup']
 ---
 
 ## Content

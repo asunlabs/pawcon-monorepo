@@ -1,6 +1,9 @@
 ---
 title: 'Client overview'
 draft: false
+featured_image: '/images/web-banner.jpg' # the images dir means static.
+tags: ['front end', 'webapp', 'centralization']
+categories: ['web']
 ---
 
 ## Contents
@@ -33,6 +36,8 @@ draft: false
 
 New version of PawCon client documentation will be avaiable soon. Till then, feel free to check out previous version of client app [here](https://github.com/developerasun/pawcon/tree/main/client#pawcon-client-side)
 
+What I'm focusing on client side is to be _lightweight_ and _trendy_. This means that the client app will try to use as minimum dependencies as possible and at the same time, contains all the necessities.
+
 ## Migration
 
 As project gets bigger and complicated, documentation and readmes were starting to be scattered. To avoid this, all docs will be maintained in a static website using HUGO.
@@ -42,7 +47,7 @@ As project gets bigger and complicated, documentation and readmes were starting 
 UI wireframes dealt with using [Uizard](https://uizard.io/) with a pre-made templates for faster UI development. Note that below attached images in detail tags are **reference** images.
 
 - [AsunMint](https://app.uizard.io/p/aa4f6b74)
-- [AsunSwap](https://app.uizard.io/p/be853c23)
+- [AsunSwap](https://app.uizard.io/p/6284aee8)
 
 - Reference: [@Shazia Alam on Behence](https://www.behance.net/gallery/138262699/NFT-landing-page?tracking_source=search_projects%7Cnft%20marketplace%20wireframe), [@Sergey Antoniuk on Behence](https://www.behance.net/gallery/134683025/Pixanimal-NFT-Website?tracking_source=search_projects%7Cdefi%20wireframe)
 
@@ -109,48 +114,35 @@ UI wireframes dealt with using [Uizard](https://uizard.io/) with a pre-made temp
 
 {{< /rawhtml >}}
 
-## Temp
+### Style
 
-{{< rawhtml >}}
+**structure**
 
-<details>
-<summary>Under construction</summary>
+Each feature is managed in independent directory, having a .tsx and .css for UI.
 
-## Sign in with Ethereum
+**breakpoints**
 
-will be added
+Screen size for CSS media queries is based on a part of [bootstrap 5 breakspoints](https://getbootstrap.com/docs/5.1/layout/breakpoints/#media-queries), which is as follows :
 
-## Deployment
+1. mobile : <576px
+1. tablet : ≥768px
+1. pc : ≥992px
 
-API documentation will be available soon.
+**Component**
 
-### Netlify
+React component is functional components with interface props. Props are destructured and have verb-based names.
 
-will be added
+```tsx
+interface AppProps {
+  name: string;
+}
+const App = ({ name }: AppProps) => {
+  return <div></div>;
+};
 
-### IPFS
+export default App;
+```
 
-will be added
+## On the way
 
-### ENS
-
-will be added
-
-## Components
-
-Component map will be available soon.
-
-### Layout
-
-will be added
-
-### State management
-
-will be added
-
-## Style
-
-Style convention will be available soon.
-
-</details>
-{{< /rawhtml >}}
+These will be added: app characteristics, sign in with Ethereum, continuous delivery, state management

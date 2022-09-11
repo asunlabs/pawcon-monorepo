@@ -1,6 +1,9 @@
 ---
 title: 'Blockchain overview'
 draft: false
+featured_image: '/images/chain-banner.jpg' # the images dir means static.
+tags: ['ethereum', 'dapp', 'decentralization']
+categories: ['blockchain']
 ---
 
 ## Contents

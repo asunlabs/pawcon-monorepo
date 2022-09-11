@@ -1,6 +1,10 @@
 ---
 title: 'Git strategy'
 draft: false
+featured_image: '/images/git-banner.png'
+tags:
+  ['project management', 'collaboration', 'overview', 'development environment']
+categories: ['_setup']
 ---
 
 ## Contents
