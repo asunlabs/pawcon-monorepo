@@ -36,3 +36,8 @@ enableRobotsTXT = true
 [[params.ananke_socials]]
 name = "linkedin"
 url = "https://www.linkedin.com/in/jakesung/"
+
+[taxonomies]
+# taxonomics helps to group contents logically
+  category = 'categories'
+  tag = 'tags'
