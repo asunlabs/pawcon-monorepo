@@ -1,6 +1,9 @@
 ---
 title: 'Architecture diagram'
 draft: false
+featured_image: '/images/architecture-banner.png'
+tags: ['project management', 'diagram', 'tech stack', 'history']
+categories: ['_setup']
 ---
 
 ## Heads-up

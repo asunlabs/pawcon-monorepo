@@ -1,4 +1,5 @@
 ---
+# front matter: managing metadata
 title: 'Introduction'
 description: 'Open source Ethereum dapp project. Powered by @developerasun.'
 theme_version: '2.8.2'

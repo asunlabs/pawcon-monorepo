@@ -1,6 +1,9 @@
 ---
 title: 'Server overview'
 draft: false
+featured_image: '/images/web-banner.jpg' # the images dir means static.
+tags: ['backend', 'webapp', 'centralization']
+categories: ['web']
 ---
 
 ## Content
