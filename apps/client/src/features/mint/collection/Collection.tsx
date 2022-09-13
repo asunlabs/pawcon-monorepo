@@ -1,10 +1,7 @@
-import { title } from 'process';
 import * as React from 'react';
+import axios from 'axios';
 import { Card } from '../../layout/card/Card';
 import './Collection.css';
-
-// TODO set server API
-const cardsAPI = [];
 
 const CollectionContext = React.createContext('');
 
@@ -26,6 +23,25 @@ export interface ICollectionProps {}
 
 export function Collection(props: ICollectionProps) {
     const baseReactRouterURL = '/nft';
+    const baseDockerServerURL = 'http://localhost:3001';
+    const apiV1CollectionURL = '/api/collection/all.json';
+
+    // TODO fix docker server CORS
+    React.useEffect(() => {
+        console.log(
+            (async () => {
+                const res = await axios.get(
+                    baseDockerServerURL.concat(apiV1CollectionURL)
+                );
+                const data = res.data;
+                console.log({ data });
+            })()
+        );
+
+        // cleanup
+        return () => {};
+    }, []);
+
     return (
         <div className="asunMintComponent" id="collection">
             <div className="collectionItem" id="introduction">
