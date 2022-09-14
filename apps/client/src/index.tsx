@@ -8,25 +8,32 @@ import { AsunSwap } from './features/swap/AsunSwap';
 import { AsunMint } from './features/mint/AsunMint';
 import { Page404 } from './features/layout/page404/Page404';
 import { TokenDetail } from './features/mint/collection/TokenDetail';
+import { LayoutProvider } from './features/layout/LayoutProvider';
+import { APIContextProvider } from './app/context/APIContext';
 
 const container = document.getElementById('root')!;
 const root = createRoot(container);
 
 root.render(
     <React.StrictMode>
-        <BrowserRouter>
-            <Routes>
-                <Route path="/" element={<App />} />
-
-                <Route path="mint" element={<AsunMint />} />
-                <Route path="nft">
-                    <Route path=":title" element={<TokenDetail />} />
-                </Route>
-
-                <Route path="swap" element={<AsunSwap />} />
-                <Route path="*" element={<Page404 bannerType="image" />} />
-            </Routes>
-        </BrowserRouter>
+        <LayoutProvider>
+            <APIContextProvider>
+                <BrowserRouter>
+                    <Routes>
+                        <Route path="/" element={<App />} />
+                        <Route path="mint" element={<AsunMint />} />
+                        <Route path="nft">
+                            <Route path=":title" element={<TokenDetail />} />
+                        </Route>
+                        <Route path="swap" element={<AsunSwap />} />
+                        <Route
+                            path="*"
+                            element={<Page404 bannerType="image" />}
+                        />
+                    </Routes>
+                </BrowserRouter>
+            </APIContextProvider>
+        </LayoutProvider>
     </React.StrictMode>
 );
 
