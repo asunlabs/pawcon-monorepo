@@ -18,13 +18,14 @@ import (
 	"fmt"
 	"log"
 	"time"
-
 	"github.com/asunlabs/pawcon-monorepo/server/src/app/database"
+	"github.com/asunlabs/pawcon-monorepo/server/src/app/middleware"
 	"github.com/asunlabs/pawcon-monorepo/server/src/feature/auth"
 	"github.com/gofiber/fiber/v2"
 )
 
 const (
+	_CLIENT_PORT = 3000
 	_PORT = 3001
 )
 
@@ -38,6 +39,7 @@ func main() {
 		Immutable: false,
 		GETOnly: false,
 	})
+	middleware.SetCORS(app, []int{_CLIENT_PORT, _PORT})
 	database.Connect(auth.UserModel())
 	// ================ App config ================ //
 	
