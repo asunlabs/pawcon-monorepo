@@ -1,66 +1,50 @@
 [
   {
-    "title": "Ms.Cuty",
-    "details": {
-      "identity": {
-        "title": "Ms.Cuty",
-        "description": "I'm the most adorable among these cats.",
-        "author": "Princess",
-        "date": "1999.01.30"
-      },
-      "image": {
-        "width": 150,
-        "height": 150,
-        "url": "https://i.ibb.co/xGP3G4L/Ms-cuty.webp"
+    "description": "I'm the most adorable among these cats.",
+    "external_url": "https://pawcon.netlify.app/",
+    "image": "https://i.ibb.co/xGP3G4L/Ms-cuty.webp",
+    "name": "Ms.Cuty",
+    "attributes": [
+      {
+        "trait_type": "",
+        "value": ""
       }
-    }
+    ]
   },
   {
-    "title": "Zeus",
-    "details": {
-      "identity": {
-        "title": "Zeus",
-        "description": "Behold, this is the thunder!",
-        "author": "Thor",
-        "date": "2018.11.01"
-      },
-      "image": {
-        "width": 400,
-        "height": 400,
-        "url": "https://i.ibb.co/JHYf36H/zeus.webp"
+    "description": "Behold, this is a thunder!",
+    "external_url": "https://pawcon.netlify.app/",
+    "image": "https://i.ibb.co/JHYf36H/zeus.webp",
+    "name": "Zeus",
+    "attributes": [
+      {
+        "trait_type": "",
+        "value": ""
       }
-    }
+    ]
   },
   {
-    "title": "Neon cat",
-    "details": {
-      "identity": {
-        "title": "Neon cat",
-        "description": "Look, mom, I'm this shining",
-        "author": "Ladybug",
-        "date": "2020.11.11"
-      },
-      "image": {
-        "width": 422,
-        "height": 412,
-        "url": "https://i.ibb.co/X7W5BSD/neon-cat.webp"
+    "description": "Look, mom, I'm this shining",
+    "external_url": "https://pawcon.netlify.app/",
+    "image": "https://i.ibb.co/X7W5BSD/neon-cat.webp",
+    "name": "Neon cat",
+    "attributes": [
+      {
+        "trait_type": "",
+        "value": ""
       }
-    }
+    ]
   },
   {
-    "title": "Sword cat",
-    "details": {
-      "identity": {
-        "title": "Sword cat",
-        "description": "Real warrior doesn't fear nothing... only dogs.",
-        "author": "Majesty",
-        "date": "2015.03.20"
-      },
-      "image": {
-        "width": 300,
-        "height": 188,
-        "url": "https://i.ibb.co/k19ZDLK/sword-cat.webp"
+    "description": "Real warrior doesn't fear nothing... only dogs.",
+    "external_url": "https://pawcon.netlify.app/",
+    "image": "https://i.ibb.co/k19ZDLK/sword-cat.webp",
+    "name": "Sword cat",
+    "attributes": [
+      {
+        "trait_type": "",
+        "value": ""
       }
-    }
+    ]
   }
 ]

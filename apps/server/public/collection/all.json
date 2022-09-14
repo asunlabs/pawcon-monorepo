@@ -1,172 +1,145 @@
 [
-    {
-    "title": "Cat The Chimney",
-    "details": {
-        "identity" : {
-        "id" : "20220101", 
-        "title" : "Cat The Chimney", 
-        "description" : "No cat more adorable than me.", 
-        "author" : "Jake", 
-        "date" : "2021.11.15" 
-        }, 
-        "image": {
-        "width": 600,
-        "height": 446,
-        "url": "https://i.ibb.co/5WxWg0x/1.webp"
-        }
-    }
-    },
-    {
-    "title": "Mr.Gentle",
-    "details": {
-        "identity" : {
-        "id" : "20220101", 
-        "title" : "Mr.Gentle", 
-        "description" : "Come see my paws here", 
-        "author" : "Angela", 
-        "date" : "2011.03.22" 
-        }, 
-        "image": {
-        "width": 600,
-        "height": 446,
-        "url": "https://i.ibb.co/hdf4sRg/2.webp"
-        }
-    }
-    },
-    {
-    "title": "The Cat Meme",
-    "details": {
-        "identity" : {
-        "id" : "20220101", 
-        "title" : "The Cat Meme", 
-        "description" : "Yeah, I'm that cat meme.", 
-        "author" : "Brian", 
-        "date" : "2015.09.22" 
-        }, 
-        "image": {
-        "width": 600,
-        "height": 446,
-        "url": "https://i.ibb.co/wSJK8BK/3.webp"
-        }
-    }
-    },
-    {
-    "title": "Quiet Pranky",
-    "details": {
-        "identity" : {
-        "id" : "20220101", 
-        "title" : "20220101", 
-        "description" : "Shhh, everybody quiet here", 
-        "author" : "Paul", 
-        "date" : "2033.02.16" 
-        }, 
-        "image": {
-        "width": 600,
-        "height": 446,
-        "url": "https://i.ibb.co/JBdRrZ5/4.webp"
-        }
-    }
-    },
-    {
-    "title": "Twinkle twin",
-    "details": {
-        "identity" : {
-        "id" : "20220101", 
-        "title" : "20220101", 
-        "description" : "We are twins, you see that?", 
-        "author" : "Smith", 
-        "date" : "2002.01.30" 
-        }, 
-        "image": {
-        "width": 600,
-        "height": 446,
-        "url": "https://i.ibb.co/vjpSd32/5.webp"
-        }
-    }
-    },
-    {
-        "title": "Lazer",
-        "details": {
-            "identity" : {
-            "id" : "20220101", 
-            "title" : "20220101", 
-            "description" : "We are twins, you see that?", 
-            "author" : "Smith", 
-            "date" : "2002.01.30" 
-            }, 
-            "image": {
-            "width": 600,
-            "height": 446,
-            "url": "https://i.ibb.co/qYPDgRm/lazer.webp"
-            }
-        }
-    }, 
-    {
-        "title": "Catster",
-        "details": {
-            "identity" : {
-            "id" : "20220101", 
-            "title" : "20220101", 
-            "description" : "We are twins, you see that?", 
-            "author" : "Smith", 
-            "date" : "2002.01.30" 
-            }, 
-            "image": {
-            "width": 600,
-            "height": 446,
-            "url": "https://i.ibb.co/QKYMmkM/catster.webp"
-            }
-        }
-    }, 
-    {
-        "title": "Smoker",
-        "details": {
-            "identity" : {
-            "id" : "20220101", 
-            "title" : "20220101", 
-            "description" : "We are twins, you see that?", 
-            "author" : "Smith", 
-            "date" : "2002.01.30" 
-            }, 
-            "image": {
-            "width": 600,
-            "height": 446,
-            "url": "https://i.ibb.co/kJfGdxB/smoker.webp"
-            }
-        }
-    }, 
-    {
-        "title": "Ms.Cuty",
-        "details": {
-            "identity" : {
-            "id" : "20220101", 
-            "title" : "20220101", 
-            "description" : "We are twins, you see that?", 
-            "author" : "Smith", 
-            "date" : "2002.01.30" 
-            }, 
-            "image": {
-            "width": 600,
-            "height": 446,
-            "url": "https://i.ibb.co/xGP3G4L/Ms-cuty.webp"
-            }
-        }
-    }, 
-    {
-        "title": "Zeus",
-        "details": {
-            "identity" : {
-            "id" : "20220101", 
-            "title" : "20220101", 
-            "description" : "We are twins, you see that?", 
-            "author" : "Smith", 
-            "date" : "2002.01.30" 
-            }, 
-            "image": {
-            "width": 600,
-            "height": 446,
-            "url": "https://i.ibb.co/JHYf36H/zeus.webp"
-            }
-        }
-    }
+  {
+    "description": "Friendly OpenSea Creature that enjoys long swims in the ocean.",
+    "external_url": "https://openseacreatures.io/3",
+    "image": "https://storage.googleapis.com/opensea-prod.appspot.com/puffs/3.png",
+    "name": "Dave Starbelly",
+    "attributes": [
+      {
+        "trait_type": "Base",
+        "value": "Starfish"
+      },
+      {
+        "trait_type": "Eyes",
+        "value": "Big"
+      },
+      {
+        "trait_type": "Mouth",
+        "value": "Surprised"
+      },
+      {
+        "trait_type": "Level",
+        "value": 5
+      },
+      {
+        "trait_type": "Stamina",
+        "value": 1.4
+      },
+      {
+        "trait_type": "Personality",
+        "value": "Sad"
+      },
+      {
+        "display_type": "boost_number",
+        "trait_type": "Aqua Power",
+        "value": 40
+      },
+      {
+        "display_type": "boost_percentage",
+        "trait_type": "Stamina Increase",
+        "value": 10
+      },
+      {
+        "display_type": "number",
+        "trait_type": "Generation",
+        "value": 2
+      }
+    ]
+  },
+  {
+    "description": "We are twins, you see that?",
+    "external_url": "https://pawcon.netlify.app/",
+    "image": "https://i.ibb.co/vjpSd32/5.webp",
+    "name": "Twinkle twin",
+    "attributes": [
+      {
+        "trait_type": "",
+        "value": ""
+      }
+    ]
+  },
+  {
+    "description": "Watch out, this is real",
+    "external_url": "https://pawcon.netlify.app/",
+    "image": "https://i.ibb.co/qYPDgRm/lazer.webp",
+    "name": "Lazer",
+    "attributes": [
+      {
+        "trait_type": "",
+        "value": ""
+      }
+    ]
+  },
+  {
+    "description": "Don't get in the way, we are busy getting treats here",
+    "external_url": "https://pawcon.netlify.app/",
+    "image": "https://i.ibb.co/QKYMmkM/catster.webp",
+    "name": "Catster",
+    "attributes": [
+      {
+        "trait_type": "",
+        "value": ""
+      }
+    ]
+  },
+  {
+    "description": "This one tastes good",
+    "external_url": "https://pawcon.netlify.app/",
+    "image": "https://i.ibb.co/kJfGdxB/smoker.webp",
+    "name": "Smoker",
+    "attributes": [
+      {
+        "trait_type": "",
+        "value": ""
+      }
+    ]
+  },
+  {
+    "description": "I'm the most adorable among these cats.",
+    "external_url": "https://pawcon.netlify.app/",
+    "image": "https://i.ibb.co/xGP3G4L/Ms-cuty.webp",
+    "name": "Ms.Cuty",
+    "attributes": [
+      {
+        "trait_type": "",
+        "value": ""
+      }
+    ]
+  },
+  {
+    "description": "Behold, this is a thunder!",
+    "external_url": "https://pawcon.netlify.app/",
+    "image": "https://i.ibb.co/JHYf36H/zeus.webp",
+    "name": "Zeus",
+    "attributes": [
+      {
+        "trait_type": "",
+        "value": ""
+      }
+    ]
+  },
+  {
+    "description": "Look, mom, I'm this shining",
+    "external_url": "https://pawcon.netlify.app/",
+    "image": "https://i.ibb.co/X7W5BSD/neon-cat.webp",
+    "name": "Neon cat",
+    "attributes": [
+      {
+        "trait_type": "",
+        "value": ""
+      }
+    ]
+  },
+  {
+    "description": "Real warrior doesn't fear nothing... only dogs.",
+    "external_url": "https://pawcon.netlify.app/",
+    "image": "https://i.ibb.co/k19ZDLK/sword-cat.webp",
+    "name": "Sword cat",
+    "attributes": [
+      {
+        "trait_type": "",
+        "value": ""
+      }
+    ]
+  }
 ]
