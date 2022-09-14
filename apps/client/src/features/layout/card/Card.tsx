@@ -21,7 +21,7 @@ export function Card({
     linkTo,
 }: ICardProps) {
     return (
-        <div className="card">
+        <div className="card" id="card">
             {image !== undefined ? (
                 <img
                     className="cardImage"
