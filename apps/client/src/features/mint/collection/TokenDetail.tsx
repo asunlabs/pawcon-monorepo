@@ -1,22 +1,41 @@
 import * as React from 'react';
 import { useParams } from 'react-router-dom';
+import {
+    APIContext,
+    APIContextProvider,
+} from '../../../app/context/APIContext';
 import { Buttom } from '../../layout/button/Button';
 import { LayoutProvider } from '../../layout/LayoutProvider';
 import './TokenDetail.css';
 
 function Description() {
+    const { title } = useParams();
+    const apiData = React.useContext(APIContext);
     return (
         <div id="description">
             {/* TODO: change value dynamically later */}
             <div id="text">
                 <span>No: 1</span>
                 <p>
-                    Lorem ipsum, dolor sit amet consectetur adipisicing elit.
-                    Architecto, ipsum fugit eaque deserunt nemo maxime.
+                    {apiData
+                        ? apiData.map(({ name, description }: any) => {
+                              if (title === name) {
+                                  return <p>{description}</p>;
+                              }
+                              return '';
+                          })
+                        : 'fetch failed'}
                 </p>
             </div>
             <div id="image">
-                <img src="https://i.ibb.co/Qchvsh4/metamask-logo.webp" alt="" />
+                {apiData
+                    ? apiData.map(({ name, image }: any) => {
+                          if (title === name) {
+                              return <img src={image} alt="token detail" />;
+                          }
+                          return '';
+                      })
+                    : 'fetch failed'}
             </div>
         </div>
     );
@@ -24,6 +43,7 @@ function Description() {
 
 function CurrentBid() {
     const { title } = useParams();
+
     return (
         <div id="currentBid">
             <span id="title">NFT: {title}</span>
@@ -95,12 +115,10 @@ export interface ITokenDetailProps {}
 
 export function TokenDetail(props: ITokenDetailProps) {
     return (
-        <LayoutProvider>
-            <div className="asunMintComponent" id="tokenDetail">
-                <Description />
-                <CurrentBid />
-                <BidHistory />
-            </div>
-        </LayoutProvider>
+        <div className="asunMintComponent" id="tokenDetail">
+            <Description />
+            <CurrentBid />
+            <BidHistory />
+        </div>
     );
 }

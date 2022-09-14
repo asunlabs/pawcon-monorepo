@@ -1,10 +1,12 @@
 import * as React from 'react';
+import { APIContext } from '../../../app/context/APIContext';
 import { Card } from '../../layout/card/Card';
 import './Featured.css';
 
-export interface IFeaturedProps {}
+export function Featured() {
+    const apiData = React.useContext(APIContext);
+    const baseReactRouterURL = '/nft';
 
-export function Featured(props: IFeaturedProps) {
     return (
         <div className="asunMintComponent" id="featured">
             <div className="featuredItem" id="introduction">
@@ -19,21 +21,29 @@ export function Featured(props: IFeaturedProps) {
 
             {/* Featured item is up to 3 */}
             <div className="featuredItem" id="featuredGallery">
-                <Card
-                    description={'Lorem ipsum, dolor sit amet consectetur'}
-                    bid="2 ETH"
-                    text="Place a bid"
-                />
-                <Card
-                    description={'vero possimus tenetur. Laudantium'}
-                    bid="3 ETH"
-                    text="Place a bid"
-                />
-                <Card
-                    description={'tenetur mollitia accusamus excepturi sit?'}
-                    bid="1.4 ETH"
-                    text="Place a bid"
-                />
+                {apiData ? (
+                    apiData.map(({ image, name, description }: any, index) => {
+                        // TODO set randomness later
+                        if (index < 3) {
+                            return (
+                                <Card
+                                    image={image}
+                                    title={name}
+                                    description={description}
+                                    bid="2 ETH"
+                                    text="Place a bid"
+                                    linkTo={baseReactRouterURL.concat(
+                                        '/',
+                                        name
+                                    )}
+                                />
+                            );
+                        }
+                        return '';
+                    })
+                ) : (
+                    <p>Image fetching failed</p>
+                )}
             </div>
         </div>
     );
