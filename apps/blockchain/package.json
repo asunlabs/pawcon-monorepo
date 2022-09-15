@@ -87,7 +87,7 @@
     "node-html-parser": "5.4.2-0",
     "nodemon": "^2.0.15",
     "prettier": ">=2.0.0",
-    "prettier-plugin-solidity": "1.0.0-beta.19",
+    "prettier-plugin-solidity": "1.0.0-beta.24",
     "solidity-coverage": "^0.7.21",
     "solidity-docgen": "0.6.0-beta.22",
     "ts-node": "^10.8.1",
