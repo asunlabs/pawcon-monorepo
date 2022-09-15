@@ -2,6 +2,8 @@ import axios from 'axios';
 import React from 'react';
 
 export const APIContext = React.createContext<unknown[]>([]);
+export const baseDockerServerURL = 'http://localhost:3001';
+export const apiV1CollectionURL = '/api/collection/';
 
 export interface IAPIContextProviderProps {
     children?: React.ReactNode;
@@ -11,13 +13,10 @@ export interface IAPIContextProviderProps {
 export function APIContextProvider({ children }: IAPIContextProviderProps) {
     const [APIdata, setAPIData] = React.useState<unknown[]>([]);
 
-    const baseDockerServerURL = 'http://localhost:3001';
-    const apiV1CollectionURL = '/api/collection/all.json';
-
     React.useEffect(() => {
         (async () => {
             const response = await axios.get(
-                baseDockerServerURL.concat(apiV1CollectionURL)
+                baseDockerServerURL.concat(apiV1CollectionURL, 'all.json')
             );
             // TODO add error handling
             if (response.status === 200) {
@@ -25,7 +24,7 @@ export function APIContextProvider({ children }: IAPIContextProviderProps) {
                 setAPIData(data);
             }
         })();
-    });
+    }, []);
     return (
         <APIContext.Provider value={APIdata}>{children}</APIContext.Provider>
     );
