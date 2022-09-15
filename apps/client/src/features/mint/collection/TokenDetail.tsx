@@ -1,11 +1,7 @@
 import * as React from 'react';
 import { useParams } from 'react-router-dom';
-import {
-    APIContext,
-    APIContextProvider,
-} from '../../../app/context/APIContext';
+import { APIContext } from '../../../app/context/APIContext';
 import { Buttom } from '../../layout/button/Button';
-import { LayoutProvider } from '../../layout/LayoutProvider';
 import './TokenDetail.css';
 
 function Description() {
@@ -13,7 +9,6 @@ function Description() {
     const apiData = React.useContext(APIContext);
     return (
         <div id="description">
-            {/* TODO: change value dynamically later */}
             <div id="text">
                 <span>No: 1</span>
                 <p>
@@ -41,6 +36,11 @@ function Description() {
     );
 }
 
+// TODO
+function invokeContractBid() {
+    console.log('invoke smart contract bid function here');
+}
+
 function CurrentBid() {
     const { title } = useParams();
 
@@ -57,12 +57,17 @@ function CurrentBid() {
             <div id="bid">
                 {/* TODO: change price later */}
                 <span>Current: 1 ETH</span>
-                <Buttom text="bid" />
+                <Buttom
+                    text="bid"
+                    id="bidButton"
+                    callback={invokeContractBid}
+                />
             </div>
         </div>
     );
 }
 
+// TODO set dynamic value from API later
 function BidHistory() {
     return (
         <div id="bidHistory">
