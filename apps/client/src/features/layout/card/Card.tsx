@@ -1,29 +1,51 @@
 import * as React from 'react';
+import { Link } from 'react-router-dom';
+import { Buttom } from '../button/Button';
 import './Card.css';
 
 export interface ICardProps {
-    date?: string;
     title?: string;
-    description: string | string[];
+    description?: string | string[];
     image?: string;
-    author?: string;
+    bid?: string;
+    text?: string;
+    linkTo?: string;
 }
 
-export function Card({ description, date, title, image, author }: ICardProps) {
+export function Card({
+    description,
+    title,
+    image,
+    bid,
+    text,
+    linkTo,
+}: ICardProps) {
     return (
-        <div className="card">
-            <img
-                className="cardImage"
-                src={image}
-                alt="gallery card"
-                loading="lazy"
-            />
+        <div className="card" id="card">
+            {image !== undefined ? (
+                <img
+                    className="cardImage"
+                    src={image}
+                    alt="card"
+                    loading="lazy"
+                />
+            ) : (
+                ''
+            )}
+
             <div className="cardDetails">
-                <span className="date">{date}</span>
                 <h3 className="title">{title}</h3>
-                <span className="author">{author}</span>
+                <span className="bid">{bid}</span>
                 <p className="description">{description}</p>
             </div>
+
+            {linkTo !== undefined ? (
+                <Link to={linkTo}>
+                    <Buttom text={text} />{' '}
+                </Link>
+            ) : (
+                <Buttom text={text} />
+            )}
         </div>
     );
 }

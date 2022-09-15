@@ -1,14 +1,43 @@
 import * as React from 'react';
 import './Navigation.css';
-import logo from './pawcon-logo.svg';
+import { breakpoint } from '../../../app/type';
 import { Buttom } from '../button/Button';
-
+import { ethers } from 'ethers';
+import CoinbaseWalletSDK from '@coinbase/wallet-sdk';
+import Web3Modal from 'web3modal';
+import { INFURA_PROJECT_ID } from '../../../app/config/setup';
+import { IWeb3ModalContextProps } from '../../../app/context/Web3ModalContext';
 function handleSIWE() {
     console.log('auth 1');
 }
 
-function handleWalletConnect() {
-    console.log('auth 2');
+async function handleWalletConnect() {
+    const web3modal = new Web3Modal({
+        providerOptions: {
+            coinbasewallet: {
+                package: CoinbaseWalletSDK,
+                options: {
+                    appName: 'PawCon',
+                    infuraId: INFURA_PROJECT_ID, // Required
+                    darkMode: true,
+                },
+            },
+        },
+    });
+
+    console.log({ INFURA_PROJECT_ID });
+
+    const instance = await web3modal.connect();
+    let provider = new ethers.providers.Web3Provider(instance);
+    let _signer = provider.getSigner();
+
+    let network = (await provider.detectNetwork()).name;
+    let signer = await _signer.getAddress();
+
+    return {
+        network,
+        signer,
+    };
 }
 
 const ToggleContext = React.createContext(false);
@@ -19,6 +48,18 @@ interface IToggleContextProviderProps {
 
 function ToggleContextProvider({ children }: IToggleContextProviderProps) {
     const [toggle, setToggle] = React.useState(false);
+    const tabletSize: breakpoint = 768;
+
+    // * Media query
+    React.useEffect(() => {
+        window.addEventListener('resize', () => {
+            if (window.innerWidth > tabletSize) {
+                setToggle(true);
+            } else {
+                setToggle(false);
+            }
+        });
+    }, []);
 
     return (
         <ToggleContext.Provider value={toggle}>
@@ -38,7 +79,7 @@ function ToggleContextProvider({ children }: IToggleContextProviderProps) {
                     {/*
                      * &#9776; => ≡,  &#10005 => X
                      */}
-                    {toggle ? <span>&#9776;</span> : <span>&#10005;</span>}
+                    {toggle ? <span>&#10005;</span> : <span>&#9776;</span>}
                 </span>
             </div>
             {children}
@@ -48,6 +89,9 @@ function ToggleContextProvider({ children }: IToggleContextProviderProps) {
 
 function MenuBar() {
     const toggle = React.useContext(ToggleContext);
+    const [web3ModalUser, setWeb3ModalUser] =
+        React.useState<IWeb3ModalContextProps>();
+
     return (
         <ul className="navigationBar" id={toggle ? 'menu' : 'disabled'}>
             <li className="menuItem">
@@ -63,12 +107,23 @@ function MenuBar() {
                     callback={handleSIWE}
                 />
             </li>
-            <li className="menuItem" onClick={handleWalletConnect}>
-                <Buttom
-                    className="menuBarButton"
-                    text="Connect wallet"
-                    callback={handleWalletConnect}
-                />
+            <li className="menuItem">
+                {web3ModalUser?.signer !== undefined ? (
+                    <div>
+                        <span>network: {web3ModalUser.network}</span>
+                        <p>signer: {web3ModalUser.signer}</p>
+                    </div>
+                ) : (
+                    <Buttom
+                        className="menuBarButton"
+                        text="Connect wallet"
+                        callback={async () => {
+                            const { network, signer } =
+                                await handleWalletConnect();
+                            setWeb3ModalUser({ network, signer });
+                        }}
+                    />
+                )}
             </li>
         </ul>
     );
