@@ -55,6 +55,8 @@ function ToggleContextProvider({ children }: IToggleContextProviderProps) {
         window.addEventListener('resize', () => {
             if (window.innerWidth > tabletSize) {
                 setToggle(true);
+            } else {
+                setToggle(false);
             }
         });
     }, []);
