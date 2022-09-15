@@ -1,4 +1,5 @@
 import * as React from 'react';
+import { v4 } from 'uuid';
 import { APIContext } from '../../../app/context/APIContext';
 import { Card } from '../../layout/card/Card';
 import './Featured.css';
@@ -7,6 +8,17 @@ export function Featured() {
     const apiData = React.useContext(APIContext);
     const baseReactRouterURL = '/nft';
 
+    function setRandomIndexForFeatured() {
+        const indices = [];
+
+        const maxNumOfFeatured = 3;
+        for (let i = 0; i < maxNumOfFeatured; i++) {
+            const rand = Math.round(Math.random() * apiData.length);
+            indices.push(rand);
+        }
+
+        return indices;
+    }
     return (
         <div className="asunMintComponent" id="featured">
             <div className="featuredItem" id="introduction">
@@ -24,9 +36,16 @@ export function Featured() {
                 {apiData ? (
                     apiData.map(({ image, name, description }: any, index) => {
                         // TODO set randomness later
-                        if (index < 3) {
+                        const [rand1, rand2, rand3] =
+                            setRandomIndexForFeatured();
+                        if (
+                            index === rand1 ||
+                            index === rand2 ||
+                            index === rand3
+                        ) {
                             return (
                                 <Card
+                                    key={v4()}
                                     image={image}
                                     title={name}
                                     description={description}
