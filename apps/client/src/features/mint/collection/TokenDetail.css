@@ -1,0 +1,75 @@
+#tokenDetail {
+    background-color: black;
+    color: white;
+    gap: 2rem;
+
+    /* cascading(overriding) asunMintComponent in AsunMint.css */
+    width: 100%;
+    margin: 0;
+}
+
+#description,
+#currentBid,
+#bidHistory {
+    width: 70%;
+    margin: 0 15%;
+}
+
+#tokenDetail > #description {
+    display: flex;
+    flex-flow: column nowrap;
+}
+
+#tokenDetail > #description > #image > img {
+    max-width: 100%;
+}
+
+#tokenDetail > #currentBid {
+    background-color: wheat;
+    color: black;
+    padding: 1.5rem;
+}
+
+#tokenDetail > #currentBid > #title {
+    font-weight: bold;
+    font-size: 1.2rem;
+}
+
+#tokenDetail > #currentBid > #bid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    align-items: center;
+}
+
+#tokenDetail > #bidHistory {
+    display: flex;
+    flex-flow: column nowrap;
+}
+
+#tokenDetail > #bidHistory > table {
+    border-collapse: collapse;
+    text-align: center;
+}
+
+#tokenDetail > #bidHistory > th,
+td {
+    border-bottom: 1px solid;
+}
+
+/* * tablet: +768px */
+@media screen and (min-width: 768px) {
+    #tokenDetail {
+        flex-flow: column nowrap;
+    }
+
+    #tokenDetail > #description {
+        display: grid;
+        grid-template-columns: repeat(2, 1fr);
+    }
+
+    #tokenDetail > #description > #text {
+        display: flex;
+        flex-flow: column nowrap;
+        justify-content: space-around;
+    }
+}
