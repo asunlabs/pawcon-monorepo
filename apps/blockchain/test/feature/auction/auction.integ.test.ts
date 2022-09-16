@@ -1,8 +1,8 @@
 import { loadFixture, time } from "@nomicfoundation/hardhat-network-helpers";
 import { expect } from "chai";
 import { ethers, upgrades } from "hardhat";
-import deploy from "../scripts/hooks/useDeployer";
-import { useUUPSDeployer } from "../scripts/hooks/useUpgradeDeployer";
+import deploy from "../../../scripts/hooks/useDeployer";
+import { useUUPSDeployer } from "../../../scripts/hooks/useUpgradeDeployer";
 
 const PREFIX = "integ-auction";
 
