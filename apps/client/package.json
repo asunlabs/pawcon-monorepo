@@ -61,6 +61,6 @@
     "react-app-rewired": "^2.2.1",
     "react-is": ">= 16.8.0",
     "react-native": "*",
-    "uuid": "^8.3.2"
+    "uuid": "^9.0.0"
   }
 }
