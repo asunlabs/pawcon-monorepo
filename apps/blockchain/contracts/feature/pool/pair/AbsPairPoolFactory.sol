@@ -11,7 +11,8 @@ abstract contract AbsPairPoolFactory {
     Counters.Counter private _poolId;
 
     /// @dev pool id => pool contract address
-    mapping(uint256 => PairPoolData) public poolList;
+    mapping(uint256 => PairPoolData) private _poolList;
+    mapping(uint256 => PairPool) public poolList;
 
     event PairPoolCreated(address _pairPool);
     event PoolCreationFailed(string _reason);
@@ -46,13 +47,15 @@ abstract contract AbsPairPoolFactory {
             addr: address(pairPool)
         });
 
-        poolList[poolId] = pairPoolData;
+        _poolList[poolId] = pairPoolData;
+        poolList[poolId] = pairPool;
+
         _poolId.increment();
     }
 
     function getTokenPairAddress(uint256 poolId) public virtual returns (address, address) {
-        address left = poolList[poolId].leftToken;
-        address right = poolList[poolId].rightToken;
+        address left = _poolList[poolId].leftToken;
+        address right = _poolList[poolId].rightToken;
 
         return (left, right);
     }
