@@ -15,5 +15,5 @@ func AuthAccountRoutes(app *fiber.App) {
 	_auth.Post("/signup", jsonwebtoken.HandleJwtSignUp)
 	// auth.Get("/user:id", ReadUser)
 	// auth.Put("/user:id", UpdateUser)
-	_auth.Delete("/user:id", jsonwebtoken.HandleJwtSignClose)
+	_auth.Delete("/user/:id", jsonwebtoken.HandleJwtSignClose)
 }
