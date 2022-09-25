@@ -11,6 +11,12 @@ categories: ['web']
 1. [Heads-up](#heads-up)
 
 1. [Migration](#migration)
+1. [Getting started](#getting-started)
+
+   1. [Format](#format)
+   1. [API](#api)
+   1. [Running test](#running-test)
+   1. [Extension](#extension)
 
 1. [Auth](#auth)
 
@@ -28,6 +34,69 @@ What I'm focusing on server application is to mix decentralization and centraliz
 ## Migration
 
 As project gets bigger and complicated, documentation and readmes were starting to be scattered. To avoid this, all docs will be maintained in a static website using HUGO.
+
+## Getting started
+
+Install dependencies
+
+```sh
+go install
+```
+
+Run fiber server with hot reload.
+
+```sh
+fiber dev
+```
+
+## Format
+
+Run golines to for auto code formatting. Use -w flag to overwrite code.
+
+Format an individual file.
+
+```sh
+golines -w ./server.go
+```
+
+Format all files.
+
+```sh
+golines -w ./
+```
+
+## API
+
+In local, use curl for quick prototyping.
+
+```sh
+curl -method POST /api/path/here
+```
+
+## Running test
+
+PawCon server application uses Ginkgo and Gomega.
+
+```sh
+go install github.com/onsi/ginkgo/v2/ginkgo
+go get github.com/onsi/gomega
+```
+
+Generate test suite.
+
+```sh
+ginkgo bootstrap
+```
+
+Run test.
+
+```sh
+ginkgo --succinct
+```
+
+## Extension
+
+will be added
 
 ## Auth
 
