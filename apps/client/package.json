@@ -62,5 +62,9 @@
     "react-is": ">= 16.8.0",
     "react-native": "*",
     "uuid": "^9.0.0"
+  },
+  "packageManager": "pnpm@7.5.0",
+  "engines": {
+    "node": ">=16.17.0"
   }
 }
