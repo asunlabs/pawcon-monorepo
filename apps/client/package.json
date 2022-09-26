@@ -35,7 +35,7 @@
     "@testing-library/react": "^13.3.0",
     "@testing-library/user-event": "^14.2.1",
     "@types/jest": "^29.0.2",
-    "@types/node": "^17.0.45",
+    "@types/node": "^18.7.19",
     "@types/react": "^18.0.14",
     "@types/react-dom": "^18.0.5",
     "@types/uuid": "^8.3.4",
@@ -62,5 +62,9 @@
     "react-is": ">= 16.8.0",
     "react-native": "*",
     "uuid": "^9.0.0"
+  },
+  "packageManager": "pnpm@7.5.0",
+  "engines": {
+    "node": ">=16.17.0"
   }
 }
