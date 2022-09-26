@@ -16,54 +16,57 @@ package main
 
 import (
 	"fmt"
-	"log"
-	"time"
 	"github.com/asunlabs/pawcon-monorepo/server/src/app/database"
 	"github.com/asunlabs/pawcon-monorepo/server/src/app/middleware"
-	"github.com/asunlabs/pawcon-monorepo/server/src/feature/auth"
+	"github.com/asunlabs/pawcon-monorepo/server/src/app/router"
 	"github.com/gofiber/fiber/v2"
+	"log"
+	"time"
 )
 
 const (
 	_CLIENT_PORT = 3000
-	_PORT = 3001
+	_PORT        = 3001
 )
 
 func main() {
-	
 	// ================ App config ================ //
+	middleware.LoadEnv()
 	app := fiber.New(fiber.Config{
-		AppName: "PawCon server v0.3.0",
-		CaseSensitive: false,
-		StrictRouting: false,
-		Immutable: false,
-		GETOnly: false,
+		AppName:       "PawCon server v0.3.0",
+		CaseSensitive: true,
+		StrictRouting: true,
+		Immutable:     false, // performance-related
+		GETOnly:       false,
 	})
 	middleware.SetCORS(app, []int{_CLIENT_PORT, _PORT})
-	database.Connect(auth.UserModel())
+	database.Connect(database.UserModel())
 	// ================ App config ================ //
-	
+
 	// ================ API ================ //
+	// * API ver 1: REST API, hardcoded static jsons
 	/// @dev /api => virtual path prefix
 	app.Static("/api", "./public", fiber.Static{
-		Compress: true, // CPU minimization
+		Compress:      true, // CPU minimization
 		CacheDuration: 10 * time.Second,
-		MaxAge: 3600, // 5 mins
+		MaxAge:        3600, // 5 mins
 	})
+
+	// * API ver 2: GraphQL, dynamic jsons
 	// ================ API ================ //
-	
+
 	// ================ Routers ================ //
-	app.Group("/auth", auth.Default)
+	router.RoutingGroup(app)
 	// ================ Routers ================ //
 
 	app.Get("/", func(c *fiber.Ctx) error {
 		type PawConServerGuide struct {
-			Routers []string `json:"routers"`
-			Handlers uint32 `json:"numberOfHandlers"`
-		} 
+			Routers  []string `json:"routers"`
+			Handlers uint32   `json:"numberOfHandlers"`
+		}
 
 		pawconServerGuide := PawConServerGuide{
-			Routers: []string {"/api, /auth"},
+			Routers:  []string{"/api, /auth"},
 			Handlers: app.HandlersCount(),
 		}
 		return c.JSON(pawconServerGuide)

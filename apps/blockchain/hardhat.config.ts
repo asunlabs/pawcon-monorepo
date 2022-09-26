@@ -184,9 +184,9 @@ const config: HardhatUserConfig = {
     strict: true,
   },
   docgen: {
-    pages: "files",
+    pages: "single",
     pageExtension: ".md",
-    outputDir: "docs",
+    outputDir: "../../docs/content/blockchain/API",
     exclude: [],
   },
 };
