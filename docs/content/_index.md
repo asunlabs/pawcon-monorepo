@@ -9,10 +9,8 @@ cascade:
 
 ## Maintainer
 
-🔊 BGM included
+🔊 Sound
 {{< youtube id="Y1ediZp-SE0" title="developerasun promotion video" autoplay="true" >}}
-
-{{< download resume-KOR.pdf >}}
 
 ## Guide
 
