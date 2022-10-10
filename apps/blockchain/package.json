@@ -41,7 +41,7 @@
     "ci:tests": "pnpm ci:prepare & pnpm ci:unit & pnpm ci:integ"
   },
   "devDependencies": {
-    "@chainlink/contracts": "^0.4.1",
+    "@chainlink/contracts": "^0.5.1",
     "@defi-wonderland/smock": "^2.2.0",
     "@ethersproject/abi": "^5.0.0",
     "@ethersproject/abstract-provider": "5",
