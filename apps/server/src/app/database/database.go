@@ -13,7 +13,7 @@ var (
 	Conn *gorm.DB
 )
 
-func Connect(schema interface{}) {
+func Connect(schema []interface{}) {
 	db, err := gorm.Open(sqlite.Open("app.db"), &gorm.Config{})
 	Conn = db
 
@@ -25,7 +25,10 @@ func Connect(schema interface{}) {
 		*/
 		os.Exit(1)
 	} else {
-		db.AutoMigrate(&schema)
+		// iterate array in Go: for ~ range
+		for _,v := range schema {
+			db.AutoMigrate(v)
+		}
 		color.Green("Schema auto-migrated, DB connected")
 	}
 }
