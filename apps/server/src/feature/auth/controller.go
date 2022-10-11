@@ -2,6 +2,7 @@ package jsonwebtoken
 
 import (
 	"log"
+
 	"github.com/asunlabs/pawcon-monorepo/server/src/app/database"
 	"github.com/fatih/color"
 	"github.com/gofiber/fiber/v2"
@@ -17,7 +18,6 @@ import (
 
 func HandleJwtSignUp(c *fiber.Ctx) error {
 	log.Printf("client sent: %s", string(c.Request().Body()))
-	
 	allParams := c.AllParams()
 
 	color.Blue("params from client: ", allParams)
@@ -29,7 +29,6 @@ func HandleJwtSignUp(c *fiber.Ctx) error {
 		* 3) data transfer object
 	*/
 	user := new(database.User)
-	color.Cyan("user instance: ", user.Name, user.Email)
 
 	if err := c.BodyParser(&user); err != nil {
 		log.Panicf("struct binding failed: %s", err.Error())
@@ -78,5 +77,23 @@ func HandleJwtSignIn(c *fiber.Ctx) error {
 
 func HandleJwtSignOut(c *fiber.Ctx) error {
 	return c.SendStatus(fiber.StatusOK)
+}
 
+func GetUserByID(c *fiber.Ctx) error {
+	db := database.Conn
+	id := c.Params("id")
+	user := new(database.User)
+
+	db.Find(&user, id)
+	return c.JSON(&user)
+}
+
+func UpdateUserByID(c *fiber.Ctx) error {
+	db := database.Conn
+	user := new(database.User)
+
+	c.BodyParser(&user)
+	db.Model(&user).Updates(map[string]interface{}{ "firstname": user.Firstname, "email": user.Email})
+
+	return c.SendStatus(fiber.StatusOK)
 }
