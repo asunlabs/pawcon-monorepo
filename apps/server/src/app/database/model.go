@@ -2,7 +2,6 @@ package database
 
 import (
 	"time"
-
 	"gorm.io/gorm"
 	"github.com/satori/go.uuid"
 )
@@ -13,74 +12,72 @@ import (
  */
 type User struct {
 	gorm.Model
-	UserId uuid.UUID `gorm:"primary_key" json:"user_id"`
-	Firstname  string `json:"firstname"`
-	Lastname string `json:"lastname"`
-	Email string `json:"email"`
-	Username string `json:"username"`
+	Firstname  string `gorm:"not null" json:"firstname"`
+	Lastname string `gorm:"not null" json:"lastname"`
+	Email string `gorm:"not null;unique" json:"email"`
+	Username string `gorm:"not null" json:"username"`
 }
 
 type Voter struct {
 	gorm.Model
-	VoterId uuid.UUID `gorm:"primary_key" json:"voter_id"`
-	UserId uuid.UUID `gorm:"foreign_key" json:"user_id"`
+	UserId uuid.UUID `gorm:"foreignKey" json:"userId"`
 	VotingPower int `json:"voterPower"`
 	VotingHistory int `json:"voterHistory"`
 }
 
 type VoteForm struct {
 	gorm.Model
-	FormId uuid.UUID `gorm:"primary_key" json:"form_id"`
-	VoterId uuid.UUID `gorm:"foreign_key" json:"voter_id"`
-	AgendaId uuid.UUID `gorm:"foreign_key" json:"agenda_id"`
-	Agree uint `json:"choice_type"`
-	Against uint `json:"choice_type"`
+	VoterId uuid.UUID `gorm:"foreignKey" json:"voterId"`
+	AgendaId uuid.UUID `gorm:"foreignKey" json:"agendaId"`
+	Agree uint `json:"choiceTypeAgree"`
+	Against uint `json:"choiceTypeAgainst"`
 }
 
 type Agenda struct {
 	gorm.Model
-	AgendaId uuid.UUID `gorm:"primary_key" json:"agenda_id"`
 	Name string `json:"name"`
 	Description string `json:"description"`
-	IsPassed bool `json:"is_passed"`
+	IsPassed bool `json:"isPassed"`
 }
 
 type NFT struct {
-	UserId uuid.UUID `gorm:"foreign_key" json:"user_id"`
+	gorm.Model
+	UserId uuid.UUID `gorm:"foreignKey" json:"userId"`
 	Name string `json:"name"`
-	TokenId uint `json:"tokenId"`
-	TokenURI string `json:"tokenURI"`
+	TokenId uint `gorm:"not null" json:"tokenId"`
+	TokenURI string `gorm:"not null" json:"tokenURI"`
 	Price uint `json:"price"`
 }
 
 type Staking struct {
-	UserId uuid.UUID `gorm:"foreign_key" json:"user_id"`
-	ERC20Balance uint `json:"erc20_balance"`
-	ERC721Balance uint `json:"erc721_balance"`
-	ERC20Reward uint `json:"erc20_reward"`
-	ERC721Reward uint `json:"erc721_reward"`
+	gorm.Model
+	UserId uuid.UUID `gorm:"foreignKey" json:"userId"`
+	ERC20Balance uint `json:"erc20Balance"`
+	ERC721Balance uint `json:"erc721Balance"`
+	ERC20Reward uint `json:"erc20Reward"`
+	ERC721Reward uint `json:"erc721Reward"`
 }
 
 type Feedback struct {
-	PostId uuid.UUID `gorm:"primary_key" json:"post_id"`
-	Title string `json:"title"`
-	Description string `json:"description"`
-	Author string `json:"author"`
-	Editted_At time.Time `json:"editted_at"`
+	gorm.Model
+	Title string `gorm:"not null" json:"title"`
+	Description string `gorm:"not null" json:"description"`
+	Author string `gorm:"not null" json:"author"`
+	EdittedAt time.Time `json:"edittedAt"`
 }
 
 type Comment struct { 
-	PostId uuid.UUID `gorm:"foreign_key" json:"post_id"`
-	Author string `json:"author"`
-	Description string `json:"description"`
-	Editted_At time.Time `json:"editted_at"`
+	PostId uuid.UUID `gorm:"foreignKey" json:"postId"`
+	Author string `gorm:"not null" json:"author"`
+	Description string `gorm:"not null" json:"description"`
+	EdittedAt time.Time `json:"edittedAt"`
 }
 
 type Wallet struct { 
-	WalletId uuid.UUID `gorm:"primary_key" json:"walletId"`
-	UserId uuid.UUID `gorm:"foreign_key" json:"user_id"`
-	PublicKey string `json:"publickey"`
-	PrivateKey uint `json:"privatekey"`
+	gorm.Model
+	UserId uuid.UUID `gorm:"foreignKey" json:"userId"`
+	PublicKey string `gorm:"not null" json:"publickey"`
+	PrivateKey uint `gorm:"not null" json:"privatekey"`
 	Balance uint `json:"balance"`
 	Whitelist bool `json:"whitelist"`
 }
