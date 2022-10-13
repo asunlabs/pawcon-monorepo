@@ -2,11 +2,22 @@ package jsonwebtoken
 
 import (
 	"log"
-
 	"github.com/asunlabs/pawcon-monorepo/server/src/app/database"
 	"github.com/fatih/color"
 	"github.com/gofiber/fiber/v2"
 )
+
+// return 0 if no err
+func useErrorCallback(c *fiber.Ctx, err error) int {
+	log.Printf("Request coming from: %s %v", c.Request().URI(), color.BgCyan)
+	var status int
+	if err != nil { 
+		status = fiber.StatusInternalServerError
+	}
+	status = 0
+
+	return status
+}
 
 /*
 * Authentication package:
@@ -36,9 +47,11 @@ func HandleJwtSignUp(c *fiber.Ctx) error {
 	}
 
 	db := database.Conn
-	db.Create(&user)
+	result := db.Create(&user)
 
-	return c.SendStatus(fiber.StatusCreated)
+	status := useErrorCallback(c, result.Error)
+
+	return c.SendStatus(status)
 }
 
 func HandleJwtSignClose(c *fiber.Ctx) error {
