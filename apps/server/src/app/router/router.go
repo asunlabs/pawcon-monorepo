@@ -1,7 +1,7 @@
 package router
 
 import (
-	"github.com/asunlabs/pawcon-monorepo/server/src/feature/auth/account/jsonwebtoken"
+	"github.com/asunlabs/pawcon-monorepo/server/src/feature/auth"
 	"github.com/gofiber/fiber/v2"
 )
 
@@ -13,7 +13,7 @@ func AuthAccountRoutes(app *fiber.App) {
 	_auth := app.Group("/auth")
 
 	_auth.Post("/signup", jsonwebtoken.HandleJwtSignUp)
-	// auth.Get("/user:id", ReadUser)
-	// auth.Put("/user:id", UpdateUser)
+	_auth.Get("/user:id", jsonwebtoken.GetUserByID)
+	// _auth.Put("/user:id", jsonwebtoken.UpdateUserByID)
 	_auth.Delete("/user/:id", jsonwebtoken.HandleJwtSignClose)
 }

@@ -40,7 +40,7 @@ func main() {
 		GETOnly:       false,
 	})
 	middleware.SetCORS(app, []int{_CLIENT_PORT, _PORT})
-	database.Connect(database.UserModel())
+	database.Connect(database.ReturnAllModel())
 	// ================ App config ================ //
 
 	// ================ API ================ //
