@@ -12,8 +12,8 @@ func RoutingGroup(app *fiber.App) {
 func AuthAccountRoutes(app *fiber.App) {
 	_auth := app.Group("/auth")
 
-	_auth.Post("/signup", jsonwebtoken.HandleJwtSignUp)
-	_auth.Get("/user:id", jsonwebtoken.GetUserByID)
-	// _auth.Put("/user:id", jsonwebtoken.UpdateUserByID)
-	_auth.Delete("/user/:id", jsonwebtoken.HandleJwtSignClose)
+	_auth.Post("/signup", auth.HandleJwtSignUp)
+	_auth.Get("/user:id", auth.GetUserByID)
+	_auth.Put("/user:id", auth.UpdateUserByID)
+	_auth.Delete("/user/:id", auth.HandleJwtSignClose)
 }
