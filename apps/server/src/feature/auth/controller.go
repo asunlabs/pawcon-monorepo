@@ -1,20 +1,53 @@
-package jsonwebtoken
+package auth
 
 import (
-	"log"
 	"github.com/asunlabs/pawcon-monorepo/server/src/app/database"
 	"github.com/fatih/color"
 	"github.com/gofiber/fiber/v2"
+	"log"
 )
 
+func validateMethodType(reqType string) bool {
+	var isValid bool = false
+	allowedMethods := []string{"get", "delete", "post", "put"}
+
+	for _, v := range allowedMethods {
+		if reqType == v {
+			isValid = true
+			break
+		}
+	}
+
+	return isValid
+}
+
 // return 0 if no err
-func useErrorCallback(c *fiber.Ctx, err error) int {
+func useErrorCallback(c *fiber.Ctx, err error, reqType string) int {
+
+	isValid := validateMethodType(reqType)
+
+	if !isValid {
+		log.Fatalf("Invalid HTTP request")
+	}
+
 	log.Printf("Request coming from: %s %v", c.Request().URI(), color.BgCyan)
 	var status int
-	if err != nil { 
+
+	if err != nil {
 		status = fiber.StatusInternalServerError
 	}
-	status = 0
+
+	if reqType == "post" {
+		status = fiber.StatusCreated
+	}
+
+	if reqType == "get" || reqType == "delete" {
+		status = fiber.StatusOK
+	}
+
+	if reqType == "put" {
+		status = fiber.StatusNoContent // 204
+	}
 
 	return status
 }
@@ -49,7 +82,7 @@ func HandleJwtSignUp(c *fiber.Ctx) error {
 	db := database.Conn
 	result := db.Create(&user)
 
-	status := useErrorCallback(c, result.Error)
+	status := useErrorCallback(c, result.Error, "post")
 
 	return c.SendStatus(status)
 }
@@ -69,8 +102,10 @@ func HandleJwtSignClose(c *fiber.Ctx) error {
 	/* db.Delete: Delete delete value match given conditions,
 	if the value has primary key, then will including the primary key as condition
 	*/
-	db.Delete(&user, id)
-	return c.SendStatus(fiber.StatusOK)
+	result := db.Delete(&user, id)
+
+	status := useErrorCallback(c, result.Error, "delete")
+	return c.SendStatus(status)
 }
 
 /*
@@ -83,9 +118,11 @@ func HandleJwtSignIn(c *fiber.Ctx) error {
 	db := database.Conn
 	email := c.Params("email")
 	user := new(database.User)
-	db.Find(&user, email)
 
-	return c.SendStatus(fiber.StatusOK)
+	result := db.First(&user, email)
+
+	status := useErrorCallback(c, result.Error, "get")
+	return c.SendStatus(status)
 }
 
 func HandleJwtSignOut(c *fiber.Ctx) error {
@@ -97,7 +134,13 @@ func GetUserByID(c *fiber.Ctx) error {
 	id := c.Params("id")
 	user := new(database.User)
 
-	db.Find(&user, id)
+	result := db.First(&user, id)
+	status := useErrorCallback(c, result.Error, "get")
+
+	if status != fiber.StatusOK {
+		return result.Error
+	}
+
 	return c.JSON(&user)
 }
 
@@ -105,8 +148,17 @@ func UpdateUserByID(c *fiber.Ctx) error {
 	db := database.Conn
 	user := new(database.User)
 
-	c.BodyParser(&user)
-	db.Model(&user).Updates(map[string]interface{}{ "firstname": user.Firstname, "email": user.Email})
+	if err := c.BodyParser(&user); err != nil {
+		return err
+	}
 
-	return c.SendStatus(fiber.StatusOK)
+	result := db.Model(&user).Updates(map[string]interface{}{
+		"firstname": user.Firstname,
+		"lastname":  user.Lastname,
+		"email":     user.Email,
+		"username":  user.Username})
+
+	status := useErrorCallback(c, result.Error, "put")
+
+	return c.SendStatus(status)
 }
