@@ -52,26 +52,12 @@ func useErrorCallback(c *fiber.Ctx, err error, reqType string) int {
 	return status
 }
 
-/*
-* Authentication package:
-1) HandleSignUp
-3) HandleSignClose
-2) HandleSignIn
-4) HandleSignOut
-*/
-
 func HandleJwtSignUp(c *fiber.Ctx) error {
 	log.Printf("client sent: %s", string(c.Request().Body()))
 	allParams := c.AllParams()
 
 	color.Blue("params from client: ", allParams)
 
-	/*
-		TODO User signup validation
-		* 1) email duplicates
-		* 2) password hashing with jwt
-		* 3) data transfer object
-	*/
 	user := new(database.User)
 
 	if err := c.BodyParser(&user); err != nil {
@@ -91,28 +77,14 @@ func HandleJwtSignClose(c *fiber.Ctx) error {
 	db := database.Conn
 	id := c.Params("id")
 
-	/*
-		* pointer = new(type)
-		The new built-in function allocates memory. The first argument is a type,
-		not a value, and the value returned is a pointer to a newly
-		allocated zero value of that type.
-	*/
 	user := new(database.User)
 
-	/* db.Delete: Delete delete value match given conditions,
-	if the value has primary key, then will including the primary key as condition
-	*/
 	result := db.Delete(&user, id)
 
 	status := useErrorCallback(c, result.Error, "delete")
 	return c.SendStatus(status)
 }
 
-/*
-* User signin validation
-* 1) data transfer object
-* 2) password comparison from DB
- */
 func HandleJwtSignIn(c *fiber.Ctx) error {
 
 	db := database.Conn
