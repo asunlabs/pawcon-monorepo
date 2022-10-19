@@ -1,11 +1,11 @@
 package database
 
 import (
-	"os"
 	"github.com/fatih/color"
 	"github.com/gofiber/fiber/v2"
 	"gorm.io/driver/sqlite"
 	"gorm.io/gorm"
+	"os"
 )
 
 var (
@@ -26,7 +26,7 @@ func Connect(schema []interface{}) {
 		os.Exit(1)
 	} else {
 		// iterate array in Go: for ~ range
-		for _,v := range schema {
+		for _, v := range schema {
 			db.AutoMigrate(v)
 		}
 		color.Green("Schema auto-migrated, DB connected")

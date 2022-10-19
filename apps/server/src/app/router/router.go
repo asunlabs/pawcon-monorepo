@@ -13,7 +13,7 @@ func AuthAccountRoutes(app *fiber.App) {
 	_auth := app.Group("/auth")
 
 	_auth.Post("/signup", auth.HandleJwtSignUp)
-	_auth.Get("/user:id", auth.GetUserByID)
-	_auth.Put("/user:id", auth.UpdateUserByID)
-	_auth.Delete("/user/:id", auth.HandleJwtSignClose)
+	_auth.Get("/user/:id", auth.GetUserByID)
+	_auth.Put("/user/:id", auth.UpdateUserByID)
+	_auth.Delete("/user/:id", auth.HandleJwtAccountClose)
 }
