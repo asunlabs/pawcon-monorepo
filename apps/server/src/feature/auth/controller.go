@@ -1,10 +1,11 @@
 package auth
 
 import (
+	"log"
+
 	"github.com/asunlabs/pawcon-monorepo/server/src/app/database"
 	"github.com/fatih/color"
 	"github.com/gofiber/fiber/v2"
-	"log"
 )
 
 func validateMethodType(reqType string) bool {
@@ -54,13 +55,10 @@ func useErrorCallback(c *fiber.Ctx, err error, reqType string) int {
 
 func HandleJwtSignUp(c *fiber.Ctx) error {
 	log.Printf("client sent: %s", string(c.Request().Body()))
-	allParams := c.AllParams()
-
-	color.Blue("params from client: ", allParams)
-
+	// pointer
 	user := new(database.User)
 
-	if err := c.BodyParser(&user); err != nil {
+	if err := c.BodyParser(user); err != nil {
 		log.Panicf("struct binding failed: %s", err.Error())
 		return c.SendStatus(fiber.StatusInternalServerError)
 	}
@@ -73,7 +71,8 @@ func HandleJwtSignUp(c *fiber.Ctx) error {
 	return c.SendStatus(status)
 }
 
-func HandleJwtSignClose(c *fiber.Ctx) error {
+// @dev GORM soft delete
+func HandleJwtAccountClose(c *fiber.Ctx) error {
 	db := database.Conn
 	id := c.Params("id")
 
@@ -119,12 +118,13 @@ func GetUserByID(c *fiber.Ctx) error {
 func UpdateUserByID(c *fiber.Ctx) error {
 	db := database.Conn
 	user := new(database.User)
+	id := c.Params("id")
 
-	if err := c.BodyParser(&user); err != nil {
+	if err := c.BodyParser(user); err != nil {
 		return err
 	}
 
-	result := db.Model(&user).Updates(map[string]interface{}{
+	result := db.Model(&user).Where("id = ?", id).Updates(map[string]interface{}{
 		"firstname": user.Firstname,
 		"lastname":  user.Lastname,
 		"email":     user.Email,
