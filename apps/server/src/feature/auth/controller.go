@@ -2,7 +2,6 @@ package auth
 
 import (
 	"log"
-
 	"github.com/asunlabs/pawcon-monorepo/server/src/app/database"
 	"github.com/fatih/color"
 	"github.com/gofiber/fiber/v2"
@@ -38,16 +37,15 @@ func useErrorCallback(c *fiber.Ctx, err error, reqType string) int {
 		status = fiber.StatusInternalServerError
 	}
 
-	if reqType == "post" {
-		status = fiber.StatusCreated
-	}
-
-	if reqType == "get" || reqType == "delete" {
-		status = fiber.StatusOK
-	}
-
-	if reqType == "put" {
-		status = fiber.StatusNoContent // 204
+	switch reqType {
+		case "post":
+			status = fiber.StatusCreated
+		case "get":
+			status = fiber.StatusOK
+		case "delete":
+			status = fiber.StatusNoContent
+		case "put":
+			status = fiber.StatusNoContent
 	}
 
 	return status
@@ -64,7 +62,7 @@ func HandleJwtSignUp(c *fiber.Ctx) error {
 	}
 
 	db := database.Conn
-	result := db.Create(&user)
+	result := db.Create(user)
 
 	status := useErrorCallback(c, result.Error, "post")
 

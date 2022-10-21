@@ -31,7 +31,7 @@ const (
 
 func main() {
 	// ================ App config ================ //
-	middleware.LoadEnv()
+	middleware.LoadEnv("")
 	app := fiber.New(fiber.Config{
 		AppName:       "PawCon server v0.3.0",
 		CaseSensitive: true,
@@ -40,7 +40,7 @@ func main() {
 		GETOnly:       false,
 	})
 	middleware.SetCORS(app, []int{_CLIENT_PORT, _PORT})
-	database.Connect(database.ReturnAllModel())
+	database.Connect(database.ReturnAllModel(), "develop")
 	// ================ App config ================ //
 
 	// ================ API ================ //
