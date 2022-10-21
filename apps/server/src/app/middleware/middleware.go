@@ -38,11 +38,19 @@ func SetCORS(app *fiber.App, ports []int) {
 	}))
 }
 
-func LoadEnv() {
-	// godotenv.Load(): If you call Load without any args it will default to loading .env in the current path
-	err := godotenv.Load()
+func LoadEnv(_envPath string) {
+	var err error
+	if len(_envPath) == 0 {
+		// godotenv.Load(): If you call Load without any args it will default to loading .env in the current path
+		_err := godotenv.Load()
+		err = _err
+	} else {
+		_err := godotenv.Load(_envPath)
+		err = _err
+	}
 
 	if err != nil {
+		log.Print(err.Error())
 		log.Fatal(".env load failed")
 	}
 
