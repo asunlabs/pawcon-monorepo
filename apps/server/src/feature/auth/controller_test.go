@@ -23,9 +23,11 @@ type MockUser struct {
 	Username  string
 }
 
-// TODO fix nil pointer bug
 func TestHandleJwtSignUp(t *testing.T) {
 	app := fiber.New()
+	
+	// db should be connected for DB CRUD op
+	database.Connect(database.ReturnAllModel(), "test")
 	app.Post("/auth/signup", auth.HandleJwtSignUp)
 
 	// create a post body with struct
@@ -46,7 +48,7 @@ func TestHandleJwtSignUp(t *testing.T) {
 
 	/// @dev see http test detail here: https://github.com/gofiber/fiber/blob/master/app_test.go
 	req := httptest.NewRequest(http.MethodPost, "/auth/signup", &buf)
-	req.Header.Add("Content-Type", "application/json")
+	req.Header.Set("Content-Type", "application/json")
 
 	resp, _ := app.Test(req)
 	utils.AssertEqual(t, 201, resp.StatusCode)
