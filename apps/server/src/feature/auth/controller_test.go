@@ -8,6 +8,7 @@ import (
 	"net/http/httptest"
 	"testing"
 
+	"github.com/DATA-DOG/go-sqlmock"
 	"github.com/asunlabs/pawcon-monorepo/server/src/app/database"
 	"github.com/asunlabs/pawcon-monorepo/server/src/feature/auth"
 	"github.com/gofiber/fiber/v2"
@@ -23,6 +24,7 @@ type MockUser struct {
 	Username  string
 }
 
+// test case with real db connection
 func TestHandleJwtSignUp(t *testing.T) {
 	app := fiber.New()
 	
@@ -52,4 +54,55 @@ func TestHandleJwtSignUp(t *testing.T) {
 
 	resp, _ := app.Test(req)
 	utils.AssertEqual(t, 201, resp.StatusCode)
+}
+
+func TestHandleJwtSignUpWithMockDB(t *testing.T) {
+	/// @dev New creates sqlmock database connection and a mock to manage expectations.
+	db, mock, err := sqlmock.New()
+
+	if err != nil { 
+		t.Errorf("error message: %s", err.Error())
+	}
+
+	/// @dev Close closes the database and prevents new queries from starting.
+	defer db.Close()
+
+	// TODO fix expectation not matched error: QueryContext or QueryRow error
+	row := sqlmock.NewRows([]string{
+		"created_at", 
+		"updated_at", 
+		"deleted_at", 
+		"firstname", 
+		"lastname", 
+		"email",
+		"username"}).AddRow(
+			"2022-10-25 22:46:24.792",
+			"2022-10-25 22:46:24.888",
+			"NULL", 
+	    	"mock jake",
+			"mock sung",
+			"mock email",
+			"mock dev")
+	insertQuery := `INSERT INTO users VALUE (
+		"2022-10-25 22:46:24.792",
+		"2022-10-25 22:46:24.888",
+		"NULL", 
+		"mock jake",
+		"mock sung",
+		"mock email",
+		"mock dev"
+	)`
+
+	mock.ExpectQuery(insertQuery).WithArgs(
+		"2022-10-25 22:46:24.792",
+	"2022-10-25 22:46:24.888",
+	"NULL", 
+	"mock jake",
+	"mock sung",
+	"mock email",
+	"mock dev").WillReturnRows(row)
+
+	if err := mock.ExpectationsWereMet(); err != nil {
+		t.Error(err.Error())
+	}
 }
