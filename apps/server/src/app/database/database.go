@@ -3,6 +3,7 @@ package database
 import (
 	"log"
 	"os"
+	"strings"
 
 	"github.com/fatih/color"
 	"github.com/gofiber/fiber/v2"
@@ -20,9 +21,9 @@ func Connect(schema []interface{}, _appType string)  {
 	appType := []string{"production", "develop", "test"}
 
 	isValidType := false
-
+	
 	for _, v := range appType {
-		if v == _appType {
+		if v == strings.ToLower(_appType) {
 			isValidType = true
 			break
 		}
