@@ -6,7 +6,7 @@ go 1.19
 
 require (
 	github.com/fatih/color v1.13.0
-	github.com/gofiber/fiber/v2 v2.40.0
+	github.com/gofiber/fiber/v2 v2.40.1
 	github.com/joho/godotenv v1.4.0
 	github.com/satori/go.uuid v1.2.0
 	gorm.io/driver/sqlite v1.4.3
